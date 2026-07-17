@@ -1,0 +1,120 @@
+Acquia
+Acquia-Certified-Front-End-Specialist-D10 Exam
+Drupal 10
+Questions & Answers
+(Full Version)
+Thank you for Purchasing Acquia-Certified-Front-End-Specialist-D10 Exam
+www.certsteacher.com
+Exam Dumps 1/76
+Question: 1
+Which HTML tag is used to define a section that is self-contained and reusable across a site, such as a
+blog post?
+A. <section>
+B. <article>
+C. <div>
+D. <aside>
+Answer: B
+Explanation:
+The <article> tag defines self-contained content like blog posts or news articles. It is intended to be
+independently distributable or reusable. Unlike <section>, which groups thematic content, <article>
+focuses on standalone material. This semantic tag enhances content structure for accessibility and SEO. It
+is widely used in modern HTML5 layout strategies.
+Question: 2
+Which CSS property is used to create a grid layout system in a container?
+A. display: block;
+B. display: inline;
+C. display: grid;
+D. display: flex;
+Answer: C
+Explanation:
+display: grid; enables a two-dimensional layout system for web components. It allows content to be
+placed in rows and columns with control over spacing and alignment. Unlike Flexbox, which is one-
+dimensional, Grid handles both axes efficiently. Grid is supported in all modern browsers and ideal for
+complex layouts. Using CSS Grid improves flexibility and reduces the need for media queries.
+Question: 3
+Which of the following PHP features are essential for outputting data securely in HTML? (Choose two)
+www.certsteacher.com
+Exam Dumps 2/76
+A. echo
+B. htmlspecialchars()
+C. strip_tags()
+D. include
+Answer: B, C
+Explanation:
+htmlspecialchars() escapes characters like < and > to prevent XSS attacks. strip_tags() removes all HTML
+tags from a string, increasing output safety. echo simply outputs data and does not sanitize it, which can
+be risky. include is for file inclusion, not for output handling. Using proper sanitization functions is a best
+practice in PHP web development.
+Question: 4
+Which of the following HTML attributes are valid and important for web accessibility? (Choose two)
+A. alt
+B. src
+C. aria-label
+D. target
+Answer: A, C
+Explanation:
+The alt attribute provides alternative text for images, crucial for screen readers. aria-label enhances
+accessibility by providing labels for interactive elements. While src and target are valid HTML attributes,
+they don’t enhance accessibility directly. ARIA attributes like aria-label are part of the WAI-ARIA spec.
+Accessibility improves user experience for users with disabilities.
+Question: 5
+What is the default display value for a <div> element?
+A. inline
+B. block
+C. inline-block
+D. none
+Answer: B
+Explanation:
+By default, a <div> is a block-level element in HTML. It starts on a new line and spans the full width of
+its container. This behavior is suitable for structuring large content sections. Its display property can be
+changed via CSS if needed. Understanding default behaviors is key in layout design.
+www.certsteacher.com
+Exam Dumps 3/76
+Question: 6
+Which PHP function is used to check whether a variable is set and is not null?
+A. isset()
+B. empty()
+C. is_null()
+D. defined()
+Answer: A
+Explanation:
+The isset() function returns true if the variable exists and is not null. It is commonly used to check for
+form submissions or variable presence. empty() checks for falsy values but not strictly for null. is_null()
+checks if a variable is null, not if it is set. Using isset() helps prevent runtime errors in PHP scripts.
+Question: 7
+Which of the following CSS techniques is best suited for building a responsive layout?
+A. Fixed width layout
+B. Table-based layout
+C. Media queries
+D. Inline styles
+Answer: C
+Explanation:
+Media queries enable CSS rules to adapt based on device screen size. They are essential for responsive
+design across multiple viewports. Fixed-width or table-based designs limit flexibility on small screens.
+Inline styles are not scalable and reduce maintainability. Responsive design ensures a consistent
+experience across devices.
+Question: 8
+Which PHP function is used to include and execute another file only once?
+A. require
+B. include
+C. require_once
+D. include_once
+Answer: D
+Explanation:
+www.certsteacher.com
+Exam Dumps 4/76
+include_once includes and executes a file only once per script run. This prevents function redeclaration
+and variable collisions. It's ideal for including config or library files safely. require_once behaves
+similarly but throws a fatal error on failure. Choosing the right inclusion function improves code safety
+and performance.
+Question: 9
+Which CSS feature allows you to apply different styles for printing a webpage?
+A. @media screen
+B. @import
+C. @media print
+D. @font-face
+Answer: C
+Explanation:
+@media print targets print devices and allows custom print styles. It ensures the layout is printer-friendly
+without altering screen styles. This feature is critical for creating print-optimized versions of pages. Using
+it avoids printing unnecessary UI elements like buttons or menus. This technique improves usabili
