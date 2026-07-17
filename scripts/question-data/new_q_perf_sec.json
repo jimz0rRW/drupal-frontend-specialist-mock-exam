@@ -1,0 +1,762 @@
+[
+  {
+    "domain": "Performance",
+    "question": "On a Drupal 11 marketing site, Performance settings show CSS and JavaScript aggregation enabled, yet the homepage still requests dozens of theme CSS files. A developer attached several libraries with preprocess disabled during local debugging. Which library.yml key prevents a CSS file from joining the aggregated bundle?",
+    "options": [
+      "Setting preprocess: false on that CSS asset entry in *.libraries.yml.",
+      "Omitting weight so Drupal treats the file as critical.",
+      "Declaring the file under js instead of css so aggregation skips it.",
+      "Adding dependencies: - core/drupal so aggregation is bypassed."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "In Drupal libraries, preprocess: false on a CSS or JS asset excludes that file from aggregation while aggregation remains globally enabled. Weight, moving the file to js, or adding core/drupal does not disable preprocessing.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "You are preparing a custom theme for production. Editors complain that anonymous pages are slow until caches warm. Which two core capabilities should you verify are enabled so anonymous traffic benefits from full-page caching and asset bundling?",
+    "options": [
+      "Internal Page Cache for anonymous users.",
+      "CSS and JavaScript aggregation on the Performance configuration page.",
+      "Twig debug mode so template suggestions are printed in HTML comments.",
+      "Disabling the Dynamic Page Cache module site-wide."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Internal Page Cache serves complete cached pages to anonymous users, and aggregation reduces HTTP requests for CSS/JS. Twig debug hurts performance, and Dynamic Page Cache should remain available for authenticated/personalized responses—not disabled.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Performance",
+    "question": "A authenticated dashboard shows a personalized Welcome block that varies per user. The rest of the page is identical for all authenticated roles. Which approach lets Drupal stream the shared markup quickly while filling the personalized block later?",
+    "options": [
+      "Enable BigPipe so highly dynamic placeholders can be replaced after the initial payload.",
+      "Set #cache max-age to 0 on the entire page render array.",
+      "Disable Internal Page Cache and rely only on browser cache.",
+      "Move the Welcome block into settings.php as a hardcoded string."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "BigPipe sends cacheable page structure first and streams personalized placeholders afterward, improving perceived performance without turning off caching for the whole page.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "A Views block lists recent articles and sits in a sidebar on many content types. After publishing a new article, the block still shows stale titles until a full cache rebuild. Which cache metadata should the view/block correctly bubble so the listing invalidates when article nodes change?",
+    "options": [
+      "Cache tags such as node_list (and relevant node tags) so list content invalidates on node updates.",
+      "A permanent max-age of Cache::PERMANENT with no tags.",
+      "Only the url.path cache context, ignoring entity changes.",
+      "Disabling the Render cache bin entirely in settings.php."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Listings of nodes should expose cache tags (for example node_list) so Drupal invalidates cached markup when content changes. Relying only on path context or clearing bins site-wide is inefficient and incorrect.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "Hero images on article teasers download a 2400px original on every listing page. Which Drupal configuration reduces bytes transferred across breakpoints without hardcoding widths in Twig?",
+    "options": [
+      "Configure a Responsive Image style that maps breakpoints/sizes to image style derivatives.",
+      "Enable CSS aggregation so images are automatically resized.",
+      "Store originals as Base64 in a preprocess hook.",
+      "Set preprocess: false on the theme’s global CSS library."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Responsive Image styles generate appropriately sized derivatives and emit srcset/sizes so browsers pick a suitable file. Aggregation and preprocess flags do not resize images.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "Your theme’s global library attaches a large carousel script on every page, including pages without carousels. Which two library practices reduce unnecessary front-end payload?",
+    "options": [
+      "Split the carousel into its own library and attach it only from templates or preprocess that need it.",
+      "Declare shared dependencies once (for example core/drupal, core/once) so Drupal loads each asset a single time.",
+      "Disable JavaScript aggregation so each script stays a separate request forever.",
+      "Inline the carousel script with |raw in page.html.twig for every route."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Conditional library attachment and shared dependencies keep pages lean and avoid duplicate loads. Disabling aggregation or inlining scripts worsens maintainability and often performance.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Performance",
+    "question": "During a performance audit you notice Dynamic Page Cache rarely hits for a custom block that prints the current user’s display name. What is the most likely missing cache metadata?",
+    "options": [
+      "The user cache context (for example user or user.roles) on the render array so variants are stored separately.",
+      "Setting #cache max-age to Cache::PERMANENT while ignoring the user.",
+      "Forcing Internal Page Cache to serve authenticated responses.",
+      "Removing cache tags so the block never invalidates."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "User-specific markup must declare an appropriate user-related cache context; otherwise Dynamic Page Cache cannot safely reuse a single variant. Internal Page Cache is for anonymous traffic and should not be forced for authenticated personalization.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "A front-end developer enables Twig debugging while investigating template suggestions on production-like infrastructure. Which impact should you expect until debugging is turned off?",
+    "options": [
+      "Twig compilation/caching is impaired and HTML comments with suggestions are injected, increasing render cost and response size.",
+      "CSS aggregation automatically disables itself.",
+      "BigPipe stops streaming placeholders.",
+      "Image derivatives stop generating until caches are rebuilt."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Twig debug disables optimized Twig caching behavior and adds suggestion comments, which is useful locally but harmful for performance in shared environments.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "You need a custom JS behavior that depends on Drupal’s once API and should not block HTML parsing. Which libraries.yml configuration best matches Drupal 10/11 front-end guidance?",
+    "options": [
+      "Declare the script under js with attributes: { defer: true } and dependencies including core/drupal and core/once.",
+      "Load the script with async: true and no dependencies so it races ahead of Drupal settings.",
+      "Embed the script inline in html.html.twig without a library definition.",
+      "Set header: true on the JS file so it always runs in <head> without defer."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Libraries should declare dependencies so load order is correct; defer allows non-blocking parsing while still respecting dependency order better than unconstrained async for Drupal behaviors.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "Product listing pages show many thumbnails. Which two Drupal-friendly techniques reduce image-related layout delay and bandwidth?",
+    "options": [
+      "Use image styles (or responsive image styles) sized for the teaser display instead of originals.",
+      "Add loading=\"lazy\" (or equivalent theme/field formatter support) for below-the-fold images.",
+      "Disable the Page Cache so every image request bypasses CDN headers.",
+      "Serve only 4K PNG uploads and rely on browser downscaling."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Derivatives cut bytes and dimensions; lazy loading defers offscreen images. Disabling page cache or serving oversized PNGs works against performance goals.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Performance",
+    "question": "A render array for a weather widget sets #cache max-age to 0 because the API result is always considered uncacheable. How does this affect the broader page in Drupal’s render cache model?",
+    "options": [
+      "A max-age of 0 bubbles up and can prevent the page (or containing placeholders) from being cached as a long-lived response.",
+      "Only that widget’s Twig file is skipped; parent page cache is unaffected.",
+      "Drupal ignores max-age when aggregation is enabled.",
+      "Internal Page Cache converts 0 into Cache::PERMANENT automatically."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Cache metadata bubbles: a child with max-age 0 makes ancestors uncacheable for that duration unless placeholdered/isolated (for example via BigPipe/Lazy builders). Aggregation settings do not change this.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "After deploying new theme CSS, anonymous users still receive the previous aggregated stylesheet for a long time. Aggregation is on and files live under public://css. What is the correct operational step to refresh aggregated assets?",
+    "options": [
+      "Clear caches (for example via Drush cr) so Drupal regenerates aggregated CSS/JS with updated content hashes/URLs.",
+      "Only restart PHP-FPM without clearing Drupal caches.",
+      "Delete node revisions so asset URLs change.",
+      "Toggle Twig auto-reload in services.yml permanently on production."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Aggregated asset URLs are cache-managed; rebuilding caches regenerates aggregates after theme changes. Restarting PHP alone or unrelated content operations does not reliably refresh aggregates.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "You attach libraries from a preprocess hook only when a field formatter is present. Which attachment API is the Drupal-standard way to add a library to the page render?",
+    "options": [
+      "$variables['#attached']['library'][] = 'mytheme/carousel';",
+      "$GLOBALS['libraries'][] = 'mytheme/carousel';",
+      "drupal_add_library('mytheme', 'carousel');",
+      "{{ attach_library() }} inside a preprocess PHP file."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Modern Drupal uses the render #attached API (or attach_library() in Twig). drupal_add_library() is obsolete, and Twig functions are not called from PHP preprocess files.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "A content type uses Layout Builder with many blocks. Some blocks are expensive Views. Which two caching strategies help keep layout pages responsive?",
+    "options": [
+      "Configure Views caching (time-based and/or tag-based as appropriate) for expensive displays.",
+      "Ensure blocks/views bubble correct cache tags and contexts rather than forcing max-age 0 unnecessarily.",
+      "Disable Dynamic Page Cache so Layout Builder always rebuilds from scratch.",
+      "Turn on Twig debug to verify which blocks are slow in HTML comments."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Caching Views results and preserving accurate cache metadata lets Drupal reuse work. Disabling Dynamic Page Cache or enabling Twig debug worsens performance.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Performance",
+    "question": "You need placeholdered rendering for a slow block so the rest of the page can be cached. Which render array pattern is appropriate in Drupal 8+?",
+    "options": [
+      "Use a #lazy_builder callback (and typically #create_placeholder) so the expensive work can be deferred/placeholdered.",
+      "Print the block HTML with file_get_contents() in the theme .theme file.",
+      "Set #cache contexts to [] to mark the block globally shareable regardless of user data.",
+      "Place the block markup in settings.php."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Lazy builders (often with placeholders/BigPipe) isolate expensive or personalized rendering. Emptying contexts or embedding HTML in settings.php is incorrect and unsafe for performance design.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "Anonymous traffic should be served from a reverse proxy/CDN that respects Drupal’s Cache-Control headers. Which core module primarily provides full-page caching for anonymous users in Drupal core?",
+    "options": [
+      "Internal Page Cache (page_cache).",
+      "Ban module.",
+      "Update Manager.",
+      "Syslog."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "The Internal Page Cache module caches full pages for anonymous users and works with reverse proxies. Ban, Update Manager, and Syslog do not provide that page-cache behavior.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "A theme library lists both a compiled CSS file and many unminified SCSS sources under css. What should ship in libraries.yml for production aggregation?",
+    "options": [
+      "Reference only the built CSS (and JS) artifacts that should be served to browsers.",
+      "List every SCSS partial so Drupal compiles Sass at request time.",
+      "Point css entries at node_modules paths without a build step.",
+      "Omit the library and @import remote CSS in Twig with |raw."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal aggregates/serves browser-ready assets declared in libraries.yml; it does not compile SCSS at runtime. Build tools produce the artifacts the library should reference.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "Editors upload multi-megabyte camera photos. Image styles are configured, but the first request after upload is slow. Why can the first hit still be expensive even with correct image styles?",
+    "options": [
+      "Drupal generates the derivative on demand (unless pre-generated), so the first request pays the image toolkit processing cost.",
+      "Aggregation must rebuild all CSS before any image style works.",
+      "BigPipe disables image style generation for anonymous users.",
+      "Twig autoescape blocks binary image output until caches clear."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Image style derivatives are typically created when first requested (or via explicit flush/generation). That CPU/IO cost is separate from CSS aggregation, BigPipe, or Twig escaping.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "A custom module adds drupalSettings for a map widget. Which attachment key is the supported way to pass settings to front-end JavaScript?",
+    "options": [
+      "$build['#attached']['drupalSettings']['myModule'] = $settings;",
+      "$build['#attached']['js_settings']['myModule'] = $settings;",
+      "$_SESSION['drupalSettings']['myModule'] = $settings;",
+      "Put JSON in a Twig comment and parse it with regex in JS."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal’s render API uses #attached drupalSettings to expose configuration to Drupal.behaviors. Session hacks or inventing js_settings keys are not the supported pattern.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "You are comparing Internal Page Cache and Dynamic Page Cache for a mostly anonymous brochure site with a few personalized blocks for logged-in members. Which statement is accurate?",
+    "options": [
+      "Internal Page Cache targets anonymous full-page responses; Dynamic Page Cache caches personalized pages by varying on cache contexts.",
+      "Dynamic Page Cache only works when aggregation is disabled.",
+      "Internal Page Cache stores per-user HTML for every authenticated role by default.",
+      "Both modules are replaced by Twig caching and should be uninstalled."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Page Cache is for anonymous full pages; Dynamic Page Cache handles context-sensitive caching (including authenticated). Neither depends on turning aggregation off, and Twig cache is a different layer.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "A listing template outputs dozens of entity reference teasers. Which two practices help keep render performance predictable?",
+    "options": [
+      "Use view modes/formatters so each teaser reuses structured, cacheable render arrays.",
+      "Avoid loading full entities repeatedly in Twig via entity reference chains without caching considerations.",
+      "Call |render|raw on every field to bypass the render pipeline.",
+      "Set every teaser’s max-age to 0 to guarantee freshness."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "View modes and careful entity rendering leverage Drupal’s render cache. Bypassing with |raw or blanket max-age 0 undermines caching and can hurt both performance and security.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Performance",
+    "question": "Production Performance configuration has aggregation enabled, but local development needs individual files for debugging. Which approach is appropriate?",
+    "options": [
+      "Disable CSS/JS aggregation in local environment configuration (UI or env-specific config override), not by permanently changing production.",
+      "Delete core’s AggregateOptimizer class from the codebase.",
+      "Set preprocess: false on every core library in core.libraries.yml.",
+      "Disable the theme registry so assets never combine."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Aggregation should be environment-specific configuration. Editing core libraries or deleting core classes is not an acceptable Drupal practice.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "A CDN caches public files aggressively. After changing an image style effect (for example quality or crop), some URLs still show old pixels. What Drupal action regenerates derivatives?",
+    "options": [
+      "Flush the image style so existing derivatives are deleted and rebuilt on demand.",
+      "Disable Internal Page Cache only.",
+      "Clear only the discovery cache bin.",
+      "Reinstall the theme."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Flushing an image style removes stored derivatives so they are regenerated with the new effects. Page cache or theme reinstall does not specifically rebuild image style files.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "You want browsers to download a critical theme font early without putting a blocking @import in CSS. Which HTML-level technique is commonly paired with Drupal libraries/attachments?",
+    "options": [
+      "Attach a preload link (for example via #attached html_head / html_head_link) for the font file, and use font-display strategies in CSS.",
+      "Add the font file to js in libraries.yml with defer: true.",
+      "Store the font in the Twig {% trans %} bucket.",
+      "Enable BigPipe, which automatically preloads all theme fonts."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Preload hints (and font-display) improve font performance. Fonts are not JS library entries, Twig translation, or automatic BigPipe behavior.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Performance",
+    "question": "A custom block plugin builds a render array that varies by query argument ?sort=. Editors report cache bleed between sort orders. Which cache metadata fixes the variants?",
+    "options": [
+      "Add the url.query_args:sort cache context (or broader query args context as appropriate) to #cache contexts.",
+      "Remove all cache tags from the block.",
+      "Set #cache max-age to Cache::PERMANENT and ignore the query string.",
+      "Disable aggregation for CSS only."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Different query arguments that change output require matching cache contexts so Dynamic Page Cache stores separate variants. Tags and aggregation do not express query-string variation.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "A Twig template prints a plain-text field value with {{ content.field_summary }}. Why is this generally safer than concatenating unfiltered strings with the |raw filter?",
+    "options": [
+      "Twig auto-escaping (and Drupal’s render/ Twig integration) escapes unsafe strings by default, whereas |raw marks output as pre-escaped/trusted.",
+      "Drupal disables all HTML in every field regardless of text format.",
+      "|raw is required for all field output in Drupal 11.",
+      "Auto-escaping only applies inside {% trans %} blocks."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal Twig autoescapes variables unless they are known-safe Markup or explicitly marked safe via |raw. Blind |raw is a common XSS footgun; render arrays/fields usually carry proper escaping/filtering already.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Editors with a restricted role paste HTML into a body field. Which two Drupal mechanisms are the primary server-side controls that determine which tags/attributes survive?",
+    "options": [
+      "The text format assigned to the field (filters such as Limit allowed HTML tags).",
+      "Filter permissions controlling which roles may use each text format.",
+      "Setting preprocess: false on the theme CSS library.",
+      "Enabling BigPipe for authenticated users."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Text formats and the permissions that grant format use are core XSS controls for authored HTML. Asset aggregation and BigPipe are performance features, not HTML sanitizers.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Security",
+    "question": "A theme developer needs to output intentional HTML from a custom string built in preprocess. Which approach aligns with Drupal security practice?",
+    "options": [
+      "Sanitize/build safe markup in PHP (for example using Drupal’s XSS filtering or proper render/Markup APIs) before Twig, rather than piping untrusted input through |raw.",
+      "Always append |raw in Twig for any variable that might contain tags.",
+      "Disable Twig autoescape globally in the theme’s services definition.",
+      "Store the HTML in a cookie and document.write it in a behavior."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Trusted HTML should be created carefully in PHP with filtering/Markup APIs. Globally disabling autoescape or casually using |raw on untrusted data invites XSS.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Security testing finds a reflected XSS vector where a query parameter is printed in a custom Twig file as {{ app.request.query.get('q')|raw }}. What is the correct remediation?",
+    "options": [
+      "Remove |raw and avoid printing untrusted request input as markup; escape it or do not output it as HTML.",
+      "Enable CSS aggregation to neutralize script tags.",
+      "Grant the anonymous role the 'administer filters' permission so filters clean the query string.",
+      "Switch the site to HTTP to avoid mixed-content warnings."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Request parameters are untrusted. Printing them with |raw enables XSS. Aggregation and filter admin permissions do not sanitize arbitrary Twig output of query values.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "You are hardening session security for a Drupal site that must run only over HTTPS in production. Which two practices belong in a typical secure deployment?",
+    "options": [
+      "Serve the site over HTTPS and ensure cookies are sent securely (Drupal’s production HTTPS setup / reverse proxy SSL termination).",
+      "Force users through HTTPS (for example via server redirect and trusted host / reverse proxy configuration) so session cookies are not exposed on cleartext HTTP.",
+      "Store session IDs in a public Twig variable for easier front-end debugging.",
+      "Disable the user.module to remove authentication entirely."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "HTTPS and secure cookie transport protect session identifiers. Exposing session IDs to Twig or removing authentication is not a hardening strategy.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Security",
+    "question": "A custom theme attribute is built from a content title: attributes.setAttribute('data-title', node.label). What is the safe expectation in Twig/Attribute handling?",
+    "options": [
+      "Drupal’s Attribute objects escape values when rendered, preventing attribute breakout from the label string.",
+      "You must always append |raw to Attribute objects or they will not print.",
+      "Titles are never user-controlled, so escaping is unnecessary.",
+      "Attributes bypass Twig entirely and print PHP strings unchanged without escaping."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "The Attribute API escapes attribute values on output, which mitigates XSS via attribute injection. Labels can be user-controlled and must not be forced through |raw.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Anonymous users can select the Full HTML text format on a comment field. Why is this a security problem?",
+    "options": [
+      "Full HTML typically allows unrestricted markup (including scripts/styles depending on filters), enabling stored XSS by untrusted users.",
+      "Full HTML disables Internal Page Cache for the whole site.",
+      "Full HTML prevents image styles from generating derivatives.",
+      "Full HTML automatically grants administer permissions."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Powerful text formats must be limited to trusted roles. Allowing anonymous Full HTML is a classic stored XSS misconfiguration.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "A front-end story requires embedding a third-party analytics script. Which approach best fits Drupal’s security and asset model?",
+    "options": [
+      "Add the script through a library definition / controlled attachment, and avoid giving untrusted roles a text format that can embed arbitrary <script> tags.",
+      "Instruct editors to paste the script into Full HTML body fields on every page.",
+      "Put the script inside |raw in node.html.twig using content from a query parameter.",
+      "Disable Twig autoescape site-wide so scripts always run."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Third-party scripts should be managed as code/config-controlled libraries, not as editor-supplied HTML. Untrusted formats and |raw on request data are XSS risks.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Content Security Policy discussions for a Drupal theme mention avoiding inline scripts. Which two theme practices reduce reliance on unsafe inline JavaScript?",
+    "options": [
+      "Move behaviors into *.js libraries attached via Drupal’s library system instead of inline <script> in Twig.",
+      "Pass configuration through drupalSettings rather than embedding large JS snippets in templates.",
+      "Use |raw to print editor-supplied <script> blocks from body fields.",
+      "Disable aggregation so inline scripts become external automatically."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "External libraries and drupalSettings align with stricter CSP postures. Editor-supplied scripts and disabling aggregation do not solve inline-script risk.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Security",
+    "question": "A preprocess function does: $variables['title'] = $node->label(); and the template prints {{ title }}. An attacker sets a title to <img src=x onerror=alert(1)>. What should happen with default Twig autoescaping?",
+    "options": [
+      "The title is escaped to HTML entities, so the onerror handler does not execute as HTML/JS.",
+      "Drupal executes the onerror handler because node titles are trusted Markup.",
+      "The alert runs only for authenticated users.",
+      "Autoescaping converts it into a render array automatically."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Plain strings are escaped by Twig in Drupal themes, neutralizing HTML/JS in titles unless marked safe incorrectly.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Which permission is dangerously broad for a front-end content editor who only needs to manage basic pages?",
+    "options": [
+      "Administer filters (allows changing text format filter configuration site-wide).",
+      "View published content.",
+      "Use the toolbar.",
+      "Access the Content overview page."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Administer filters can weaken HTML restrictions for everyone and is far more privileged than routine content editing permissions.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Your custom Twig uses {{ var|raw }} because a designer wants unescaped HTML. Which two conditions must be true before |raw is acceptable?",
+    "options": [
+      "The HTML has already been sanitized or constructed from trusted sources using Drupal-safe APIs.",
+      "You understand |raw disables escaping and will not apply it to untrusted user/request input.",
+      "Aggregation is enabled on the Performance page.",
+      "The variable name contains the word safe."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "|raw is only appropriate for trusted, already-safe markup. Aggregation or naming conventions do not make output safe.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Security",
+    "question": "A form-altering theme script reads ?destination= from the URL and assigns window.location to that value. Why is this risky?",
+    "options": [
+      "Unvalidated open redirects / JavaScript navigation to attacker-controlled URLs can enable phishing and token theft scenarios.",
+      "Drupal forbids query parameters on all forms.",
+      "destinations must be stored in libraries.yml or they will 404.",
+      "HTTPS automatically sanitizes destination targets."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Client-side redirects to arbitrary URLs are an open-redirect class issue. HTTPS does not validate destination targets; Drupal’s Form API has its own destination handling that should not be reinvented unsafely.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "You need to print translated interface text that may include placeholders. Which Twig approach is preferred over assembling HTML with |raw?",
+    "options": [
+      "Use the {% trans %} / |t mechanisms with placeholders so translations remain escaped appropriately.",
+      "Concatenate English strings with |raw for every language.",
+      "Disable locale and hardcode all languages in JS.",
+      "Store translations in $_GET and print them in the template."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal’s translation/trans constructs handle placeholders safely. Building multilingual HTML via |raw or request parameters is insecure and unmaintainable.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "A restricted text format allows <a> tags. Attackers attempt javascript: URLs in href. Which filter responsibility is essential?",
+    "options": [
+      "HTML filtering that restricts protocols/attributes (Drupal’s filter system / XSS admin filtering) so dangerous URIs are not allowed.",
+      "CSS aggregation rewriting href values at the web server.",
+      "BigPipe stripping all anchors for anonymous users.",
+      "Image styles validating every link on the page."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Allowed HTML and XSS filtering must constrain tags, attributes, and protocols. Performance subsystems do not sanitize anchor hrefs.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "During a theme security review, you find onclick=\"...\" attributes hard-coded in a Twig template around CMS content. Which recommendation is best?",
+    "options": [
+      "Replace inline event handlers with Drupal behaviors in an external JS library bound to elements safely.",
+      "Keep onclick but wrap the attribute value in |raw.",
+      "Move the same onclick into a body field using Full HTML for editors.",
+      "Disable autoescaping so inline handlers are easier to maintain."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Inline event handlers complicate CSP and mix behavior with markup. External Drupal behaviors are the maintainable, safer pattern.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Which statement about Drupal render arrays and XSS is correct for front-end themers?",
+    "options": [
+      "Printing a render array/field with {{ content }} lets Drupal’s rendering and filtering pipeline produce safe markup for the configured formatters/formats.",
+      "You should convert every render array to a string in preprocess and print it with |raw.",
+      "Render arrays skip text filters when aggregation is on.",
+      "Cache tags sanitize HTML automatically."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Prefer letting the render system output fields/formatters. Premature stringification plus |raw bypasses safeguards; cache tags and aggregation are unrelated to HTML sanitization.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "A site must limit which roles can embed media with rich markup. Which two configuration areas should you review first?",
+    "options": [
+      "Text format filter configuration for allowed HTML/media embeds.",
+      "User role permissions for 'Use the … text format' (and related media permissions).",
+      "The color module palette permissions.",
+      "The Twig debug checkbox on the Performance page."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Format filters and format-use permissions determine who can introduce rich HTML/media. Color palettes and Twig debug are not the primary XSS controls.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Security",
+    "question": "You discover a custom Twig filter in a theme that returns Markup::create($string) for any input. Why is this dangerous?",
+    "options": [
+      "It marks arbitrary strings as safe HTML, bypassing Twig autoescaping and enabling XSS if the input is untrusted.",
+      "Markup::create disables CSS aggregation.",
+      "Markup objects cannot be printed in Twig at all.",
+      "It forces HTTPS redirects on every request."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Markup::create is for trusted HTML only. Wrapping untrusted input makes Twig treat it as safe and can reintroduce XSS.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Session cookies should not be readable by front-end JavaScript. Which browser cookie flag supports that goal?",
+    "options": [
+      "HttpOnly on the session cookie so document.cookie cannot read it.",
+      "SameSite=None without Secure on HTTP sites as a universal default.",
+      "Exposing the session name in drupalSettings for behaviors.",
+      "Storing the session ID in localStorage for BigPipe."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "HttpOnly prevents JavaScript access to the session cookie, mitigating theft via XSS. Putting session identifiers in JS-accessible storage is the opposite of hardening.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "A developer copies unfiltered field values into a data-* attribute using string concatenation in Twig: <div data-label=\"{{ label|raw }}\">. What is the correct fix?",
+    "options": [
+      "Drop |raw and let Twig escape the attribute value (or use the Attribute API).",
+      "Enable Internal Page Cache to sanitize attributes.",
+      "Switch the field to Full HTML so raw is justified.",
+      "Add defer: true to a unrelated JS library."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Attribute context still requires escaping. |raw in attributes enables breakout/XSS. Page cache and Full HTML do not make this pattern safe.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "Which Drupal core concept helps prevent cross-site request forgery on forms that your theme may alter visually?",
+    "options": [
+      "Form API tokens (and related form processing) that validate the submission originated from the site’s form build.",
+      "CSS aggregation hashes.",
+      "Image style flush tokens in the theme .info.yml.",
+      "Twig spaceless blocks."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal forms include CSRF protection via Form API tokens. Front-end theming must not strip required hidden token fields. Aggregation and Twig whitespace tools are unrelated.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "An editor role can administer themes and configure blocks freely on production. From a front-end security operations perspective, why is this concerning?",
+    "options": [
+      "Theme/block administration can introduce active code/markup and alter site presentation widely, and should be limited to trusted administrators.",
+      "Block placement automatically grants administer filters.",
+      "Theme administration disables HTTPS.",
+      "Editors need that permission to use Responsive Image styles."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Broad theme/block admin rights are powerful and can be abused to inject content or weaken presentation security. They are not required for routine responsive image use.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "You are documenting CSP-friendly theming for a Drupal 10/11 project. Which guidance is accurate?",
+    "options": [
+      "Prefer external JS/CSS libraries and minimize inline scripts/styles in Twig so a stricter Content-Security-Policy is feasible.",
+      "CSP is enforced automatically by enabling JavaScript aggregation.",
+      "|raw is CSP’s preferred way to inline event handlers.",
+      "Text formats replace the need for HTTPS."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "CSP is an HTTP policy usually applied at server/edge/module layers; aggregation alone is not CSP. Reducing inline code in themes makes adopting CSP practical. HTTPS and text formats solve different problems.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Security",
+    "question": "A custom field formatter outputs user-supplied HTML that already passed through check_markup() / the filter system for a known format. How should the theme print it?",
+    "options": [
+      "Print the filtered Markup/render output without adding |raw on top of untrusted pre-filter strings; trust the filtered result Drupal returns.",
+      "Call |raw twice to ensure scripts execute for accessibility.",
+      "Disable the text format and print the original string with |raw.",
+      "Bypass filters by reading the database column in Twig."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Filtered output from Drupal’s filter system is the safe path. Re-applying |raw to unfiltered storage or disabling formats defeats XSS protections.",
+    "multipleAnswers": false
+  }
+]

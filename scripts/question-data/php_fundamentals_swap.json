@@ -1,0 +1,336 @@
+[
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "In PHP, which statement correctly appends the string `banner` to an indexed array named `$classes`?",
+    "options": [
+      "`$classes[] = 'banner';`",
+      "`$classes = 'banner';`",
+      "`array_push($classes = 'banner');`",
+      "`$classes->append('banner');`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Using `$array[] = $value` appends to an indexed array. Assigning a string overwrites the variable; objects use different APIs.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which PHP comparison is both type-safe and the recommended default when checking that a variable equals the integer `0`?",
+    "options": [
+      "`$count === 0`",
+      "`$count == 0`",
+      "`$count = 0`",
+      "`$count != null`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`===` compares value and type. `==` coerces types (so `'0' == 0` is true), and `=` is assignment.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "What does the null coalescing operator return in `$title = $node->label() ?? 'Untitled';` when `label()` returns `null`?",
+    "options": [
+      "`'Untitled'`",
+      "`null`",
+      "`false`",
+      "An empty string"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`??` yields the right-hand operand when the left side is `null` (or not set). It does not treat other falsy values like `0` or `''` as missing unless they are null.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which PHP construct iterates both keys and values of an associative array `$attributes`?",
+    "options": [
+      "`foreach ($attributes as $key => $value) { ... }`",
+      "`for ($attributes as $key => $value) { ... }`",
+      "`each($attributes as $key => $value)`",
+      "`loop ($attributes) { ... }`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`foreach` with `$key => $value` is the idiomatic way to walk associative arrays in PHP.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "In modern PHP used by Drupal 10/11, which visibility keyword allows a property to be accessed only inside the defining class?",
+    "options": [
+      "`private`",
+      "`public`",
+      "`global`",
+      "`static`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`private` restricts access to the class itself. `public` is open; `static` is about binding, not visibility; `global` is not a property visibility keyword.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which two statements about PHP `isset()` and `empty()` are correct? (Choose two)",
+    "options": [
+      "`isset($var)` is false when `$var` is `null` or not defined.",
+      "`empty('0')` evaluates to true because `'0'` is considered empty in PHP.",
+      "`isset(0)` is false because zero is empty.",
+      "`empty([])` is false because arrays are never empty."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "`isset` fails for null/undefined. `empty` treats `'0'`, `0`, `''`, `null`, `false`, and `[]` as empty. Zero is a valid set value for `isset`.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You need a PHP function that accepts an optional string defaulting to an empty string. Which signature is valid?",
+    "options": [
+      "`function build_label(string $text = ''): string`",
+      "`function build_label(string $text = null): string` without a nullable type",
+      "`function build_label($text = ''): string $text`",
+      "`function build_label(string $text): string = ''`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Default values belong in the parameter list. A `string` parameter cannot default to `null` unless typed `?string`.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which PHP array function returns a new array containing only values that pass a callback test?",
+    "options": [
+      "`array_filter($items, $callback)`",
+      "`array_map($callback, $items)`",
+      "`array_merge($items, $callback)`",
+      "`array_values($callback)`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`array_filter` keeps elements for which the callback returns true. `array_map` transforms elements; it does not filter.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "In Drupal-oriented PHP, which structure is a render array that will print markup through the render system?",
+    "options": [
+      "`['#markup' => 'Hello world']`",
+      "`['markup' => 'Hello world']`",
+      "`(object) ['text' => 'Hello world']`",
+      "`'<div>Hello world</div>'` returned from a preprocess function as a raw string replacement for all of `$variables`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Render arrays use `#` keys such as `#markup`, `#theme`, and `#plain_text`. Plain associative keys are not render API elements.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which two PHP language features help prevent null-related errors when reading nested data? (Choose two)",
+    "options": [
+      "Null coalescing: `$value = $data['title'] ?? 'n/a';`",
+      "Nullsafe operator: `$label = $node?->label();`",
+      "Using `==` instead of `===` for all comparisons",
+      "Prefixing variables with `@` to suppress all errors permanently"
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "`??` and `?->` are the modern, intentional tools. Error suppression with `@` hides problems; loose equality does not solve null access.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "What is the difference between `include` and `require` in PHP when the target file is missing?",
+    "options": [
+      "`require` emits a fatal error and stops execution; `include` emits a warning and continues.",
+      "They behave identically in all PHP versions.",
+      "`include` always fatals; `require` never fatals.",
+      "Both silently return `false` with no warning."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Missing `require`/`require_once` is fatal. Missing `include`/`include_once` warns and continues.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which snippet correctly defines a simple PHP class with a constructor property promotion style used in modern PHP?",
+    "options": [
+      "`class Card { public function __construct(private string $title) {} }`",
+      "`class Card($title) { private string $title; }`",
+      "`class Card { function Card(string $title) { $this->title = $title; } }` as the only modern constructor form",
+      "`struct Card { string $title; }`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Constructor property promotion declares and assigns properties in `__construct`. PHP has classes, not structs; old PHP4-style constructors are obsolete.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You must check whether the key `url` exists in `$options` before reading it. Which expression is appropriate?",
+    "options": [
+      "`array_key_exists('url', $options)` or `isset($options['url'])` depending on null handling needs",
+      "`in_array('url', $options)` which tests keys",
+      "`property_exists($options, 'url')` for arrays",
+      "`$options->has('url')` on a plain array"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`array_key_exists` detects keys even when the value is `null`; `isset` is false for null. `in_array` checks values, not keys.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "In a theme preprocess function, which variable is the standard by-reference array you modify to pass data into Twig?",
+    "options": [
+      "`$variables`",
+      "`$form_state`",
+      "`$_SESSION`",
+      "`$GLOBALS['twig']`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`hook_preprocess_HOOK(&$variables)` receives `$variables` by reference; values you set become Twig variables.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which PHP string function returns the portion of `$haystack` starting at the first occurrence of `$needle`, or `false` if not found?",
+    "options": [
+      "`strpos($haystack, $needle)` for the position; use `strstr($haystack, $needle)` for the substring from the match",
+      "`explode($haystack, $needle)`",
+      "`implode($haystack, $needle)`",
+      "`str_split($needle)`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`strpos` returns an offset (or false). `strstr` returns the matched tail. Explode/implode split/join on delimiters.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which two statements about PHP namespaces and `use` imports are true? (Choose two)",
+    "options": [
+      "`use Drupal\\Core\\Url;` imports the `Url` class into the current namespace.",
+      "Fully qualified names like `\\Drupal\\Core\\Url::fromRoute()` work without a `use` statement.",
+      "`use` statements change the class file location on disk at runtime.",
+      "Namespaces are only available when Xdebug is enabled."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "`use` is an alias/import for shorter names; FQCN always works. Autoloading resolves files; namespaces do not depend on Xdebug.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "What does this PHP match expression assign to `$label` when `$status` is `'published'`?\n\n```php\n$label = match ($status) {\n  'draft' => 'Draft',\n  'published' => 'Live',\n  default => 'Unknown',\n};\n```",
+    "options": [
+      "`'Live'`",
+      "`'Draft'`",
+      "`'Unknown'`",
+      "`true`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`match` is a strict comparison expression introduced in PHP 8; the `'published'` arm returns `'Live'`.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which approach correctly catches any `Throwable` (including `Error` and `Exception`) in PHP 7+?",
+    "options": [
+      "`try { ... } catch (\\Throwable $e) { ... }`",
+      "`try { ... } catch ($e) { ... }` without a type (invalid syntax in modern PHP)",
+      "`on error resume next`",
+      "`catch_all { ... }`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`Throwable` is the shared interface for `Error` and `Exception`. Typed catch blocks are required.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which Drupal PHP helper escapes text for safe HTML element body output?",
+    "options": [
+      "`\\Drupal\\Component\\Utility\\Html::escape($text)`",
+      "`strip_tags($text)` alone when you need to keep tags visible as text entities",
+      "`Markup::create($text)` for untrusted editor input",
+      "`print $text;` in a preprocess function"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "`Html::escape()` converts special characters to entities. `Markup::create()` marks trusted HTML; do not use it for untrusted strings.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You need to pass a callable into `array_map`. Which two forms are valid callables in PHP? (Choose two)",
+    "options": [
+      "An anonymous function: `function ($item) { return $item; }`",
+      "A string function name such as `'strtoupper'`",
+      "An arbitrary integer like `42`",
+      "A plain object without `__invoke` or a method reference"
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Closures and global function name strings are callables. Random integers/objects are not unless they implement `__invoke` or use `[$obj, 'method']` form.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "What is the value of `$result` after this code runs?\n\n```php\n$a = ['x' => 1, 'y' => 2];\n$b = ['y' => 9, 'z' => 3];\n$result = $a + $b;\n```",
+    "options": [
+      "`['x' => 1, 'y' => 2, 'z' => 3]` (left-hand keys win on conflict)",
+      "`['x' => 1, 'y' => 9, 'z' => 3]` (right-hand keys always overwrite)",
+      "`['y' => 9, 'z' => 3]`",
+      "`[1, 2, 9, 3]`"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "The `+` operator for arrays unions keys and keeps the left-hand value when keys collide. Use `array_merge` for different overwrite rules.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Which statement best describes a PHP interface?",
+    "options": [
+      "It defines a contract of method signatures that implementing classes must provide.",
+      "It stores instance property values shared across all objects.",
+      "It replaces Composer autoloading.",
+      "It is identical to a trait and may contain property defaults in all PHP versions."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Interfaces specify what methods a class must implement. Traits are for reusable method sets; they are not the same construct.",
+    "multipleAnswers": false
+  }
+]

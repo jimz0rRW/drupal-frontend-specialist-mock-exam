@@ -1,0 +1,761 @@
+[
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You are building a product listing page in Drupal 11. Each product teaser must be announced as a self-contained unit by assistive technologies, with the title and price grouped as introductory content. Which markup pattern best meets this requirement?",
+    "options": [
+      "Wrap each teaser in an <article> with a nested <header> for the title and price.",
+      "Use a bare <div> for each teaser and rely on CSS class names for structure.",
+      "Wrap teasers only in <section> elements without an article landmark.",
+      "Render each teaser as a <span> inside a single parent <div> for the whole list."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "An <article> signals a standalone content unit, and a nested <header> groups introductory metadata such as title and price. This semantic pattern is preferred over generic divs or spans for accessible, reusable teasers.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Design requires hero headlines to scale smoothly between 320px and 1200px viewports without a media-query ladder. Which CSS approach should you use?",
+    "options": [
+      "Set font-size in fixed px values and override them at every breakpoint.",
+      "Use clamp() with a rem minimum, a viewport-based preferred value, and a rem maximum.",
+      "Toggle utility classes from JavaScript on every window resize event.",
+      "Apply font-size: 100% and expect the browser to scale headlines automatically."
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "clamp() provides a minimum, preferred, and maximum size in one declaration, enabling fluid typography without proliferating breakpoints or resize listeners.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You are implementing a mobile navigation drawer that must meet WCAG keyboard and state requirements. How should the toggle be built? (Choose two)",
+    "options": [
+      "Use a <button> element as the control that opens and closes the drawer.",
+      "Keep aria-expanded on the control in sync with the drawer's open or closed state.",
+      "Use an <a href=\"#\"> link and toggle visibility with CSS :hover only.",
+      "Add tabindex=\"-1\" to every menu link while the drawer is open."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "A real button exposes correct keyboard semantics, and updating aria-expanded communicates open/closed state to assistive technologies. Hover-only links and blanket tabindex changes do not satisfy accessible disclosure patterns.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Editors paste rich text that must appear as plain text in a Twig template with no HTML tags rendered. Which approach should your preprocess use before returning the string?",
+    "options": [
+      "Call strip_tags() so markup is removed and the remaining text can be escaped on output.",
+      "Pass the raw string through without sanitization so Twig can decide.",
+      "Wrap the string in <script> tags to neutralize HTML.",
+      "Use htmlspecialchars_decode() so entities become live markup again."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "strip_tags() removes HTML tags from the editor input. Combined with Twig's auto-escaping (or an explicit escape), this yields safe plain-text output suitable for non-HTML contexts.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "A listing must show differently sized images across breakpoints while keeping a single image style pipeline. Which Drupal-aligned approach should you choose?",
+    "options": [
+      "Configure a responsive image style that maps breakpoints to image styles and outputs a <picture> or srcset.",
+      "Hard-code multiple <img> tags and hide unused ones with display:none.",
+      "Serve only the largest derivative and scale it down with CSS width:100%.",
+      "Load the original upload URL and rely on the browser's intrinsic sizing alone."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal's Responsive Image module maps breakpoints to image styles and emits srcset/picture markup, delivering appropriately sized assets per viewport instead of CSS-only downscaling or duplicate hidden images.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You need a two-column card grid that wraps to one column on narrow viewports without floats. Which CSS layout method is most appropriate?",
+    "options": [
+      "CSS Grid or Flexbox with a media query or auto-fit to collapse to a single column.",
+      "Absolute positioning each card with calculated left offsets.",
+      "A table layout with colspan changes via JavaScript.",
+      "Float:left on every card and clearfix hacks for wrapping."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Grid and Flexbox are the modern, maintainable tools for responsive multi-column layouts. Absolute positioning, tables, and float hacks are brittle and harder to keep accessible.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Your theme JavaScript attaches behaviors that must run once per matched element even after Drupal.attachBehaviors runs again via AJAX. Which Drupal 10/11 pattern should you use?",
+    "options": [
+      "Import once from core/once and call once('myFeature', context.querySelectorAll('.selector')).forEach(...).",
+      "Use jQuery.once from core/jquery.once as the primary Drupal 11 API.",
+      "Set a global window flag and skip all future attachBehaviors calls site-wide.",
+      "Bind handlers with document.write inside the behavior attach callback."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal 10/11 uses the core/once library (not the deprecated jQuery.once) so behaviors process each element only once across initial load and AJAX reattachments.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "A modal dialog opens from a toolbar button. Which focus-management practices keep the pattern WCAG-conformant? (Choose two)",
+    "options": [
+      "Move focus into the dialog when it opens, typically to the first meaningful control or the dialog container.",
+      "Restore focus to the triggering control when the dialog closes.",
+      "Leave focus on the page behind the dialog so users can keep tabbing the background.",
+      "Remove the dialog from the accessibility tree only while it remains visible."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Accessible dialogs move focus into the modal on open and return it to the trigger on close. Leaving focus in the background or incorrectly removing the open dialog from the a11y tree breaks keyboard and screen-reader users.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You are styling form error messages so sighted and screen-reader users both understand which fields failed validation. Which combination is required?",
+    "options": [
+      "Associate each error with its field via aria-describedby (or equivalent) and keep a clear visible error text.",
+      "Show errors only as red borders with no text.",
+      "Announce errors solely with a console.log for developers.",
+      "Hide error text with visibility:hidden while leaving aria-invalid unset."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "WCAG requires perceivable error identification. Linking messages with aria-describedby (and typically aria-invalid) plus visible text ensures both visual and assistive-tech users understand the failure.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "The design system defines brand colors as tokens reused across components. Which CSS feature best supports themeable, maintainable tokens in Drupal front-end work?",
+    "options": [
+      "CSS custom properties (variables) defined on :root or a theme wrapper and consumed by components.",
+      "Hard-coded hex values duplicated in every component stylesheet.",
+      "Inline style attributes on every Twig template node.",
+      "Server-side color replacement by rewriting compiled CSS after every deploy."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Custom properties provide a single source of truth for design tokens and can be overridden by themes or contexts without rewriting every rule.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "A skip link must let keyboard users bypass repetitive header navigation. Where should the skip link point and how should it behave?",
+    "options": [
+      "Link to the main content landmark (for example #main-content) and become visible on focus.",
+      "Link to the site logo so users restart at the top of the page.",
+      "Link to an off-site help page in a new window.",
+      "Use a button that only scrolls visually without a matching in-page target."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Skip links target the primary content landmark and are typically visually hidden until focused, satisfying WCAG bypass-blocks guidance for keyboard users.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You need icons that convey meaning (not decoration) next to status labels. Which approach is accessible?",
+    "options": [
+      "Provide an accessible name for the icon (aria-label, visually hidden text, or equivalent) matching its meaning.",
+      "Use a background-image icon with no text alternative because CSS images are ignored.",
+      "Set aria-hidden=\"true\" on meaningful icons so they never compete with labels.",
+      "Rely on color alone to communicate the status without text or labels."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Meaningful icons need a text alternative. Decorative icons may be hidden from AT, but status icons that convey information must expose their meaning and must not rely on color alone.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Your landing page hero must remain readable when text is resized to 200% per WCAG. Which practices help? (Choose two)",
+    "options": [
+      "Prefer relative units such as rem for typography and spacing that should scale with text size.",
+      "Avoid fixed-height containers that clip or hide overflowing text when font size increases.",
+      "Lock all text to px sizes and overflow:hidden on every section.",
+      "Disable browser zoom with a maximum-scale=1 viewport meta tag."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Relative units and flexible containers allow text to reflow at 200% without clipping. Fixed heights with overflow hidden and disabling zoom actively harm WCAG resize/reflow requirements.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "A custom front-end script needs to wait until the DOM in a given Drupal context is ready and then query elements within that context. What is the correct Drupal behavior pattern?",
+    "options": [
+      "Implement Drupal.behaviors.myFeature = { attach(context, settings) { /* query within context */ } } and declare the library dependency.",
+      "Only use window.onload and always query document without using context.",
+      "Put the script inline in html.html.twig with no library declaration.",
+      "Call jQuery(document).ready exclusively and ignore Drupal.behaviors."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal.behaviors.attach receives a context so scripts work on full page loads and AJAX replacements. Libraries.yml should declare the script and its dependencies.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You must ensure interactive controls meet WCAG 2.2 target size expectations on a touch-first Drupal site. Which guidance should you follow?",
+    "options": [
+      "Provide adequately large hit areas (commonly at least 24x24 CSS pixels under WCAG 2.2, with larger targets preferred) and sufficient spacing.",
+      "Keep all tap targets at 8x8 CSS pixels to maximize density.",
+      "Make only mouse hover areas large; touch targets can remain tiny.",
+      "Rely on browser defaults for unchecked radio dots without enlarging the clickable label area."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "WCAG 2.2 introduces stricter target-size criteria. Adequately sized controls and spacing reduce mis-taps; tiny 8px targets fail common mobile usability and accessibility expectations.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "A data table of event schedules must be accessible. Which HTML practice is essential?",
+    "options": [
+      "Use <table>, <th> with scope (or headers/id), and a caption or aria-labelledby for the table name.",
+      "Build the grid entirely from nested <div> elements styled to look like a table.",
+      "Put each row in a separate <ul> without header cells.",
+      "Use a single paragraph with spaces and line breaks to simulate columns."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Real table markup with header cells and a name lets assistive technologies announce row/column relationships. Div-based faux tables lose that structure.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You are optimizing front-end assets for a content-heavy Drupal page. Which statements about images are correct? (Choose two)",
+    "options": [
+      "Provide width and height (or aspect-ratio) so the browser can reserve space and reduce layout shift.",
+      "Use modern formats (for example WebP/AVIF via image styles) when supported to reduce transfer size.",
+      "Omit dimensions always so the browser discovers size only after download.",
+      "Upload multi-megabyte originals directly into <img src> without derivatives."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Explicit dimensions (or aspect-ratio) mitigate CLS, and modern formats via Drupal image styles reduce bytes. Omitting dimensions and serving raw huge originals harm performance.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "A form field is required. Beyond the visual asterisk, what should you do for accessibility?",
+    "options": [
+      "Mark the control required with the required attribute and/or aria-required and include clear accessible labeling.",
+      "Use color alone (red outline) with no accessible name indicating required state.",
+      "Hide the label and rely on placeholder text as the only name.",
+      "Put the word Required only in a title tooltip on mouse hover."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Programmatic required state plus a proper label ensures AT users know the field is mandatory. Color-only cues, placeholder-as-label, and hover-only tooltips are insufficient.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Your CSS must support a dark color scheme preference when editors enable a dark variant. Which approach aligns with modern CSS fundamentals?",
+    "options": [
+      "Use a prefers-color-scheme media query and/or a theme class that swaps CSS custom property values.",
+      "Detect the preference only in PHP and inline every color on each request with no CSS variables.",
+      "Ship a separate Drupal core fork for dark mode.",
+      "Force dark colors with !important on html without respecting user preference."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "prefers-color-scheme and token swaps via custom properties (or a theme class) are maintainable ways to support dark variants without hard-coding every color in PHP.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You need a visually hidden heading that remains available to screen readers for page structure. Which technique is appropriate?",
+    "options": [
+      "Apply a visually-hidden/sr-only CSS pattern that clips or positions content off-screen without display:none.",
+      "Use display:none so the heading is removed from both vision and the accessibility tree.",
+      "Set font-size:0 and color:transparent only, leaving the text focusable in an unpredictable way.",
+      "Delete the heading from the DOM and add an unrelated aria-label on the body."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Visually hidden CSS keeps content in the accessibility tree while hiding it visually. display:none removes it from AT, defeating the purpose of a screen-reader-only heading.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "A carousel auto-rotates promotional slides. Which WCAG-oriented controls must you provide? (Choose two)",
+    "options": [
+      "A mechanism to pause, stop, or hide the moving content.",
+      "Keyboard-operable previous/next (or equivalent) controls for slide changes.",
+      "Auto-rotation that cannot be paused because motion draws attention.",
+      "Mouse-only drag interaction with no keyboard alternative."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "WCAG requires users to pause or stop moving content and to operate carousels without a mouse. Unstoppable autoplay and mouse-only controls fail accessibility requirements.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "You are choosing units for a layout container that should track the viewport width while respecting root font size for nested type. Which pairing is sensible?",
+    "options": [
+      "Use % or vw/svw-related units for fluid containers and rem for typography that should scale with root font size.",
+      "Use only pt units for both layout and type on the web.",
+      "Use cm units so print and screen always match exactly.",
+      "Use viewport units exclusively for font sizes with no minimum, risking unreadably small text."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Fluid layout units combined with rem-based type (often inside clamp) balance responsiveness with readable typography. Print units and unconstrained viewport fonts are poor defaults for web UI.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Inline SVG icons are injected into Twig. Decorative icons sit beside visible text labels. What should you do?",
+    "options": [
+      "Mark decorative SVGs aria-hidden=\"true\" (and omit title) so assistive tech ignores them.",
+      "Always add a redundant aria-label that repeats the adjacent visible text.",
+      "Give every decorative SVG role=\"img\" and a long description.",
+      "Convert decorative SVGs to <img> with empty alt and also aria-label=\"icon\"."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Decorative icons adjacent to visible text should be hidden from AT to avoid duplicate announcements. Meaningful standalone icons need accessible names instead.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "Your team must meet WCAG contrast for body text on a branded background. Which statement is correct for normal-sized text under WCAG 2.1 AA?",
+    "options": [
+      "Normal text generally needs at least a 4.5:1 contrast ratio against its background.",
+      "Any contrast above 2:1 is sufficient for AA normal text.",
+      "Contrast requirements apply only to images, not to text.",
+      "AA allows pure light-gray text on white if the brand guidelines say so."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "WCAG 2.1 Level AA requires about 4.5:1 contrast for normal text (with a lower threshold for large text). Brand preferences do not override this requirement.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Fundamental Web Development Concepts",
+    "question": "A client-side script filters a list of cards as the user types. Which accessibility practice should you include?",
+    "options": [
+      "Update an aria-live region (or equivalent) so assistive tech hears result-count or status changes.",
+      "Change the list silently with no status text because screen readers will guess.",
+      "Remove all list items from the tab order permanently after the first keystroke.",
+      "Disable the keyboard entirely while filtering runs."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Dynamic filter results should expose status updates through an aria-live region or similar so screen-reader users know how many items match without visual inspection.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You are creating a custom Drupal 11 front-end theme that needs a stable, minimally opinionated base with predictable markup. Which core base theme is the usual choice?",
+    "options": [
+      "Stable9 as the base theme for a minimally styled, forward-compatible starter.",
+      "Claro as the front-end base theme for anonymous visitor pages.",
+      "Olivero only as a hidden base theme that cannot be sub-themed.",
+      "Seven, which remains the default Drupal 11 admin theme."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Stable9 is the core stable base theme intended for sub-theming with predictable markup. Claro is the admin theme; Seven is not the Drupal 11 admin theme; Olivero is a full front-end theme that can be sub-themed but is more opinionated than Stable9.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Your theme must load a global CSS file on every page and a JS file that depends on Drupal's once library. Where do you declare this?",
+    "options": [
+      "In the theme's *.libraries.yml, defining library assets and a dependency on core/once, then attaching the library.",
+      "Only inside settings.php with $config['styles'] entries.",
+      "By dropping files into /core/misc so Drupal auto-discovers them.",
+      "Exclusively via a <link> tag hard-coded in node.html.twig."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Asset libraries are declared in *.libraries.yml with dependencies such as core/once, then attached via info.yml, hook_page_attachments, Twig attach_library, or similar. Core should not be patched for theme assets.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You are defining theme breakpoints for responsive image styles and CSS. Which file and concept apply in Drupal 10/11?",
+    "options": [
+      "Declare breakpoints in THEMENAME.breakpoints.yml with media query labels reusable by Responsive Image and themes.",
+      "Breakpoints may only be defined in PHP inside settings.local.php.",
+      "Drupal reads breakpoints exclusively from Bootstrap's grid SCSS.",
+      "Breakpoint YAML is ignored unless the theme is Olivero."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Themes and modules expose breakpoints through *.breakpoints.yml. Responsive image styles and front-end code can reference those named breakpoints.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You are building Single Directory Components (SDC) in a Drupal 10/11 theme. Which statements are true? (Choose two)",
+    "options": [
+      "An SDC typically colocates template, CSS/JS, and component metadata in one component directory.",
+      "Components are defined with a *.component.yml (metadata) alongside the Twig template.",
+      "SDC components must be stored only under /core/modules and cannot live in themes.",
+      "SDC replaces the need for any *.libraries.yml entry site-wide, including non-component assets."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "SDC keeps a component's Twig, assets, and YAML metadata together and can live in themes or modules. It does not eliminate libraries.yml for all other theme assets, nor is it limited to core paths.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Your sub-theme must override Olivero's color and typography while keeping most templates. What is the correct sub-theme setup?",
+    "options": [
+      "Set base theme: olivero in the sub-theme *.info.yml and override libraries/CSS (and templates only where needed).",
+      "Copy the entire core Olivero folder into /themes and edit core files in place.",
+      "Set base theme: false and manually re-implement every Olivero template.",
+      "Change the active theme in the database only, without an info.yml base theme key."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Sub-themes declare base theme: olivero in info.yml and override assets or templates selectively. Editing core theme files directly is not upgrade-safe.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Claro is enabled as the administration theme. A front-end developer wants visitor-facing pages to use a custom theme. How should this be configured?",
+    "options": [
+      "Set the custom theme as the default (front-end) theme and keep Claro as the admin theme.",
+      "Use Claro for both admin and front-end because Drupal allows only one theme.",
+      "Disable themes entirely and render routes with raw PHP includes.",
+      "Put the custom theme under /core/themes so it replaces Claro automatically."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal separates the default theme (front-end) from the administration theme. Claro typically remains admin while a custom or Olivero-based theme serves visitors.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You need a library to load only on the article content type full view, not globally. Which approach fits Drupal theming?",
+    "options": [
+      "Attach the library in a preprocess (or equivalent) when the article full view is being rendered.",
+      "Add the CSS file to every page via the theme info.yml stylesheets-remove key only.",
+      "Place the CSS in html.html.twig unconditionally.",
+      "Register the file in core.libraries.yml inside the Drupal core repo."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Conditional attachment in preprocess (or Twig attach_library in the right template) scopes assets to the article full display. Global info.yml inclusion and core edits are the wrong tools.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "When defining a theme library that includes CSS and JS, which libraries.yml details matter? (Choose two)",
+    "options": [
+      "List CSS under css with the appropriate SMACSS category such as theme or component.",
+      "Declare dependencies (for example core/drupal or core/once) so scripts load in the correct order.",
+      "Omit file paths because Drupal scans the theme folder recursively for *.js.",
+      "Put PHP classes inside libraries.yml to bootstrap the theme registry."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "libraries.yml must reference explicit asset paths, SMACSS groups for CSS, and JS dependencies. It is not a PHP class registry and does not auto-discover every script.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Your theme info.yml needs to register regions used in page.html.twig. What happens if you print a region in Twig that is not declared in info.yml?",
+    "options": [
+      "The region will not be available for blocks in the UI; undeclared regions are not proper theme regions.",
+      "Drupal auto-creates any Twig variable name as a block region.",
+      "Twig silently maps unknown regions to the header region.",
+      "Regions are defined only in views and ignore info.yml."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Theme regions must be declared in *.info.yml to appear in Block layout and to be first-class page regions. Printing an undeclared variable does not register a region.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You want to override a core Twig template for nodes of type page in your theme. Which file name pattern should you use?",
+    "options": [
+      "node--page.html.twig in the theme's templates directory (with correct theme suggestion enabled).",
+      "node.page.tpl.php like Drupal 7.",
+      "page--node.html.twig to override all node templates of every type.",
+      "entity--node--page.html.twig as the only valid suggestion."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drupal's theme hook suggestions use node--page.html.twig for the page content type. Drupal 7 PHPTemplate names no longer apply.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "A starter theme should not inherit Stable9's CSS but still use its templates/markup stability. Which info.yml approach is appropriate?",
+    "options": [
+      "Use base theme: stable9 and manage libraries carefully (including overriding or not extending unwanted CSS libraries).",
+      "Delete Stable9 from core so no CSS can load.",
+      "Set base theme: classy, which ships as the Drupal 11 default base.",
+      "Set core_version_requirement only; base themes are unused in Drupal 11."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Stable9 provides stable markup as a base; themes control which libraries they extend or override. Classy was removed from Drupal core earlier; deleting core themes is not supported.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You are attaching an SDC in Twig within a Drupal 11 theme. Which call pattern is correct?",
+    "options": [
+      "Include the component with the Twig embed/include syntax for SDC (for example {% include 'mytheme:card' %}) using the theme's component namespace.",
+      "Call theme('sdc') in PHPTemplate with a .tpl.php file.",
+      "Only render SDCs through Layout Builder's XML schema.",
+      "Reference components with jQuery.load('/components/card.html')."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "SDCs are rendered from Twig using the component namespace (provider:component). They are not PHPTemplate theme hooks or jQuery HTML fetches.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Your theme must add a libraries-extend entry so custom CSS loads whenever core's drupal.dialog library loads. Where is libraries-extend declared?",
+    "options": [
+      "In the theme's *.info.yml under libraries-extend targeting the core library name.",
+      "In robots.txt as a Disallow rule.",
+      "In composer.json under extra.drupal-libraries.",
+      "In a node field formatter YAML only."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "libraries-extend in *.info.yml lets a theme attach additional assets whenever another library is attached, which is ideal for styling core dialogs without editing core.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Which practices keep a custom theme upgrade-safe on Drupal 10/11? (Choose two)",
+    "options": [
+      "Override templates and libraries in your theme or sub-theme instead of editing files under /core.",
+      "Use theme hook suggestions and preprocess hooks to alter output without patching core themes unnecessarily.",
+      "Modify Olivero templates directly in /core/themes/olivero for every project.",
+      "Disable the theme system and print HTML from controllers for all pages."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Upgrade-safe theming keeps customizations in custom themes/modules via overrides, suggestions, and preprocess. Editing core theme files is fragile across updates.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You need to remove a library that a base theme attaches globally. Which Drupal mechanism is designed for this?",
+    "options": [
+      "Use libraries-override in the sub-theme info.yml to remove or replace the base library/asset.",
+      "Delete the base theme's libraries.yml from core after each composer update.",
+      "Set $settings['suppress_libraries'] in settings.php with the library name.",
+      "Comment out aggregate CSS in .htaccess."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "libraries-override is the supported way for themes to remove or replace assets defined by base themes or modules.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Block layout shows regions from the active theme. A new 'preface' region was added to info.yml but does not appear. What should you do next?",
+    "options": [
+      "Rebuild caches so Drupal rereads the theme info and registers the new region.",
+      "Reinstall MySQL because regions are stored only in the database engine.",
+      "Add the region to core.extension.yml manually.",
+      "Rename the theme machine name to force Composer to rebuild core."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Theme info is cached. After adding regions to info.yml, a cache rebuild makes them available in Block layout.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Olivero defines CSS custom properties for colors. Your sub-theme should retint the brand without rewriting every rule. What is the best approach?",
+    "options": [
+      "Override the relevant CSS custom properties in a sub-theme library that loads after Olivero's styles.",
+      "Fork Drupal core to change Olivero's default hex values permanently.",
+      "Use JavaScript to rewrite computed styles on every paint.",
+      "Replace Twig with Blade so variables can recolor CSS."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Olivero's design tokens are exposed as CSS variables; a sub-theme library can override those properties cleanly without forking core.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You are documenting theme assets for a multi-developer Drupal 11 project. Which file declares the theme's name, base theme, regions, and global libraries?",
+    "options": [
+      "THEMENAME.info.yml",
+      "THEMENAME.services.yml only",
+      "THEMENAME.routing.yml",
+      "THEMENAME.breakpoints.yml exclusively for all metadata"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "The *.info.yml file is the theme's primary metadata: name, base theme, regions, libraries, and related keys. Breakpoints and services use their own YAML files.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "A component needs scoped CSS that should not be a global theme library. Using SDC, where should that CSS live?",
+    "options": [
+      "Beside the component Twig/metadata in the component directory so SDC can attach it with the component.",
+      "Only in /core/assets/vendor to guarantee load order.",
+      "In the database as a serialized blob in config export.",
+      "Inline in settings.local.php as a heredoc string."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "SDC is designed for colocated component assets. Component CSS belongs with the component, not in core vendor paths or settings.php.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Which statements about Drupal theme inheritance are correct? (Choose two)",
+    "options": [
+      "A sub-theme inherits templates from its base theme unless it provides its own overrides.",
+      "libraries-override and libraries-extend in the sub-theme can alter assets coming from base themes or modules.",
+      "A sub-theme cannot override any Twig file provided by its base theme.",
+      "Base theme relationships are defined in Twig using {% extends 'olivero' %} instead of info.yml."
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Inheritance is configured with base theme in info.yml; templates fall through to the base unless overridden, and library override/extend hooks adjust assets. Twig extends is not how theme base relationships are declared.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You must ensure your theme's CSS is picked up by Drupal's aggregation on production. What is required?",
+    "options": [
+      "Register CSS through the libraries system (libraries.yml / attach) rather than ad-hoc hard-coded <link> tags that bypass aggregation.",
+      "Upload CSS only through the Color module UI.",
+      "Store CSS in public:// and include it with an absolute file:// URL.",
+      "Disable the render pipeline so aggregation can scan the theme folder."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Assets attached via Drupal libraries participate in aggregation and dependency ordering. Raw hard-coded links often bypass the asset pipeline.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Your theme provides a custom page template suggestion for a specific path. Where do you typically add the suggestion?",
+    "options": [
+      "In hook_theme_suggestions_page_alter() (or a related suggestions hook) in the theme's .theme file.",
+      "In index.php before the kernel boots.",
+      "In a Composer post-install script that renames Twig files.",
+      "In Claro's maintainers.yml upstream."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Theme suggestion alter hooks in THEMENAME.theme are the standard way to add template suggestions such as path-specific page templates.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "Responsive Image styles reference breakpoints from a provider. Your theme defines those breakpoints. What must be true for them to be selectable?",
+    "options": [
+      "The theme must be installed/enabled and its *.breakpoints.yml group available to the Responsive Image configuration.",
+      "Breakpoints from disabled themes are always listed as if enabled.",
+      "Only modules may define breakpoints; theme YAML is ignored by design.",
+      "Breakpoints apply only when using the Stark theme."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Breakpoint sets come from enabled extensions' breakpoints.yml files. A theme's breakpoints are available when that theme (or the defining extension) is present and enabled as applicable.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "You are choosing between extending Olivero and starting from Stable9 for a highly custom marketing site. Which guideline is sound?",
+    "options": [
+      "Extend Olivero when you want its templates/components as a starting point; use Stable9 when you want minimal styling and full design control.",
+      "Always extend Claro for anonymous marketing pages.",
+      "Stable9 cannot be a base theme in Drupal 11.",
+      "Olivero cannot be sub-themed; you must copy it outside the docroot."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Olivero is a full-featured front-end theme suitable to sub-theme; Stable9 is the minimal stable base for custom designs. Claro is aimed at administration UIs.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Theming Concepts",
+    "question": "A theme library's JavaScript must run after Drupal settings are available and should use behaviors. Which dependency declaration is most appropriate?",
+    "options": [
+      "Depend on core/drupal and core/drupalSettings (and core/once when using once) in libraries.yml.",
+      "Depend on core/jquery.ui.accordion only, which includes Drupal settings automatically.",
+      "No dependencies are allowed in theme libraries.yml files.",
+      "Depend on ckeditor5.admin for all front-end behaviors."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Front-end behaviors typically need core/drupal and core/drupalSettings; once requires core/once. Declaring these dependencies ensures correct load order.",
+    "multipleAnswers": false
+  }
+]

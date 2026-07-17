@@ -1,0 +1,652 @@
+[
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "You are theming an Article node and need a dedicated Twig file that only applies in the Teaser view mode. Which template filename should you create in your theme?",
+    "options": [
+      "node--article--teaser.html.twig",
+      "node--teaser--article.html.twig",
+      "article--node--teaser.html.twig",
+      "node-article-teaser.html.twig"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Drupal theme suggestions for nodes use the pattern node--{bundle}--{view_mode}.html.twig. For Article teasers that resolves to node--article--teaser.html.twig after cache rebuild with Twig debug enabled to confirm suggestions.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "In a custom theme preprocess function you must ensure a CSS/JS library loads whenever nodes of type event render. Which approach correctly attaches the library to the render array?",
+    "options": [
+      "$variables['#attached']['library'][] = 'mytheme/event';",
+      "$variables['attributes']['library'] = 'mytheme/event';",
+      "drupal_add_library('mytheme/event');",
+      "$variables['attached_library'] = 'mytheme/event';"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Libraries are attached through the render array's #attached key. In preprocess, push the library name onto $variables['#attached']['library']. drupal_add_library() is a Drupal 7 API and does not exist in Drupal 10/11.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "A card component template should render all node fields except the hero image and tags, which are printed separately. Which Twig expression correctly excludes those fields from the remaining content?",
+    "options": [
+      "{{ content|without('field_hero_image', 'field_tags') }}",
+      "{{ content|exclude('field_hero_image', 'field_tags') }}",
+      "{{ content|remove(['field_hero_image', 'field_tags']) }}",
+      "{% unset content.field_hero_image %}{{ content }}"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Drupal's Twig extension provides the without filter to omit named children from a render array while leaving the rest intact. There is no exclude or remove filter for this purpose, and unset is not valid Twig for render arrays.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "Editors report that a custom search form needs an extra CSS class on the textfield and a placeholder attribute. Where should you implement this change?",
+    "options": [
+      "hook_form_FORM_ID_alter() and modify $form['keys']['#attributes']",
+      "hook_preprocess_page() and alter the rendered HTML string",
+      "hook_theme_suggestions_form_alter() to rename the template only",
+      "A Twig {% set %} block that rewrites the form markup after render"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Form alter hooks run before rendering and are the supported place to change element attributes such as class and placeholder. Preprocess-of-page string surgery and post-render Twig rewrites are brittle and not the Drupal form API pattern.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "You need a Twig-only way to load a theme library from node--article.html.twig without PHP. Which statement is correct?",
+    "options": [
+      "{{ attach_library('mytheme/article') }}",
+      "{% library 'mytheme/article' %}",
+      "{{ attach_css('mytheme/article') }}",
+      "{% include library('mytheme/article') %}"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Drupal adds the attach_library() Twig function so templates can declare libraries. The library name must match a key defined in the theme or module *.libraries.yml file.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "A site builder wants different markup when a Paragraph of type callout appears inside a Layout Builder section versus a default node body. Which two techniques correctly vary the template? (Choose two)",
+    "options": [
+      "Implement hook_theme_suggestions_paragraph_alter() and append a suggestion based on the parent entity or view mode.",
+      "Create paragraph--callout--default.html.twig and paragraph--callout--{view_mode}.html.twig using Drupal's suggestion pattern.",
+      "Rename the paragraph entity type machine name at runtime in preprocess to force a new template.",
+      "Override html.html.twig and branch on the paragraph bundle with a giant if/else."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Theme suggestion alter hooks and the standard paragraph--{bundle}--{view_mode} filenames are the supported ways to select alternate Twig templates. Renaming entity types or overloading html.html.twig are not valid approaches.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "While debugging why node--page.html.twig is not used, you enable Twig debug. Which configuration change is the Drupal 10/11-supported local setup?",
+    "options": [
+      "Set parameters.twig.config.debug (and usually auto_reload) to true under development.services.yml / services.local.yml and clear caches.",
+      "Add $settings['twig_debug'] = TRUE; alone in settings.php with no services change.",
+      "Create a file named twig.debug in the theme root.",
+      "Run drush theme:twig-debug-enable which permanently writes to production services.yml."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Twig debug is a container parameter under twig.config. Drupal's development.services.yml pattern (often copied to services.local.yml) enables debug and auto_reload; caches must be cleared afterward.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "In mytheme.theme you need variables available only to the block template for the site branding block. Which hook is the most specific correct choice?",
+    "options": [
+      "mytheme_preprocess_block(&$variables) and check $variables['plugin_id'] or derivative id before adding data",
+      "mytheme_preprocess_html(&$variables) for every page",
+      "mytheme_preprocess_page(&$variables) and hope Twig inherits the keys",
+      "mytheme_form_alter() because branding is always a form"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Block-specific data belongs in hook_preprocess_block(), gated by plugin/derivative ID so other blocks are unaffected. Page/html preprocess do not cleanly target a single block template.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "A design requires adding classes to the node wrapper based on field values. Which two approaches are valid in Drupal 10/11? (Choose two)",
+    "options": [
+      "In hook_preprocess_node(), call $variables['attributes']->addClass('is-featured') when conditions match.",
+      "In the Twig template, use {{ attributes.addClass('is-featured') }} when printing the wrapper.",
+      "Edit core's NodeViewBuilder class in the web/core directory for that content type.",
+      "Set $variables['classes'][] = 'is-featured' and expect core Attribute objects to pick it up automatically in all themes."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Both preprocess Attribute::addClass() and Twig attributes.addClass() are supported. Patching core view builders is not acceptable, and a bare classes array is not the Attribute API used by modern classy/stable9-style templates.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "You must print a translated UI string from Twig that includes a dynamic username. Which pattern is correct?",
+    "options": [
+      "{{ 'Hello @name'|t({'@name': username}) }}",
+      "{{ t('Hello ' ~ username) }}",
+      "{{ 'Hello ' ~ username|raw }}",
+      "{% trans %}Hello {{ username|raw }}{% endtrans %} without placeholders"
+    ],
+    "correctAnswers": [0],
+    "explanation": "The |t filter (and {% trans %} blocks) should use placeholders such as @name so translations stay intact and values are escaped appropriately. Concatenating variables into the source string breaks translation and can create XSS risks.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "A field formatter renders complex markup. In the node template you only need the plain text label of a taxonomy term reference for a data attribute. What is the safest approach?",
+    "options": [
+      "Read from the entity object in Twig (e.g. node.field_category.entity.label) or prepare a sanitized variable in preprocess, rather than |raw on rendered HTML.",
+      "Use {{ content.field_category|render|raw }} and parse tags in Twig.",
+      "Disable Twig autoescape globally in services.yml for the theme.",
+      "Print {{ content.field_category }} inside an HTML attribute without changes."
+    ],
+    "correctAnswers": [0],
+    "explanation": "For attribute values and plain text, use entity getters or preprocess to supply a clean string. Piping rendered HTML through raw, disabling autoescape, or dumping field render arrays into attributes are incorrect or unsafe.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "You registered a custom theme hook mytheme_card in hook_theme() with a template card. Which preprocess function name will Drupal invoke for that hook?",
+    "options": [
+      "hook_preprocess_mytheme_card() / THEMENAME_preprocess_mytheme_card()",
+      "hook_preprocess_theme_card()",
+      "hook_preprocess_template_card()",
+      "hook_card_preprocess()"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Preprocess callbacks follow hook_preprocess_HOOK() where HOOK is the theme hook name (mytheme_card). Naming must match the theme registry key, not an invented template_ prefix.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "A Views unformatted row template must receive a computed 'reading_time' variable. Which preprocess hook targets that template family?",
+    "options": [
+      "hook_preprocess_views_view_unformatted()",
+      "hook_preprocess_views_view_fields() only, for every display style",
+      "hook_preprocess_node() because Views always uses node templates",
+      "hook_views_pre_render() to inject Twig variables into $variables directly"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Each Views theme hook has a matching preprocess. For the unformatted style template, hook_preprocess_views_view_unformatted() is the correct place to add row variables. hook_views_pre_render() alters the view result/render array, not Twig $variables for that template.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "You want to reuse a macros file across several templates. Which Twig approach is idiomatic in Drupal themes?",
+    "options": [
+      "{% import '@mytheme/macros.html.twig' as macros %} then call macros.button(...)",
+      "{% php include 'macros.php' %}",
+      "{{ attach_library('mytheme/macros') }} which auto-imports Twig macros",
+      "{% extends '@mytheme/macros.html.twig' %} for every card partial"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Drupal's Twig namespace (@mytheme) plus {% import %} / {% from %} is the supported way to share macros. Libraries attach CSS/JS, not Twig macros, and extends is for template inheritance, not macro imports.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "Which two statements about Twig auto-escaping in Drupal 10/11 are correct? (Choose two)",
+    "options": [
+      "Auto-escape is enabled by default for Twig templates.",
+      "Render arrays and MarkupInterface objects can be printed without |raw because Drupal marks them as safe when appropriate.",
+      "You should routinely append |raw to all field output to avoid double-escaping.",
+      "Setting debug: true in twig.config disables auto-escape for production."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Drupal enables Twig auto-escaping by default. Early-rendered content and safe Markup objects print correctly without |raw. Blind use of |raw is a security risk, and Twig debug does not turn off escaping.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "You need to add a cache context so a node template variable varies by the current user roles. Where should you declare it?",
+    "options": [
+      "In preprocess, add to $variables['#cache']['contexts'][] = 'user.roles';",
+      "In Twig with {% cachecontext 'user.roles' %}",
+      "Only in settings.php as $settings['cache_contexts'][]",
+      "As a data-cache-context attribute on the <body> tag"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Cacheability metadata belongs on the render array via #cache. Preprocess can bubble contexts such as user.roles. There is no Twig cachecontext tag for this, and settings.php is not where per-template contexts are declared.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "A form ID is node_article_form. You want an alter that runs only for that form. Which hook name is correct?",
+    "options": [
+      "hook_form_node_article_form_alter()",
+      "hook_form_alter_node_article()",
+      "hook_node_article_form_alter()",
+      "hook_form_id_node_article_form()"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Drupal supports targeted form alters as hook_form_FORM_ID_alter(). For FORM_ID node_article_form the implementation is hook_form_node_article_form_alter().",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "You are overriding field.html.twig for a specific field on Article nodes. Which suggestion filename matches core's pattern?",
+    "options": [
+      "field--node--field-summary--article.html.twig",
+      "field--article--field-summary--node.html.twig",
+      "node--field-summary--article.html.twig",
+      "field-summary--article--node.html.twig"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Field suggestions commonly include entity type, field name, and bundle, e.g. field--node--field-summary--article.html.twig. Confirm with Twig debug output because suggestion order can include additional variants.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "Which two methods correctly pass variables into an included Twig partial in Drupal? (Choose two)",
+    "options": [
+      "{% include '@mytheme/partials/card.html.twig' with { title: label, url: url } %}",
+      "{% include '@mytheme/partials/card.html.twig' with { title: label } only %}",
+      "{% include '@mytheme/partials/card.html.twig' variables title=label %}",
+      "{{ include_php('@mytheme/partials/card.html.twig', title) }}"
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Twig's include tag supports a with hash of variables, and the only keyword prevents leaking the parent scope. Drupal does not provide include_php or a variables= keyword for includes.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "A module must alter theme suggestions for every HTML element theme hook (the 'html' theme hook). Which alter is appropriate?",
+    "options": [
+      "hook_theme_suggestions_html_alter(array &$suggestions, array $variables)",
+      "hook_preprocess_html_alter()",
+      "hook_html_theme_suggestions()",
+      "hook_template_suggestions_alter() without a theme hook suffix"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Suggestion alters are hook_theme_suggestions_HOOK_alter(). For the html theme hook that is hook_theme_suggestions_html_alter(). Preprocess alters variables, not the suggestion list.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "You need to build an Attribute object in Twig for a custom element that has no attributes variable. Which Drupal Twig function should you use?",
+    "options": [
+      "create_attribute({'class': ['button'], 'id': 'cta'})",
+      "new Attribute({'class': ['button']})",
+      "attribute_create(['class' => 'button'])",
+      "drupal_attributes(['class' => ['button']])"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Drupal provides create_attribute() in Twig to instantiate Attribute objects. PHP constructors and invented helpers like drupal_attributes() are not available inside Twig templates.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "Content editors paste links into a formatted text field. In Twig you must output the field as configured by the text format. What should you print?",
+    "options": [
+      "{{ content.field_body }}",
+      "{{ node.field_body.value|raw }}",
+      "{{ node.field_body.0.value }} without filters",
+      "{{ content.field_body|striptags|raw }}"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Printing the field from the content render array applies the correct formatter, text format filters, and cacheability. Dumping raw field values bypasses formatters and can skip important filtering.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "Which two actions are required after adding a new node--article--full.html.twig file to a custom theme before it is used? (Choose two)",
+    "options": [
+      "Rebuild caches so the theme registry picks up the new template.",
+      "Ensure the suggestion appears in Twig debug output for that node/view mode.",
+      "Delete the database and reinstall Drupal.",
+      "Convert the file to PHPTemplate .tpl.php format for Drupal 10."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "New templates are discovered via the theme registry after a cache rebuild. Twig debug confirms the active suggestion. PHPTemplate is long gone; reinstalling Drupal is unnecessary.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "In preprocess you must move title_suffix (contextual links) next to a custom heading variable without losing accessibility wrappers. What should you do?",
+    "options": [
+      "Keep printing {{ title_prefix }} / {{ title_suffix }} (or relocate those render arrays intact) rather than extracting only the link HTML.",
+      "Unset title_suffix and hardcode a pencil icon linking to /node/N/edit.",
+      "Strip contextual links with |without('title_suffix') and rebuild them in JavaScript.",
+      "Print only $variables['title_suffix']['#markup'] as a string."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Contextual links and other title affixes are render arrays that must remain intact for permissions, attachments, and cacheability. Hardcoding edit URLs or stringifying #markup breaks the contextual links system.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Templates and Preprocess Functions",
+    "question": "A custom module uses hook_theme() to define a render element theme hook that should use a Twig file at templates/status-banner.html.twig. Which hook_theme() entry is correct?",
+    "options": [
+      "'status_banner' => ['variables' => [...], 'template' => 'status-banner']",
+      "'status_banner' => ['path' => 'status-banner.html.twig'] only",
+      "'status-banner.html.twig' => ['render element' => 'elements']",
+      "'status_banner' => ['file' => 'status-banner.tpl.php']"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Theme hooks use machine names with underscores while the template key uses the Twig basename without extension (hyphenated). Drupal maps status-banner to status-banner.html.twig. PHPTemplate file keys are obsolete.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Product owners want a default landing-page structure for a content type, but marketing must rearrange sections on individual nodes. Which Layout Builder configuration enables this?",
+    "options": [
+      "Enable Layout Builder for the view mode and allow content editors to customize layouts per entity (overrides).",
+      "Enable Layout Builder but lock overrides so only config defaults apply.",
+      "Place blocks only in the theme's header region via Block UI.",
+      "Use a single global custom block and hide sections with CSS per node."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Layout Builder defaults define the shared structure; allowing per-entity overrides lets editors rearrange sections on specific nodes while new content still inherits the default.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "You need a reusable two-column section that editors can pick inside Layout Builder. What should you provide?",
+    "options": [
+      "A layout plugin (annotated Layout / layouts.yml) with a Twig template defining two regions.",
+      "A new content type for each column width.",
+      "A Views page display named twocol.",
+      "A preprocess function that splits the body field on a delimiter."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Layout Builder sections are layout plugins. Registering a layout with regions and a template makes it selectable in the Layout Builder UI without inventing content types or Views displays for structure.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "An \"Related articles\" listing must appear inside Layout Builder on Article nodes and show only content sharing the current node's category. How should the Views block be configured?",
+    "options": [
+      "Add a contextual filter on the category field (or taxonomy term) that provides a default value from the current entity/route context.",
+      "Hard-code a single term ID in a regular filter and clone the view per article.",
+      "Use an exposed filter and instruct editors to type the category each time.",
+      "Disable SQL rewriting and filter in Twig after loading all articles."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Contextual filters with a default from the route/entity context make one Views block adapt to whichever node hosts it in Layout Builder. Hard-coded filters and Twig-side filtering do not scale.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Editors need a call-to-action that exists only on one landing page layout and should not appear in the global Block layout list as a reusable site-wide block. What should you place in Layout Builder?",
+    "options": [
+      "Create an inline (custom) block within that Layout Builder section.",
+      "Place a custom block type instance in the Footer region for all pages.",
+      "Embed the CTA HTML in html.html.twig with a node ID check.",
+      "Add the CTA as a menu link in the main navigation."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Layout Builder inline blocks are stored with the layout override/default and are scoped to that layout placement, unlike blocks placed globally in Block UI regions.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Which two tasks belong in the Block layout UI rather than Layout Builder? (Choose two)",
+    "options": [
+      "Place the primary site navigation block into the theme's header region for all pages.",
+      "Configure visibility so a utility menu block appears only for authenticated users site-wide.",
+      "Arrange fields inside a single Article node's full view mode into two columns.",
+      "Override one About page node's section order without affecting other pages."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Block layout manages region placement and global visibility conditions. Per-node field arrangement and one-off section overrides are Layout Builder concerns for entity view modes.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "A content type uses Layout Builder for the Full view mode. Teasers in Views still show a stacked field list. What is the most likely reason?",
+    "options": [
+      "Layout Builder was enabled only for the Full view mode; Teaser still uses the field UI display.",
+      "Views cannot display nodes when Layout Builder is enabled on any view mode.",
+      "Teaser automatically inherits Full Layout Builder sections.",
+      "You must disable the Teaser view mode entirely when using Layout Builder."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Layout Builder is configured per view mode. Enabling it for Full does not change Teaser or other modes until those displays are also configured (or you point Views at Full).",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "You must expose a Views listing as something editors can place into a Layout Builder section. Which Views display type is appropriate?",
+    "options": [
+      "A Block display of the view, then place that Views block as a Layout Builder component.",
+      "A Feed display only.",
+      "A REST export display only.",
+      "An Attachment display without a block or page parent."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Views Block displays become blocks that can be placed in Layout Builder (or Block UI). Feed and REST export serve other consumers; attachments depend on a parent display.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Design requires different image crops for card grids versus the article hero. Which configuration combination is correct?",
+    "options": [
+      "Create separate responsive image styles (or image styles) and assign different formatters/view modes for teaser vs full displays.",
+      "Upload two physical files for every image and switch them with JavaScript.",
+      "Store crops only in the theme CSS background-position without image styles.",
+      "Use the same style everywhere and letterbox with HTML tables."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Drupal image styles and responsive image styles, applied via field formatters on the appropriate view modes, are the supported way to vary crops and sources by display context.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Which two Layout Builder practices help keep configuration deployable across environments? (Choose two)",
+    "options": [
+      "Define shared structure as Layout Builder defaults for the entity view mode and export that configuration.",
+      "Prefer defaults plus controlled overrides rather than uniquely hand-building every node layout in production only.",
+      "Store all landing page HTML exclusively in the database theme settings blob.",
+      "Disable configuration management whenever Layout Builder is enabled."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Defaults live in configuration and export cleanly. Minimizing one-off production-only overrides keeps environments consistent. Disabling config management or stuffing HTML into theme settings works against deployability.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "A theme defines regions in mytheme.info.yml. Editors place the breadcrumb block in the breadcrumb region, but the region never appears. What should you verify in the page template?",
+    "options": [
+      "That page.html.twig prints {{ page.breadcrumb }} (matching the region machine name).",
+      "That html.html.twig includes the region automatically without page.html.twig.",
+      "That the region is named in libraries.yml instead of info.yml.",
+      "That Twig debug is disabled or regions will not render."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Regions declared in the theme info file must be printed from page.html.twig using the page.<region_machine_name> variable. html.html.twig wraps the page but does not output theme regions by itself.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "You need a Views grid of promotional cards that uses custom markup from card.html.twig in your theme. Which approach aligns with Drupal theming?",
+    "options": [
+      "Set the view to show Content with a view mode (or use a row style) that your theme templates, e.g. node--promo--teaser.html.twig / field templates.",
+      "Put raw HTML in the Views header and hide the results.",
+      "Rewrite every field as absolute HTML in the Views UI and disable theming.",
+      "Override views-view.html.twig to hardcode node IDs for the grid."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Using entity view modes (or properly themed Views row/field templates) keeps markup in the theme and reuses display configuration. Hardcoded HTML rewrites in Views UI fight the theme system.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Site builders want to prevent placing certain blocks inside Layout Builder for a content type. Which core capability addresses this?",
+    "options": [
+      "Layout Builder restrictions (manage which blocks/layouts are available per entity type/view mode) or equivalent allowed-block configuration.",
+      "Deleting the Block module.",
+      "Removing all regions from the theme info file.",
+      "Setting Twig autoescape to false."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Drupal's Layout Builder restrictions UI lets administrators allow or deny specific blocks and layouts for a given entity display, guiding editors without removing Block UI entirely.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "A homepage hero must use Layout Builder, but the site logo and main menu must remain consistent on every page. Where should logo and menu live?",
+    "options": [
+      "In theme regions via Block layout (or the theme's branding/menu templates), not as one-off Layout Builder sections on every content type.",
+      "Only as Layout Builder inline blocks duplicated onto each content type default.",
+      "Inside each Views row template for every listing.",
+      "As unchecked checkboxes on the node edit form."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Global chrome belongs in theme regions/Block layout (or theme templates). Layout Builder is ideal for entity content structure, not for re-placing global navigation on every bundle.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Which two Views features are commonly used when building a filterable news listing block? (Choose two)",
+    "options": [
+      "Exposed filters so visitors can narrow results by category or keyword.",
+      "A Block display placed in a region or Layout Builder section.",
+      "A Migrate process plugin attached to each row.",
+      "hook_cron() inside the view to rebuild the listing HTML nightly."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Exposed filters plus a Block display are standard for interactive listings. Migrate plugins and cron hooks are not Views display features for visitor-facing filters.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "You customize the markup for core's two-column layout used by Layout Builder. Which template name should you override in the theme?",
+    "options": [
+      "layout--twocol.html.twig (or the specific layout's template suggestion shown in Twig debug)",
+      "block--layout-builder.html.twig exclusively for all layouts",
+      "node--layout--twocol.html.twig for every entity type",
+      "page--twocol.html.twig"
+    ],
+    "correctAnswers": [0],
+    "explanation": "Layout plugins declare Twig templates such as layout--twocol.html.twig. Twig debug lists the exact suggestions. Node or page templates do not replace layout section templates.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "An Accordion listing must show nodes referenced from a field on the current page. The view is placed via Layout Builder. What Views relationship/filter pattern is appropriate?",
+    "options": [
+      "Use a contextual filter (and relationship if needed) that reads the current node's ID or its entity reference field values from context.",
+      "List all nodes and hide non-matching rows with CSS based on data attributes.",
+      "Embed a second Drupal install via iframe filtered by NID.",
+      "Replace Views with a taxonomy dictionary vocabulary."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Contextual filters (often with relationships for reference fields) scope results to the host entity when the view is embedded in Layout Builder or Block UI.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Editors accidentally delete a Layout Builder section on a node override and need to restore the content-type default. What should they use?",
+    "options": [
+      "Revert the layout override to defaults (remove custom layout) for that entity, then re-apply intentional changes if needed.",
+      "Clear the Twig template cache only.",
+      "Disable the theme.",
+      "Run update.php to regenerate node layouts."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Layout Builder entity overrides can be reverted to the configured defaults for the view mode. Theme or update.php actions do not restore LB overrides.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Which two configuration choices correctly control how a custom block type appears when placed in Layout Builder? (Choose two)",
+    "options": [
+      "Manage the block type's view modes and field formatters under Block types → Manage display.",
+      "Create a Twig template such as block--inline-block--{bundle}.html.twig (per Twig debug suggestions) for markup changes.",
+      "Edit core block module plugins to hardcode the bundle HTML.",
+      "Store the block presentation only in a user browser cookie."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Block type display modes control formatters, and theme suggestions (including inline block variants) control markup. Core hacks and cookies are not layout configuration.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "A multilingual site translates Article nodes. Layout Builder sections include inline blocks with text. What should you plan for?",
+    "options": [
+      "Layout Builder content (including inline blocks) needs a translation workflow—translations are not automatic merely because the node title is translated.",
+      "Enabling Locale module auto-translates all Layout Builder inline blocks overnight.",
+      "Twig |t will translate editor-entered inline block body fields.",
+      "Layout overrides are language-agnostic and always shared verbatim across all languages without modules or settings."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Inline block content and layout overrides are content that must be handled in the site's translation strategy (e.g., layout builder translation support / translating block content). |t is for code UI strings, not editor content.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "You want a Views page at /resources and also the same listing as a block on the homepage. What is the efficient Views setup?",
+    "options": [
+      "One view with both a Page display (path /resources) and a Block display, reusing fields/filters where possible.",
+      "Two completely separate Drupal sites.",
+      "Only a REST display consumed by Twig with {% fetch %}.",
+      "A single Attachment display with no page or block."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Multiple displays on one view share relationships, fields, and filters while allowing different paths or block placement settings—standard Views architecture.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "A block should appear in the sidebar only on node pages of type Blog. Which Block UI approach is correct?",
+    "options": [
+      "Place the block in the sidebar region and add a Request Path or Content type (node type) visibility condition for Blog.",
+      "Embed the block in html.html.twig with a hard-coded PHP if statement in the theme.",
+      "Enable the block globally and hide it with display:none on non-blog pages only.",
+      "Use Layout Builder on Teaser view mode to place sidebar blocks for the whole site."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Block visibility conditions (content type, path, role, etc.) are the supported Block layout mechanism for conditional region placement.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Which statement about Layout Builder section storage is accurate for typical node full-page layouts?",
+    "options": [
+      "Defaults are stored in configuration for the entity type/view mode; per-entity overrides are stored with the entity (content), not as theme files.",
+      "All Layout Builder data is stored only in *.html.twig files under the theme.",
+      "Overrides are kept exclusively in settings.php arrays.",
+      "Section storage always lives in the active theme's libraries.yml."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Layout Builder uses section storage plugins: defaults are config, and entity overrides are stored as content on the entity. Themes supply templates/assets but do not store the section data.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "Which two steps are required to let editors use Layout Builder on a content type's Full display for the first time? (Choose two)",
+    "options": [
+      "Under Manage display for that view mode, enable Layout Builder.",
+      "Optionally allow each content item to have its layout customized if per-node overrides are required.",
+      "Uninstall the Field UI module first.",
+      "Convert the content type into a vocabulary."
+    ],
+    "correctAnswers": [0, 1],
+    "explanation": "Layout Builder is enabled per view mode on Manage display; a separate checkbox allows per-entity custom layouts. Field UI remains necessary for managing displays; vocabularies are unrelated.",
+    "multipleAnswers": true
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "A Views block is placed in Layout Builder but shows the same results on every node despite a contextual filter on Content: ID. What is the most likely misconfiguration?",
+    "options": [
+      "The contextual filter's default value is not set to provide the ID from the route/URL or display context, so the filter has no context when embedded.",
+      "Layout Builder strips all Views contextual filters by design.",
+      "Block displays cannot use contextual filters in Drupal 10/11.",
+      "You must name the view display \"layout_builder\" exactly."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Contextual filters need a default (e.g., Content ID from URL / route context) when the view is embedded without arguments in the path. Layout Builder does not remove contextual filters, and no special display machine name is required.",
+    "multipleAnswers": false
+  },
+  {
+    "domain": "Layout Configuration",
+    "question": "You need field-level control: show Body in Full, hide it in Teaser, and show a trimmed Body in Search index. Where is this configured?",
+    "options": [
+      "In each view mode's Manage display (formatters and field visibility), independent of theme CSS.",
+      "Only by deleting the Body field from the content type for teasers.",
+      "Exclusively in views-view-fields.html.twig with no display settings.",
+      "By setting the field cardinality to zero for Teaser."
+    ],
+    "correctAnswers": [0],
+    "explanation": "Entity view modes manage which fields render and which formatters run. That is the correct Layout/Display configuration layer before Twig refinements.",
+    "multipleAnswers": false
+  }
+]

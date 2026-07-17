@@ -29,27 +29,7 @@ You are rebuilding the newsroom landing page in Drupal 11. Each teaser card must
 ### Explanation
 `<article>` conveys a standalone piece of content, letting assistive tech announce the teaser as a self-contained unit. Grouping metadata in `<header>` and actions in `<footer>` keeps semantics clear and reusable across listings, aligning with Drupal's emphasis on structured, accessible markup.
 
-
 ### Question 2
-
-**Domain:** Fundamental Web Development Concepts
-
-Design requires fluid typography so hero headlines scale smoothly between tablet and desktop widths. Which CSS approach delivers the requested behavior without breakpoint-specific overrides?
-
-### Options
-- Declare font sizes in `px` units and override them at each breakpoint.
-- Use the `clamp()` function with viewport units and rem fallbacks to define a responsive range.
-- Apply different utility classes for every breakpoint to adjust font size.
-- Inline the computed font size with JavaScript on `resize` events.
-
-### Correct Answers
-- [1] Use the `clamp()` function with viewport units and rem fallbacks to define a responsive range.
-
-### Explanation
-`clamp()` lets you set minimum, preferred, and maximum values in a single declaration. Combining rem for the lower bound with viewport units for the growth factor keeps typography fluid without proliferating media queries or brittle JavaScript hacks.
-
-
-### Question 3
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -67,8 +47,7 @@ The design system specifies a mobile navigation drawer that opens with a toggle 
 ### Explanation
 A real button exposes keyboard semantics, and syncing the `hidden` state with `aria-expanded` gives assistive tech accurate context. This keeps the pattern accessible and works across input types without extra focus hacks.
 
-
-### Question 4
+### Question 3
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -86,8 +65,7 @@ Your custom module prepares a text snippet provided by editors before passing it
 ### Explanation
 `strip_tags()` removes HTML tags so the string is plain text before it reaches Twig. `Html::escape()` encodes characters for safe HTML output but does not strip markup; `SafeMarkup::checkPlain()` is deprecated; `Markup::create()` marks content as trusted raw HTML and should not be used for untrusted editor input.
 
-
-### Question 5
+### Question 4
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -106,27 +84,25 @@ Marketing wants the hero image to load an optimized source on phones and a high-
 ### Explanation
 `srcset`/`sizes` and the `<picture>` element both let the browser negotiate the appropriate asset, reducing payload on small screens while keeping larger displays crisp. Duplicating images or relying solely on CSS backgrounds wastes bandwidth and can undermine accessibility.
 
-
-### Question 6
+### Question 5
 
 **Domain:** Fundamental Web Development Concepts
 
-You are adopting Single Directory Components in a custom theme named `skyline`. How do you register the component directory so Twig can auto-discover templates and libraries?
+You are adopting Single Directory Components in a custom theme named `skyline`. How do you make components discoverable so Twig and libraries load automatically?
 
 ### Options
+- Place each component under `skyline/components/` with matching `*.component.yml`, `*.twig`, and optional CSS/JS sharing the same basename.
 - Declare a `component-libraries` section in `skyline.info.yml` that maps a library name to the component folder.
-- Add the component path to `skyline.libraries.yml` under the `css` entries for the global library.
 - Configure the directory in the Appearance UI under theme settings.
 - Register the path inside `skyline.theme` using `hook_theme()`.
 
 ### Correct Answers
-- [0] Declare a `component-libraries` section in `skyline.info.yml` that maps a library name to the component folder.
+- [0] Place each component under `skyline/components/` with matching `*.component.yml`, `*.twig`, and optional CSS/JS sharing the same basename.
 
 ### Explanation
-Single Directory Components read from the `component-libraries` declaration in the theme's `.info.yml`. Mapping library names to paths there allows Drupal 11 to load Twig templates, libraries, and schema metadata co-located in the component directory.
+Core SDC auto-discovers components under the theme `components/` directory. The contrib Components module’s `component-libraries` key is not how core SDC registration works.
 
-
-### Question 7
+### Question 6
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -145,8 +121,7 @@ You are creating `agency_subtheme` based on Olivero. The team wants to keep Oliv
 ### Explanation
 Setting the base theme inherits Olivero's templates and assets. Declaring a library that depends on Olivero's global styling lets you extend or override styles while still loading the core behaviors. Copying compiled CSS or stripping dependencies breaks the update path and risks regressions.
 
-
-### Question 8
+### Question 7
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -164,8 +139,7 @@ Designers request an additional `xxl` breakpoint so responsive image styles pick
 ### Explanation
 Drupal reads breakpoints from `THEME.breakpoints.yml` and uses them for responsive image styles, Layout Builder, and media queries. Declaring the `xxl` breakpoint there makes it selectable throughout the UI.
 
-
-### Question 9
+### Question 8
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -183,8 +157,7 @@ You are adding a carousel component that should load Swiper assets only when the
 ### Explanation
 Defining a discrete library keeps asset discovery and cache metadata intact. Calling `attach_library()` from the template ensures Swiper loads only when the component renders, while Drupal manages aggregation and dependencies.
 
-
-### Question 10
+### Question 9
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -202,8 +175,7 @@ The client wants editors to toggle a "High Contrast" mode from the theme setting
 ### Explanation
 `hook_form_system_theme_settings_alter()` lets a theme extend the core theme settings form. Implementing it in `THEME.theme` adds the toggle in the UI and stores the value in configuration, making it accessible in preprocess functions and Twig.
 
-
-### Question 11
+### Question 10
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -221,8 +193,7 @@ Editors need a curated list of taxonomy terms to appear above the hero in `node-
 ### Explanation
 Preprocess functions are the correct place to prepare complex data. Constructing the term list in `hook_preprocess_node()` lets you reuse the logic, leverage caching metadata, and keep Twig focused on presentation.
 
-
-### Question 12
+### Question 11
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -240,8 +211,7 @@ Product landing pages need a distinct template when the content type is `product
 ### Explanation
 Drupal constructs template suggestions in the order `node--TYPE--VIEW_MODE.html.twig`. Naming the file `node--product--full.html.twig` targets the `product` content type when rendered in the `full` view mode without affecting other view modes.
 
-
-### Question 13
+### Question 12
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -259,8 +229,7 @@ Branding requires a `data-page-theme` attribute on the `<body>` tag that reflect
 ### Explanation
 `THEME_preprocess_html()` runs before `html.html.twig` renders, letting you safely set global body attributes while preserving Drupal's attribute handling and cache metadata. Hard-coding attributes in Twig bypasses preprocessing and can break attribute merging.
 
-
-### Question 14
+### Question 13
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -278,8 +247,7 @@ You need to expose a helper template suggestion whenever a view with machine nam
 ### Explanation
 `hook_theme_suggestions_views_view_alter()` lets you append custom suggestions based on view name or display ID. Adding something like `views_view__promotions__block_featured` there tells Twig to look for the matching template without hard-coding logic in preprocess functions.
 
-
-### Question 15
+### Question 14
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -297,8 +265,7 @@ A field formatter outputs a raw date string for an `event_date` field. Designers
 ### Explanation
 `hook_preprocess_field()` is ideal for altering field output. Formatting the date there keeps presentation concerns in PHP where cache metadata and translation tools are available, while Twig simply prints the prepared variable.
 
-
-### Question 16
+### Question 15
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -316,8 +283,7 @@ Marketing wants to rearrange hero, testimonial, and CTA sections uniquely on eac
 ### Explanation
 Allowing per-node overrides lets editors rearrange sections case by case while still inheriting the same base layout. It keeps layout changes in the UI, avoids template proliferation, and respects Drupal's configuration workflow.
 
-
-### Question 17
+### Question 16
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -335,8 +301,7 @@ Regional marketers want a curated list of upcoming events to appear in a Layout 
 ### Explanation
 Views already handles filtering and pagination. By placing a View block in Layout Builder, editors can manage placement visually while Drupal handles caching and contextual filters for regional tagging.
 
-
-### Question 18
+### Question 17
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -354,27 +319,7 @@ Design wants a reusable three-column layout where editors can set a background c
 ### Explanation
 A custom layout plugin can define three regions and provide configurable settings for background colors. This keeps the UX consistent, stores choices in configuration, and leverages Layout Builder's API instead of brittle template hacks.
 
-
-### Question 19
-
-**Domain:** Fundamental Web Development Concepts
-
-While auditing theme performance, you discover a custom library adds six separate CSS files that ship unminified to every page. How can you optimize delivery using core tools?
-
-### Options
-- Set `preprocess: true` on the CSS entries in the library so Drupal aggregates and minifies them.
-- Inline the CSS into `html.html.twig` so the browser loads it in a single request.
-- Disable the CSS aggregation setting to prevent cache invalidation issues.
-- Move the styles into JavaScript and inject them at runtime.
-
-### Correct Answers
-- [0] Set `preprocess: true` on the CSS entries in the library so Drupal aggregates and minifies them.
-
-### Explanation
-Enabling preprocessing lets Drupal combine and minify CSS, reducing requests and transfer size. Inlining or injecting styles via JavaScript hurts caching, and disabling aggregation removes a major performance optimization.
-
-
-### Question 20
+### Question 18
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -392,8 +337,7 @@ Your Twig template must display user-generated testimonials stored in a `Filtere
 ### Explanation
 Printing the render array lets Drupal apply the configured text format, cache metadata, and sanitization. Bypassing it with `|raw` or manual JavaScript undermines the filter system and can reintroduce unsafe markup.
 
-
-### Question 21
+### Question 19
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -411,8 +355,7 @@ You are rebuilding a landing-page hero where the background image is purely deco
 ### Explanation
 Using semantic elements keeps the document outline meaningful. A sectional container with a real heading and button exposes the key content to screen readers, and the decorative image can stay in CSS without extra ARIA work.
 
-
-### Question 22
+### Question 20
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -430,65 +373,7 @@ During a card component review, QA notes that clicking anywhere on the card shou
 ### Explanation
 A block-level anchor allows the entire card to be clickable while keeping native focus handling and link semantics. JavaScript or overlay hacks can hurt accessibility and make keyboard navigation brittle.
 
-
-### Question 23
-
-**Domain:** Fundamental Web Development Concepts
-
-A Drupal view renders table rows of events. Design requires that row backgrounds alternate, even when filters reorder results client side. What CSS solution keeps the zebra striping intact?
-
-### Options
-- Apply `tr:nth-child(even)` and `tr:nth-child(odd)` rules directly to the table within the theme stylesheet.
-- Inject inline `style` attributes with PHP to set alternating background colors.
-- Use JavaScript to assign classes after each Ajax refresh.
-- Add unique classes to each row in Twig and style those classes.
-
-### Correct Answers
-- [0] Apply `tr:nth-child(even)` and `tr:nth-child(odd)` rules directly to the table within the theme stylesheet.
-
-### Explanation
-CSS structural selectors adapt automatically when rows change order. Inline styling or JS post-processing complicates maintenance and can flicker during Ajax updates.
-
-
-### Question 24
-
-**Domain:** Fundamental Web Development Concepts
-
-Your theme uses CSS custom properties for spacing. A new marketing campaign needs a denser variant of the hero component with smaller padding. What is the most maintainable way to scope the change?
-
-### Options
-- Extend the hero component with a modifier class that overrides the spacing variables.
-- Override the base variables globally in `:root` so every hero tightens automatically.
-- Duplicate the hero stylesheet with reduced values and load it conditionally via JavaScript.
-- Inline overrides in the Twig template using `style` attributes when the campaign flag is set.
-
-### Correct Answers
-- [0] Extend the hero component with a modifier class that overrides the spacing variables.
-
-### Explanation
-Modifier classes keep the change localized while reusing the existing design tokens. Global overrides or inline styles either affect unrelated components or break maintainability.
-
-
-### Question 25
-
-**Domain:** Fundamental Web Development Concepts
-
-You must ensure a responsive grid of testimonials never drops below 280px card width on small screens. Which CSS technique achieves this without custom media query math?
-
-### Options
-- Use `grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));` on the grid container.
-- Define fixed pixel widths on each card and rely on horizontal scrolling.
-- Apply Flexbox with `flex: 0 0 280px` and negative margins.
-- Wrap cards in a `<table>` to lock the minimum width server-side.
-
-### Correct Answers
-- [0] Use `grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));` on the grid container.
-
-### Explanation
-CSS Grid's `auto-fit` and `minmax` combination enforces a minimum card width while allowing the layout to reflow naturally. Fixed widths or tables harm responsiveness and accessibility.
-
-
-### Question 26
+### Question 21
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -506,27 +391,7 @@ Your team adds prefers-reduced-motion support to hero animations. Which approach
 ### Explanation
 The CSS media query honors the user setting directly in the stylesheet, avoiding JavaScript race conditions. It's the recommended method for responsive motion preferences.
 
-
-### Question 27
-
-**Domain:** Fundamental Web Development Concepts
-
-While auditing a theme, you spot inline `<style>` tags injecting critical CSS atop every page. Performance needs require a cleaner solution without blocking paint. What should you do?
-
-### Options
-- Move the critical CSS into the theme library and mark it as `preprocess: false` so it stays separate but cacheable.
-- Keep inline CSS because Drupal aggregates it automatically.
-- Load the CSS through an external CDN link to reduce server cost.
-- Convert the inline CSS to inline JavaScript that injects styles at runtime.
-
-### Correct Answers
-- [0] Move the critical CSS into the theme library and mark it as `preprocess: false` so it stays separate but cacheable.
-
-### Explanation
-Theme libraries maintain cacheability and control while allowing fine-grained aggregation. Inline CSS inflates HTML responses and can't benefit from caching.
-
-
-### Question 28
+### Question 22
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -544,27 +409,7 @@ You need to capture scroll-driven progress to animate a sticky sidebar in the th
 ### Explanation
 IntersectionObserver runs asynchronously, minimizes layout thrashing, and is supported broadly with fallbacks. Continuous polling or wheel events cost more performance and miss keyboard navigation.
 
-
-### Question 29
-
-**Domain:** Fundamental Web Development Concepts
-
-A layout bug appears only in iOS Safari due to viewport height differences. You decide to leverage the dynamically updating large viewport unit. How do you apply it safely?
-
-### Options
-- Use `height: 100lvh;` as part of a `calc()` fallback stack that includes `min(100vh, 100svh)`.
-- Replace every `vh` usage with `lvh` globally.
-- Detect iOS user agents in PHP and add inline styles.
-- Wrap the layout in a fixed-height container and set overflow hidden.
-
-### Correct Answers
-- [0] Use `height: 100lvh;` as part of a `calc()` fallback stack that includes `min(100vh, 100svh)`.
-
-### Explanation
-Combining legacy and new viewport units ensures broad support. Global replacements or UA sniffing are fragile, and fixed-height wrappers break responsiveness.
-
-
-### Question 30
+### Question 23
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -582,27 +427,7 @@ The team wants local developers to keep Twig debug and theme inspection settings
 ### Explanation
 Config Split/Ignore lets you keep canonical theme settings in configuration while excluding environment-specific keys from shared exports. Manual reverts or diverging core configuration create drift, and abandoning configuration management loses deploy reproducibility.
 
-
-### Question 31
-
-**Domain:** Fundamental Web Development Concepts
-
-Content editors embed responsive Vimeo videos. You want them to maintain a 16:9 aspect ratio without hardcoding heights. Which CSS pattern solves this?
-
-### Options
-- Wrap the `<iframe>` in a container with `aspect-ratio: 16 / 9` and set the iframe to `width: 100%; height: 100%`.
-- Set a fixed pixel height of 360px on the iframe.
-- Apply `padding-bottom: 56.25%` to the iframe itself.
-- Use JavaScript to calculate height whenever the window resizes.
-
-### Correct Answers
-- [0] Wrap the `<iframe>` in a container with `aspect-ratio: 16 / 9` and set the iframe to `width: 100%; height: 100%`.
-
-### Explanation
-The CSS `aspect-ratio` property keeps the embed responsive without extra scripts. Fixed dimensions or manual calculations are fragile.
-
-
-### Question 32
+### Question 24
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -620,46 +445,7 @@ An accessibility audit flags your modal for trapping keyboard focus incorrectly.
 ### Explanation
 Managing focus explicitly ensures keyboard users remain in the modal context and can return to their prior location. Disabling keys or ignoring focus flows violates accessibility guidelines.
 
-
-### Question 33
-
-**Domain:** Fundamental Web Development Concepts
-
-You are optimizing CSS delivery. Critical styling is now extracted into a `critical.css` file loaded with `rel="preload"` and `as="style"`. What must you do to ensure the stylesheet actually applies?
-
-### Options
-- Add an `onload` handler that switches the link's `rel` to `stylesheet` once it loads.
-- Leave the preload link on its own because the browser turns it into a stylesheet automatically.
-- Reference the file inline with `<style>@import 'critical.css'</style>`.
-- Load the stylesheet via JavaScript after `DOMContentLoaded`.
-
-### Correct Answers
-- [0] Add an `onload` handler that switches the link's `rel` to `stylesheet` once it loads.
-
-### Explanation
-Preloading alone fetches the file but doesn't apply it without promoting the link to a stylesheet. The onload swap pattern is required for consistent styling.
-
-
-### Question 34
-
-**Domain:** Fundamental Web Development Concepts
-
-A design system requires that every interactive element has at least a 44px touch target. Which CSS approach enforces the minimum without increasing the visual footprint?
-
-### Options
-- Apply `padding` and negative `margin` on inline controls to expand the hit area.
-- Wrap the controls in `<div>` elements with explicit heights.
-- Add invisible sibling elements to capture touch events.
-- Increase font size globally to enlarge targets.
-
-### Correct Answers
-- [0] Apply `padding` and negative `margin` on inline controls to expand the hit area.
-
-### Explanation
-Padding enlarges the clickable area, while negative margins preserve layout alignment. Extra wrappers or global font changes cause layout side effects.
-
-
-### Question 35
+### Question 25
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -677,8 +463,7 @@ Editors complain the mobile nav overlay prevents pinch-zooming because the body 
 ### Explanation
 Locking a wrapper preserves body-level pinch behavior while preventing content scroll. Removing lock or using `touch-action: none` either reintroduces while still blocking gestures or worsens the issue.
 
-
-### Question 36
+### Question 26
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -696,27 +481,7 @@ You need Twig template suggestions locally but must keep production caches optim
 ### Explanation
 Local service overrides let developers enable Twig debugging without affecting shared configuration. Editing core files or global settings pollutes production, and runtime service calls sidestep Drupal's caching and are not persistent across rebuilds.
 
-
-### Question 37
-
-**Domain:** Fundamental Web Development Concepts
-
-Content editors paste headings with smart quotes that break the fallback webfont. Which CSS solution maintains typography consistency?
-
-### Options
-- Specify a font stack including the custom typeface plus OS-safe fallbacks.
-- Force text-transform to uppercase on all headings.
-- Replace characters in Twig before rendering the heading.
-- Embed the font subset as Base64 in CSS to guarantee availability.
-
-### Correct Answers
-- [0] Specify a font stack including the custom typeface plus OS-safe fallbacks.
-
-### Explanation
-A robust font stack ensures unsupported glyphs fall back gracefully. Transforming text or rewriting content is brittle and doesn't solve missing glyph coverage.
-
-
-### Question 38
+### Question 27
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -734,27 +499,7 @@ Content designers request a new "Marketing HTML" text format that allows a handf
 ### Explanation
 Drupal enforces text format access via permissions. Scoping the new format to the Marketing role preserves security while giving that team the extra markup they need. Expanding global profiles or relying on Full HTML undermines sanitization, and post-save filtering still exposes unsafe markup before cleanup.
 
-
-### Question 39
-
-**Domain:** Fundamental Web Development Concepts
-
-Design mandates that a component switch to a single column when space is under 480px. Which modern CSS feature provides an inline condition without extra media queries?
-
-### Options
-- Use a CSS container query on the component wrapper to adjust layout based on available width.
-- Apply a `@supports` rule checking for `grid` support.
-- Rely on Flexbox's default wrapping behavior.
-- Detect viewport width in JavaScript and toggle classes.
-
-### Correct Answers
-- [0] Use a CSS container query on the component wrapper to adjust layout based on available width.
-
-### Explanation
-Container queries respond to the component's own size, keeping the layout modular. Viewport media queries or JavaScript produce extra coupling.
-
-
-### Question 40
+### Question 28
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -772,27 +517,7 @@ You must lazy-load below-the-fold hero images while preserving Largest Contentfu
 ### Explanation
 Native lazy loading defers fetching offscreen images without complex scripts. Above-the-fold content remains eager to maintain LCP.
 
-
-### Question 41
-
-**Domain:** Fundamental Web Development Concepts
-
-While reviewing color contrast, you discover that marketing toggles themes by swapping CSS classes on `<body>`. Some legacy components still hardcode colors. How do you retrofit them without duplicating rules?
-
-### Options
-- Replace hardcoded colors with CSS variables defined on the theme class and reference them in the component.
-- Add inline styles via Twig for each theme variation.
-- Duplicate the component stylesheet for every theme variant and load conditionally.
-- Inject JavaScript to rewrite computed styles when the theme toggles.
-
-### Correct Answers
-- [0] Replace hardcoded colors with CSS variables defined on the theme class and reference them in the component.
-
-### Explanation
-CSS variables scoped to the theme class allow instant swaps without touching component markup or duplicating stylesheets. Inline styles and JS rewrites do not scale.
-
-
-### Question 42
+### Question 29
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -810,27 +535,25 @@ You must deliver an accessible autocomplete field. Which combination of markup a
 ### Explanation
 ARIA combobox semantics communicate state changes and relationships to assistive tech. Application roles or hacked selects confuse users.
 
-
-### Question 43
+### Question 30
 
 **Domain:** Fundamental Web Development Concepts
 
-CMS users upload hero background videos. You need to ensure they do not autoplay for users who prefer reduced data usage. Which HTML attribute supports this behavior?
+CMS users upload hero background videos. You must avoid autoplay when users prefer reduced data usage. Which approach supports that goal?
 
 ### Options
-- Add the `preload="none"` attribute to the `<video>` element.
-- Set `muted` so autoplay is blocked.
-- Use `playsinline` so the video stays embedded.
+- Detect reduced-data preferences (for example `navigator.connection?.saveData` or `prefers-reduced-data` where available) and skip autoplay/preload for those users.
+- Add only the `preload="none"` attribute and keep `autoplay` enabled.
+- Set `muted` so autoplay is blocked for everyone.
 - Add `loop` to keep the video short.
 
 ### Correct Answers
-- [0] Add the `preload="none"` attribute to the `<video>` element.
+- [0] Detect reduced-data preferences (for example `navigator.connection?.saveData` or `prefers-reduced-data` where available) and skip autoplay/preload for those users.
 
 ### Explanation
-Limiting preload prevents unnecessary data transfer until the user opts in. Muting or loop doesn't address data savings.
+`preload="none"` alone does not honor Save-Data preferences and does not disable autoplay. Prefer explicit preference detection and conditional playback.
 
-
-### Question 44
+### Question 31
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -848,8 +571,7 @@ Editors want landing pages to move through "Draft → Needs Review → Published
 ### Explanation
 Content Moderation extends core publishing workflows with configurable states and transitions. Cloning nodes or theming hacks bypass revision history and access control, while cron jobs can't enforce editor approvals.
 
-
-### Question 45
+### Question 32
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -867,8 +589,7 @@ You need to ensure all external links open in a new tab and remain safe from rev
 ### Explanation
 Combining `target` with `rel` prevents the opened page from manipulating the source window. JavaScript overrides or ignoring security leaves a vulnerability.
 
-
-### Question 46
+### Question 33
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -886,27 +607,7 @@ During performance testing, you realize large hero images are unoptimized. Which
 ### Explanation
 Providing variants lets the browser pick the optimal image for each device. Scaling down large images wastes bandwidth.
 
-
-### Question 47
-
-**Domain:** Fundamental Web Development Concepts
-
-Marketing wants to embed a countdown timer that updates every second. To avoid layout shifts, which CSS property helps reserve space for the digits?
-
-### Options
-- Use `font-feature-settings` and `tabular-nums` if the font supports it.
-- Set `letter-spacing` to zero across the board.
-- Apply `display: inline-flex` with `align-items: center`.
-- Wrap digits in `<span>` elements and rely on default spacing.
-
-### Correct Answers
-- [0] Use `font-feature-settings` and `tabular-nums` if the font supports it.
-
-### Explanation
-Tabular numerals ensure each digit takes equal width, preventing shift. Other properties do not guarantee alignment.
-
-
-### Question 48
+### Question 34
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -924,27 +625,7 @@ You must implement custom error messages for a form while preserving native vali
 ### Explanation
 `setCustomValidity()` lets you inject custom copy while keeping constraint checks. Disabling validation or using contenteditable introduces errors.
 
-
-### Question 49
-
-**Domain:** Fundamental Web Development Concepts
-
-An SVG icon sprite renders blurry in Firefox due to scaling. What best practice keeps icons crisp?
-
-### Options
-- Ensure each `<symbol>` has explicit `viewBox` values and scale the `<use>` element via CSS.
-- Convert the sprite to PNG assets.
-- Add inline `width` and `height` attributes to the `<svg>` tag only.
-- Rely on `transform: scale()` to resize icons.
-
-### Correct Answers
-- [0] Ensure each `<symbol>` has explicit `viewBox` values and scale the `<use>` element via CSS.
-
-### Explanation
-Proper `viewBox` definitions maintain the aspect ratio across browsers. Lacking them causes inconsistent rendering.
-
-
-### Question 50
+### Question 35
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -962,8 +643,7 @@ You want to reduce bundle size of a large third-party charting library. What mod
 ### Explanation
 Code splitting with dynamic imports defers loading until required, improving initial payload. CDN inclusion may still fetch on first load.
 
-
-### Question 51
+### Question 36
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -981,8 +661,7 @@ An SEO audit requests structured data for article cards. What is the most standa
 ### Explanation
 JSON-LD is the recommended structured data format by search engines. Microdata is more brittle and harder to maintain.
 
-
-### Question 52
+### Question 37
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1000,122 +679,7 @@ You are consolidating analytics scripts. How can you defer a vendor script until
 ### Explanation
 `requestIdleCallback` schedules non-critical work during idle periods, balancing performance and data capture. Plain `defer` may still execute during important tasks.
 
-
-### Question 53
-
-**Domain:** Fundamental Web Development Concepts
-
-Your CSS build uses PostCSS. Which plugin combination modernizes CSS while maintaining browser compatibility?
-
-### Options
-- Use `postcss-preset-env` with a defined browserslist to polyfill modern features.
-- Only run `autoprefixer` and ignore other features.
-- Inline all CSS with `postcss-inline-svg`.
-- Disable PostCSS and rely on manual prefixes.
-
-### Correct Answers
-- [0] Use `postcss-preset-env` with a defined browserslist to polyfill modern features.
-
-### Explanation
-`postcss-preset-env` transpiles new syntax according to target browsers, reducing manual work. Autoprefixer alone misses syntax conversions.
-
-
-### Question 54
-
-**Domain:** Fundamental Web Development Concepts
-
-Design wants to experiment with color themes using CSS `@property`. What important step prevents invalid values from breaking the cascade?
-
-### Options
-- Define the custom property with an initial value and syntax in `@property` before using it.
-- Declare the property directly in `.theme` without registration.
-- Reset the property in JavaScript if the value fails validation.
-- Avoid using `@property` because it is experimental.
-
-### Correct Answers
-- [0] Define the custom property with an initial value and syntax in `@property` before using it.
-
-### Explanation
-Registering the property ensures type checking and fallback behavior, preventing invalid inputs from cascading.
-
-
-### Question 55
-
-**Domain:** Fundamental Web Development Concepts
-
-You discover layout thrashing caused by reading DOM dimensions in a tight scroll loop. Which optimization reduces the cost?
-
-### Options
-- Batch reads and writes by wrapping DOM measurements in `requestAnimationFrame` callbacks.
-- Increase the loop delay with `setTimeout`.
-- Duplicate layout logic on the server to cache dimensions.
-- Use `MutationObserver` to track scroll events.
-
-### Correct Answers
-- [0] Batch reads and writes by wrapping DOM measurements in `requestAnimationFrame` callbacks.
-
-### Explanation
-Aligning DOM reads with the browser's render cycle mitigates thrashing. Arbitrary delays or mutation observers don't solve the fundamental issue.
-
-
-### Question 56
-
-**Domain:** Fundamental Web Development Concepts
-
-For a progressive web app, you must cache theme assets offline. What service worker strategy suits static CSS and JS files?
-
-### Options
-- Implement a Cache First strategy for versioned static assets.
-- Use Network First for everything including static assets.
-- Bypass the service worker for static files.
-- Store the assets in IndexedDB and inject them at runtime.
-
-### Correct Answers
-- [0] Implement a Cache First strategy for versioned static assets.
-
-### Explanation
-Versioned assets benefit from Cache First caching, ensuring instant loads while updates deploy via new hashes. Network First adds latency.
-
-
-### Question 57
-
-**Domain:** Fundamental Web Development Concepts
-
-An SVG icon set must inherit text color for easy theming. Which attribute configuration achieves this?
-
-### Options
-- Ensure each SVG uses `fill="currentColor"` so it follows the surrounding text color.
-- Set `fill="inherit"` to pull from the parent.
-- Add classes to the `<svg>` and set colors in CSS only.
-- Export the icons with baked-in hex colors.
-
-### Correct Answers
-- [0] Ensure each SVG uses `fill="currentColor"` so it follows the surrounding text color.
-
-### Explanation
-`currentColor` ties the icon to the present text color, simplifying theming. Inherit isn't valid for fill, and hardcoded colors resist overrides.
-
-
-### Question 58
-
-**Domain:** Fundamental Web Development Concepts
-
-A11y testing reveals that skip links are invisible until focused. What CSS ensures they remain accessible without disrupting layout?
-
-### Options
-- Position the skip link offscreen with `top: -40px` and bring it into view on focus.
-- Hide the skip link with `display: none` until Tab is pressed.
-- Rely on the browser to display default skip link styles.
-- Wrap the skip link text in `<span>` tags and reduce opacity to 0.1.
-
-### Correct Answers
-- [0] Position the skip link offscreen with `top: -40px` and bring it into view on focus.
-
-### Explanation
-Visually hiding offscreen maintains keyboard accessibility and repositions the link when focused. `display: none` removes it from tab order.
-
-
-### Question 59
+### Question 38
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1133,8 +697,7 @@ Marketing needs a sticky CTA bar that only appears after the main content enters
 ### Explanation
 IntersectionObserver is efficient and integrates well with class toggles, avoiding continuous scroll calculations.
 
-
-### Question 60
+### Question 39
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1152,8 +715,7 @@ You want to share a single CSS grid definition across multiple components in SAS
 ### Explanation
 Mixins promote reuse while allowing overrides. Copying declarations or relying on JavaScript hinders maintainability.
 
-
-### Question 61
+### Question 40
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1171,27 +733,7 @@ You must polyfill `:has()` support for older browsers without bloating modern bu
 ### Explanation
 Build-time transformations deliver compatibility without runtime cost. JavaScript polyfills or manual duplication are harder to maintain.
 
-
-### Question 62
-
-**Domain:** Fundamental Web Development Concepts
-
-When integrating third-party web components, you need to ensure styles penetrate shadow DOM. What CSS mechanism allows styling without modifying the component?
-
-### Options
-- Leverage the `::part()` pseudo-element exposed by the web component.
-- Apply global CSS selectors with `!important` to override shadow styles.
-- Inject inline styles via JavaScript directly into the shadow root without permission.
-- Request the vendor to disable shadow DOM encapsulation.
-
-### Correct Answers
-- [0] Leverage the `::part()` pseudo-element exposed by the web component.
-
-### Explanation
-`::part()` is the standard way to style exposed sections of a shadow component. Forcing overrides breaks encapsulation and is brittle.
-
-
-### Question 63
+### Question 41
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1209,8 +751,7 @@ A performance budget requires that fonts load without causing flashes of invisib
 ### Explanation
 `font-display: swap` displays fallback text immediately and swaps once the font arrives, reducing FOIT. Leaving defaults can hide text.
 
-
-### Question 64
+### Question 42
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1228,8 +769,7 @@ Marketing requests `rel="ugc"` on user-generated comment links in addition to ex
 ### Explanation
 Combining rel tokens keeps prior directives active while adding user-generated classification. Replacing or deferring rel removes safety hints.
 
-
-### Question 65
+### Question 43
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1247,8 +787,7 @@ You need to load a polyfill only in browsers lacking native `fetch`. How do you 
 ### Explanation
 Feature detection plus dynamic import keeps modern browsers lightweight while supporting older ones. Loading everywhere increases bundle size.
 
-
-### Question 66
+### Question 44
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1266,8 +805,7 @@ For a localization project, you must ensure time strings respect the user's loca
 ### Explanation
 `Intl.DateTimeFormat` handles locale-specific formats without manual string manipulation. Hardcoding strings is unmaintainable.
 
-
-### Question 67
+### Question 45
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1285,27 +823,25 @@ A11y testing shows that decorative inline SVGs are announced by screen readers. 
 ### Explanation
 These attributes remove the icon from accessibility trees while keeping it visible. `display: none` hides it visually too.
 
-
-### Question 68
+### Question 46
 
 **Domain:** Fundamental Web Development Concepts
 
-You must ensure that a toggle switch built with `<button>` communicates its state. Which attribute pairing provides robust semantics?
+You must ensure that a toggle switch built with `<button>` communicates its on/off state. Which attribute pairing provides robust semantics?
 
 ### Options
-- Use `aria-pressed` and update it to `true` or `false` as the state changes.
-- Add `role="switch"` without state.
+- Use `role="switch"` and keep `aria-checked` in sync as `true` or `false` when the state changes.
+- Use only `aria-pressed` because that is the required attribute for switches.
+- Add `role="switch"` without any state attribute.
 - Replace the button with a `<div>` and toggle classes.
-- Rely on CSS `:checked` without attributes.
 
 ### Correct Answers
-- [0] Use `aria-pressed` and update it to `true` or `false` as the state changes.
+- [0] Use `role="switch"` and keep `aria-checked` in sync as `true` or `false` when the state changes.
 
 ### Explanation
-`aria-pressed` communicates toggle state for button-based components. Missing state attributes or non-semantic elements fail accessibility checks.
+Switches expose state with `role="switch"` and `aria-checked`. `aria-pressed` is for toggle buttons, not switch widgets.
 
-
-### Question 69
+### Question 47
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1323,8 +859,7 @@ You are rebuilding the product listing grid so each card's internal layout lines
 ### Explanation
 CSS Subgrid lets nested grid containers align their tracks with a parent grid. Flexbox, absolute positioning, or duplicate wrappers either break the desired alignment or add brittle markup.
 
-
-### Question 70
+### Question 48
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1342,8 +877,7 @@ Editors can drag a divider to change the width of a live preview iframe in your 
 ### Explanation
 `ResizeObserver` reports size changes for a specific element without tying logic to global resize events or timers. MutationObserver watches DOM mutations, and pseudo-elements cannot toggle classes on the element.
 
-
-### Question 71
+### Question 49
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1361,8 +895,7 @@ Designers want the marketing site to honor the user's system dark mode preferenc
 ### Explanation
 Using custom properties with `prefers-color-scheme` provides an accessible default while giving the toggle a single place to override values. Loading alternate stylesheets or inline colors introduces flicker and is harder to maintain.
 
-
-### Question 72
+### Question 50
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1380,8 +913,7 @@ A decoupled autosave feature sends draft updates with `fetch()`. When the author
 ### Explanation
 `AbortController` integrates with `fetch()` so the HTTP request is terminated immediately when the controller aborts. Timeouts only reject locally, and relying on navigation side effects can leave the server handling stale requests.
 
-
-### Question 73
+### Question 51
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1399,8 +931,7 @@ Keyboard users report that icon-only buttons have no focus ring because the team
 ### Explanation
 `:focus-visible` lets browsers decide when a focus ring should appear, preserving accessibility for keyboard users while avoiding unwanted outlines for mouse users. Removing outlines or relying on hover does not meet accessibility requirements.
 
-
-### Question 74
+### Question 52
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1418,8 +949,7 @@ Inline validation errors appear beneath each checkout field, but screen reader u
 ### Explanation
 Live regions such as `role="alert"` cause assistive technology to announce new content immediately. Tabindex or aria-hidden changes do not trigger announcements, and separate toasts disrupt the form flow.
 
-
-### Question 75
+### Question 53
 
 **Domain:** Fundamental Web Development Concepts
 
@@ -1437,10 +967,878 @@ Your fullscreen hero needs to respect the safe area on devices with notches with
 ### Explanation
 CSS environment variables expose the safe area insets so layouts adapt automatically across devices. UA sniffing and magic numbers are brittle, and extra wrappers do not guarantee safe spacing.
 
+### Question 54
+
+**Domain:** Fundamental Web Development Concepts
+
+You are building a product listing page in Drupal 11. Each product teaser must be announced as a self-contained unit by assistive technologies, with the title and price grouped as introductory content. Which markup pattern best meets this requirement?
+
+### Options
+- Wrap each teaser in an <article> with a nested <header> for the title and price.
+- Use a bare <div> for each teaser and rely on CSS class names for structure.
+- Wrap teasers only in <section> elements without an article landmark.
+- Render each teaser as a <span> inside a single parent <div> for the whole list.
+
+### Correct Answers
+- [0] Wrap each teaser in an <article> with a nested <header> for the title and price.
+
+### Explanation
+An <article> signals a standalone content unit, and a nested <header> groups introductory metadata such as title and price. This semantic pattern is preferred over generic divs or spans for accessible, reusable teasers.
+
+### Question 55
+
+**Domain:** Fundamental Web Development Concepts
+
+Design requires hero headlines to scale smoothly between 320px and 1200px viewports without a media-query ladder. Which CSS approach should you use?
+
+### Options
+- Set font-size in fixed px values and override them at every breakpoint.
+- Use clamp() with a rem minimum, a viewport-based preferred value, and a rem maximum.
+- Toggle utility classes from JavaScript on every window resize event.
+- Apply font-size: 100% and expect the browser to scale headlines automatically.
+
+### Correct Answers
+- [1] Use clamp() with a rem minimum, a viewport-based preferred value, and a rem maximum.
+
+### Explanation
+clamp() provides a minimum, preferred, and maximum size in one declaration, enabling fluid typography without proliferating breakpoints or resize listeners.
+
+### Question 56
+
+**Domain:** Fundamental Web Development Concepts
+
+You are implementing a mobile navigation drawer that must meet WCAG keyboard and state requirements. How should the toggle be built? (Choose two)
+
+### Options
+- Use a <button> element as the control that opens and closes the drawer.
+- Keep aria-expanded on the control in sync with the drawer's open or closed state.
+- Use an <a href="#"> link and toggle visibility with CSS :hover only.
+- Add tabindex="-1" to every menu link while the drawer is open.
+
+### Correct Answers
+- [0] Use a <button> element as the control that opens and closes the drawer.
+- [1] Keep aria-expanded on the control in sync with the drawer's open or closed state.
+
+### Explanation
+A real button exposes correct keyboard semantics, and updating aria-expanded communicates open/closed state to assistive technologies. Hover-only links and blanket tabindex changes do not satisfy accessible disclosure patterns.
+
+### Question 57
+
+**Domain:** Fundamental Web Development Concepts
+
+Editors paste rich text that must appear as plain text in a Twig template with no HTML tags rendered. Which approach should your preprocess use before returning the string?
+
+### Options
+- Call strip_tags() so markup is removed and the remaining text can be escaped on output.
+- Pass the raw string through without sanitization so Twig can decide.
+- Wrap the string in <script> tags to neutralize HTML.
+- Use htmlspecialchars_decode() so entities become live markup again.
+
+### Correct Answers
+- [0] Call strip_tags() so markup is removed and the remaining text can be escaped on output.
+
+### Explanation
+strip_tags() removes HTML tags from the editor input. Combined with Twig's auto-escaping (or an explicit escape), this yields safe plain-text output suitable for non-HTML contexts.
+
+### Question 58
+
+**Domain:** Fundamental Web Development Concepts
+
+A listing must show differently sized images across breakpoints while keeping a single image style pipeline. Which Drupal-aligned approach should you choose?
+
+### Options
+- Configure a responsive image style that maps breakpoints to image styles and outputs a <picture> or srcset.
+- Hard-code multiple <img> tags and hide unused ones with display:none.
+- Serve only the largest derivative and scale it down with CSS width:100%.
+- Load the original upload URL and rely on the browser's intrinsic sizing alone.
+
+### Correct Answers
+- [0] Configure a responsive image style that maps breakpoints to image styles and outputs a <picture> or srcset.
+
+### Explanation
+Drupal's Responsive Image module maps breakpoints to image styles and emits srcset/picture markup, delivering appropriately sized assets per viewport instead of CSS-only downscaling or duplicate hidden images.
+
+### Question 59
+
+**Domain:** Fundamental Web Development Concepts
+
+You need a two-column card grid that wraps to one column on narrow viewports without floats. Which CSS layout method is most appropriate?
+
+### Options
+- CSS Grid or Flexbox with a media query or auto-fit to collapse to a single column.
+- Absolute positioning each card with calculated left offsets.
+- A table layout with colspan changes via JavaScript.
+- Float:left on every card and clearfix hacks for wrapping.
+
+### Correct Answers
+- [0] CSS Grid or Flexbox with a media query or auto-fit to collapse to a single column.
+
+### Explanation
+Grid and Flexbox are the modern, maintainable tools for responsive multi-column layouts. Absolute positioning, tables, and float hacks are brittle and harder to keep accessible.
+
+### Question 60
+
+**Domain:** Fundamental Web Development Concepts
+
+Your theme JavaScript attaches behaviors that must run once per matched element even after Drupal.attachBehaviors runs again via AJAX. Which Drupal 10/11 pattern should you use?
+
+### Options
+- Import once from core/once and call once('myFeature', context.querySelectorAll('.selector')).forEach(...).
+- Use jQuery.once from core/jquery.once as the primary Drupal 11 API.
+- Set a global window flag and skip all future attachBehaviors calls site-wide.
+- Bind handlers with document.write inside the behavior attach callback.
+
+### Correct Answers
+- [0] Import once from core/once and call once('myFeature', context.querySelectorAll('.selector')).forEach(...).
+
+### Explanation
+Drupal 10/11 uses the core/once library (not the deprecated jQuery.once) so behaviors process each element only once across initial load and AJAX reattachments.
+
+### Question 61
+
+**Domain:** Fundamental Web Development Concepts
+
+A modal dialog opens from a toolbar button. Which focus-management practices keep the pattern WCAG-conformant? (Choose two)
+
+### Options
+- Move focus into the dialog when it opens, typically to the first meaningful control or the dialog container.
+- Restore focus to the triggering control when the dialog closes.
+- Leave focus on the page behind the dialog so users can keep tabbing the background.
+- Remove the dialog from the accessibility tree only while it remains visible.
+
+### Correct Answers
+- [0] Move focus into the dialog when it opens, typically to the first meaningful control or the dialog container.
+- [1] Restore focus to the triggering control when the dialog closes.
+
+### Explanation
+Accessible dialogs move focus into the modal on open and return it to the trigger on close. Leaving focus in the background or incorrectly removing the open dialog from the a11y tree breaks keyboard and screen-reader users.
+
+### Question 62
+
+**Domain:** Fundamental Web Development Concepts
+
+You are styling form error messages so sighted and screen-reader users both understand which fields failed validation. Which combination is required?
+
+### Options
+- Associate each error with its field via aria-describedby (or equivalent) and keep a clear visible error text.
+- Show errors only as red borders with no text.
+- Announce errors solely with a console.log for developers.
+- Hide error text with visibility:hidden while leaving aria-invalid unset.
+
+### Correct Answers
+- [0] Associate each error with its field via aria-describedby (or equivalent) and keep a clear visible error text.
+
+### Explanation
+WCAG requires perceivable error identification. Linking messages with aria-describedby (and typically aria-invalid) plus visible text ensures both visual and assistive-tech users understand the failure.
+
+### Question 63
+
+**Domain:** Fundamental Web Development Concepts
+
+The design system defines brand colors as tokens reused across components. Which CSS feature best supports themeable, maintainable tokens in Drupal front-end work?
+
+### Options
+- CSS custom properties (variables) defined on :root or a theme wrapper and consumed by components.
+- Hard-coded hex values duplicated in every component stylesheet.
+- Inline style attributes on every Twig template node.
+- Server-side color replacement by rewriting compiled CSS after every deploy.
+
+### Correct Answers
+- [0] CSS custom properties (variables) defined on :root or a theme wrapper and consumed by components.
+
+### Explanation
+Custom properties provide a single source of truth for design tokens and can be overridden by themes or contexts without rewriting every rule.
+
+### Question 64
+
+**Domain:** Fundamental Web Development Concepts
+
+A skip link must let keyboard users bypass repetitive header navigation. Where should the skip link point and how should it behave?
+
+### Options
+- Link to the main content landmark (for example #main-content) and become visible on focus.
+- Link to the site logo so users restart at the top of the page.
+- Link to an off-site help page in a new window.
+- Use a button that only scrolls visually without a matching in-page target.
+
+### Correct Answers
+- [0] Link to the main content landmark (for example #main-content) and become visible on focus.
+
+### Explanation
+Skip links target the primary content landmark and are typically visually hidden until focused, satisfying WCAG bypass-blocks guidance for keyboard users.
+
+### Question 65
+
+**Domain:** Fundamental Web Development Concepts
+
+You need icons that convey meaning (not decoration) next to status labels. Which approach is accessible?
+
+### Options
+- Provide an accessible name for the icon (aria-label, visually hidden text, or equivalent) matching its meaning.
+- Use a background-image icon with no text alternative because CSS images are ignored.
+- Set aria-hidden="true" on meaningful icons so they never compete with labels.
+- Rely on color alone to communicate the status without text or labels.
+
+### Correct Answers
+- [0] Provide an accessible name for the icon (aria-label, visually hidden text, or equivalent) matching its meaning.
+
+### Explanation
+Meaningful icons need a text alternative. Decorative icons may be hidden from AT, but status icons that convey information must expose their meaning and must not rely on color alone.
+
+### Question 66
+
+**Domain:** Fundamental Web Development Concepts
+
+Your landing page hero must remain readable when text is resized to 200% per WCAG. Which practices help? (Choose two)
+
+### Options
+- Prefer relative units such as rem for typography and spacing that should scale with text size.
+- Avoid fixed-height containers that clip or hide overflowing text when font size increases.
+- Lock all text to px sizes and overflow:hidden on every section.
+- Disable browser zoom with a maximum-scale=1 viewport meta tag.
+
+### Correct Answers
+- [0] Prefer relative units such as rem for typography and spacing that should scale with text size.
+- [1] Avoid fixed-height containers that clip or hide overflowing text when font size increases.
+
+### Explanation
+Relative units and flexible containers allow text to reflow at 200% without clipping. Fixed heights with overflow hidden and disabling zoom actively harm WCAG resize/reflow requirements.
+
+### Question 67
+
+**Domain:** Fundamental Web Development Concepts
+
+A custom front-end script needs to wait until the DOM in a given Drupal context is ready and then query elements within that context. What is the correct Drupal behavior pattern?
+
+### Options
+- Implement Drupal.behaviors.myFeature = { attach(context, settings) { /* query within context */ } } and declare the library dependency.
+- Only use window.onload and always query document without using context.
+- Put the script inline in html.html.twig with no library declaration.
+- Call jQuery(document).ready exclusively and ignore Drupal.behaviors.
+
+### Correct Answers
+- [0] Implement Drupal.behaviors.myFeature = { attach(context, settings) { /* query within context */ } } and declare the library dependency.
+
+### Explanation
+Drupal.behaviors.attach receives a context so scripts work on full page loads and AJAX replacements. Libraries.yml should declare the script and its dependencies.
+
+### Question 68
+
+**Domain:** Fundamental Web Development Concepts
+
+You must ensure interactive controls meet WCAG 2.2 target size expectations on a touch-first Drupal site. Which guidance should you follow?
+
+### Options
+- Provide adequately large hit areas (commonly at least 24x24 CSS pixels under WCAG 2.2, with larger targets preferred) and sufficient spacing.
+- Keep all tap targets at 8x8 CSS pixels to maximize density.
+- Make only mouse hover areas large; touch targets can remain tiny.
+- Rely on browser defaults for unchecked radio dots without enlarging the clickable label area.
+
+### Correct Answers
+- [0] Provide adequately large hit areas (commonly at least 24x24 CSS pixels under WCAG 2.2, with larger targets preferred) and sufficient spacing.
+
+### Explanation
+WCAG 2.2 introduces stricter target-size criteria. Adequately sized controls and spacing reduce mis-taps; tiny 8px targets fail common mobile usability and accessibility expectations.
+
+### Question 69
+
+**Domain:** Fundamental Web Development Concepts
+
+A data table of event schedules must be accessible. Which HTML practice is essential?
+
+### Options
+- Use <table>, <th> with scope (or headers/id), and a caption or aria-labelledby for the table name.
+- Build the grid entirely from nested <div> elements styled to look like a table.
+- Put each row in a separate <ul> without header cells.
+- Use a single paragraph with spaces and line breaks to simulate columns.
+
+### Correct Answers
+- [0] Use <table>, <th> with scope (or headers/id), and a caption or aria-labelledby for the table name.
+
+### Explanation
+Real table markup with header cells and a name lets assistive technologies announce row/column relationships. Div-based faux tables lose that structure.
+
+### Question 70
+
+**Domain:** Fundamental Web Development Concepts
+
+You are optimizing front-end assets for a content-heavy Drupal page. Which statements about images are correct? (Choose two)
+
+### Options
+- Provide width and height (or aspect-ratio) so the browser can reserve space and reduce layout shift.
+- Use modern formats (for example WebP/AVIF via image styles) when supported to reduce transfer size.
+- Omit dimensions always so the browser discovers size only after download.
+- Upload multi-megabyte originals directly into <img src> without derivatives.
+
+### Correct Answers
+- [0] Provide width and height (or aspect-ratio) so the browser can reserve space and reduce layout shift.
+- [1] Use modern formats (for example WebP/AVIF via image styles) when supported to reduce transfer size.
+
+### Explanation
+Explicit dimensions (or aspect-ratio) mitigate CLS, and modern formats via Drupal image styles reduce bytes. Omitting dimensions and serving raw huge originals harm performance.
+
+### Question 71
+
+**Domain:** Fundamental Web Development Concepts
+
+A form field is required. Beyond the visual asterisk, what should you do for accessibility?
+
+### Options
+- Mark the control required with the required attribute and/or aria-required and include clear accessible labeling.
+- Use color alone (red outline) with no accessible name indicating required state.
+- Hide the label and rely on placeholder text as the only name.
+- Put the word Required only in a title tooltip on mouse hover.
+
+### Correct Answers
+- [0] Mark the control required with the required attribute and/or aria-required and include clear accessible labeling.
+
+### Explanation
+Programmatic required state plus a proper label ensures AT users know the field is mandatory. Color-only cues, placeholder-as-label, and hover-only tooltips are insufficient.
+
+### Question 72
+
+**Domain:** Fundamental Web Development Concepts
+
+Your CSS must support a dark color scheme preference when editors enable a dark variant. Which approach aligns with modern CSS fundamentals?
+
+### Options
+- Use a prefers-color-scheme media query and/or a theme class that swaps CSS custom property values.
+- Detect the preference only in PHP and inline every color on each request with no CSS variables.
+- Ship a separate Drupal core fork for dark mode.
+- Force dark colors with !important on html without respecting user preference.
+
+### Correct Answers
+- [0] Use a prefers-color-scheme media query and/or a theme class that swaps CSS custom property values.
+
+### Explanation
+prefers-color-scheme and token swaps via custom properties (or a theme class) are maintainable ways to support dark variants without hard-coding every color in PHP.
+
+### Question 73
+
+**Domain:** Fundamental Web Development Concepts
+
+You need a visually hidden heading that remains available to screen readers for page structure. Which technique is appropriate?
+
+### Options
+- Apply a visually-hidden/sr-only CSS pattern that clips or positions content off-screen without display:none.
+- Use display:none so the heading is removed from both vision and the accessibility tree.
+- Set font-size:0 and color:transparent only, leaving the text focusable in an unpredictable way.
+- Delete the heading from the DOM and add an unrelated aria-label on the body.
+
+### Correct Answers
+- [0] Apply a visually-hidden/sr-only CSS pattern that clips or positions content off-screen without display:none.
+
+### Explanation
+Visually hidden CSS keeps content in the accessibility tree while hiding it visually. display:none removes it from AT, defeating the purpose of a screen-reader-only heading.
+
+### Question 74
+
+**Domain:** Fundamental Web Development Concepts
+
+A carousel auto-rotates promotional slides. Which WCAG-oriented controls must you provide? (Choose two)
+
+### Options
+- A mechanism to pause, stop, or hide the moving content.
+- Keyboard-operable previous/next (or equivalent) controls for slide changes.
+- Auto-rotation that cannot be paused because motion draws attention.
+- Mouse-only drag interaction with no keyboard alternative.
+
+### Correct Answers
+- [0] A mechanism to pause, stop, or hide the moving content.
+- [1] Keyboard-operable previous/next (or equivalent) controls for slide changes.
+
+### Explanation
+WCAG requires users to pause or stop moving content and to operate carousels without a mouse. Unstoppable autoplay and mouse-only controls fail accessibility requirements.
+
+### Question 75
+
+**Domain:** Fundamental Web Development Concepts
+
+You are choosing units for a layout container that should track the viewport width while respecting root font size for nested type. Which pairing is sensible?
+
+### Options
+- Use % or vw/svw-related units for fluid containers and rem for typography that should scale with root font size.
+- Use only pt units for both layout and type on the web.
+- Use cm units so print and screen always match exactly.
+- Use viewport units exclusively for font sizes with no minimum, risking unreadably small text.
+
+### Correct Answers
+- [0] Use % or vw/svw-related units for fluid containers and rem for typography that should scale with root font size.
+
+### Explanation
+Fluid layout units combined with rem-based type (often inside clamp) balance responsiveness with readable typography. Print units and unconstrained viewport fonts are poor defaults for web UI.
+
+### Question 76
+
+**Domain:** Fundamental Web Development Concepts
+
+Inline SVG icons are injected into Twig. Decorative icons sit beside visible text labels. What should you do?
+
+### Options
+- Mark decorative SVGs aria-hidden="true" (and omit title) so assistive tech ignores them.
+- Always add a redundant aria-label that repeats the adjacent visible text.
+- Give every decorative SVG role="img" and a long description.
+- Convert decorative SVGs to <img> with empty alt and also aria-label="icon".
+
+### Correct Answers
+- [0] Mark decorative SVGs aria-hidden="true" (and omit title) so assistive tech ignores them.
+
+### Explanation
+Decorative icons adjacent to visible text should be hidden from AT to avoid duplicate announcements. Meaningful standalone icons need accessible names instead.
+
+### Question 77
+
+**Domain:** Fundamental Web Development Concepts
+
+Your team must meet WCAG contrast for body text on a branded background. Which statement is correct for normal-sized text under WCAG 2.1 AA?
+
+### Options
+- Normal text generally needs at least a 4.5:1 contrast ratio against its background.
+- Any contrast above 2:1 is sufficient for AA normal text.
+- Contrast requirements apply only to images, not to text.
+- AA allows pure light-gray text on white if the brand guidelines say so.
+
+### Correct Answers
+- [0] Normal text generally needs at least a 4.5:1 contrast ratio against its background.
+
+### Explanation
+WCAG 2.1 Level AA requires about 4.5:1 contrast for normal text (with a lower threshold for large text). Brand preferences do not override this requirement.
+
+### Question 78
+
+**Domain:** Fundamental Web Development Concepts
+
+A client-side script filters a list of cards as the user types. Which accessibility practice should you include?
+
+### Options
+- Update an aria-live region (or equivalent) so assistive tech hears result-count or status changes.
+- Change the list silently with no status text because screen readers will guess.
+- Remove all list items from the tab order permanently after the first keystroke.
+- Disable the keyboard entirely while filtering runs.
+
+### Correct Answers
+- [0] Update an aria-live region (or equivalent) so assistive tech hears result-count or status changes.
+
+### Explanation
+Dynamic filter results should expose status updates through an aria-live region or similar so screen-reader users know how many items match without visual inspection.
+
+### Question 79
+
+**Domain:** Fundamental Web Development Concepts
+
+In PHP, which statement correctly appends the string `banner` to an indexed array named `$classes`?
+
+### Options
+- `$classes[] = 'banner';`
+- `$classes = 'banner';`
+- `array_push($classes = 'banner');`
+- `$classes->append('banner');`
+
+### Correct Answers
+- [0] `$classes[] = 'banner';`
+
+### Explanation
+Using `$array[] = $value` appends to an indexed array. Assigning a string overwrites the variable; objects use different APIs.
+
+### Question 80
+
+**Domain:** Fundamental Web Development Concepts
+
+Which PHP comparison is both type-safe and the recommended default when checking that a variable equals the integer `0`?
+
+### Options
+- `$count === 0`
+- `$count == 0`
+- `$count = 0`
+- `$count != null`
+
+### Correct Answers
+- [0] `$count === 0`
+
+### Explanation
+`===` compares value and type. `==` coerces types (so `'0' == 0` is true), and `=` is assignment.
+
+### Question 81
+
+**Domain:** Fundamental Web Development Concepts
+
+What does the null coalescing operator return in `$title = $node->label() ?? 'Untitled';` when `label()` returns `null`?
+
+### Options
+- `'Untitled'`
+- `null`
+- `false`
+- An empty string
+
+### Correct Answers
+- [0] `'Untitled'`
+
+### Explanation
+`??` yields the right-hand operand when the left side is `null` (or not set). It does not treat other falsy values like `0` or `''` as missing unless they are null.
+
+### Question 82
+
+**Domain:** Fundamental Web Development Concepts
+
+Which PHP construct iterates both keys and values of an associative array `$attributes`?
+
+### Options
+- `foreach ($attributes as $key => $value) { ... }`
+- `for ($attributes as $key => $value) { ... }`
+- `each($attributes as $key => $value)`
+- `loop ($attributes) { ... }`
+
+### Correct Answers
+- [0] `foreach ($attributes as $key => $value) { ... }`
+
+### Explanation
+`foreach` with `$key => $value` is the idiomatic way to walk associative arrays in PHP.
+
+### Question 83
+
+**Domain:** Fundamental Web Development Concepts
+
+In modern PHP used by Drupal 10/11, which visibility keyword allows a property to be accessed only inside the defining class?
+
+### Options
+- `private`
+- `public`
+- `global`
+- `static`
+
+### Correct Answers
+- [0] `private`
+
+### Explanation
+`private` restricts access to the class itself. `public` is open; `static` is about binding, not visibility; `global` is not a property visibility keyword.
+
+### Question 84
+
+**Domain:** Fundamental Web Development Concepts
+
+Which two statements about PHP `isset()` and `empty()` are correct? (Choose two)
+
+### Options
+- `isset($var)` is false when `$var` is `null` or not defined.
+- `empty('0')` evaluates to true because `'0'` is considered empty in PHP.
+- `isset(0)` is false because zero is empty.
+- `empty([])` is false because arrays are never empty.
+
+### Correct Answers
+- [0] `isset($var)` is false when `$var` is `null` or not defined.
+- [1] `empty('0')` evaluates to true because `'0'` is considered empty in PHP.
+
+### Explanation
+`isset` fails for null/undefined. `empty` treats `'0'`, `0`, `''`, `null`, `false`, and `[]` as empty. Zero is a valid set value for `isset`.
+
+### Question 85
+
+**Domain:** Fundamental Web Development Concepts
+
+You need a PHP function that accepts an optional string defaulting to an empty string. Which signature is valid?
+
+### Options
+- `function build_label(string $text = ''): string`
+- `function build_label(string $text = null): string` without a nullable type
+- `function build_label($text = ''): string $text`
+- `function build_label(string $text): string = ''`
+
+### Correct Answers
+- [0] `function build_label(string $text = ''): string`
+
+### Explanation
+Default values belong in the parameter list. A `string` parameter cannot default to `null` unless typed `?string`.
+
+### Question 86
+
+**Domain:** Fundamental Web Development Concepts
+
+Which PHP array function returns a new array containing only values that pass a callback test?
+
+### Options
+- `array_filter($items, $callback)`
+- `array_map($callback, $items)`
+- `array_merge($items, $callback)`
+- `array_values($callback)`
+
+### Correct Answers
+- [0] `array_filter($items, $callback)`
+
+### Explanation
+`array_filter` keeps elements for which the callback returns true. `array_map` transforms elements; it does not filter.
+
+### Question 87
+
+**Domain:** Fundamental Web Development Concepts
+
+In Drupal-oriented PHP, which structure is a render array that will print markup through the render system?
+
+### Options
+- `['#markup' => 'Hello world']`
+- `['markup' => 'Hello world']`
+- `(object) ['text' => 'Hello world']`
+- `'<div>Hello world</div>'` returned from a preprocess function as a raw string replacement for all of `$variables`
+
+### Correct Answers
+- [0] `['#markup' => 'Hello world']`
+
+### Explanation
+Render arrays use `#` keys such as `#markup`, `#theme`, and `#plain_text`. Plain associative keys are not render API elements.
+
+### Question 88
+
+**Domain:** Fundamental Web Development Concepts
+
+Which two PHP language features help prevent null-related errors when reading nested data? (Choose two)
+
+### Options
+- Null coalescing: `$value = $data['title'] ?? 'n/a';`
+- Nullsafe operator: `$label = $node?->label();`
+- Using `==` instead of `===` for all comparisons
+- Prefixing variables with `@` to suppress all errors permanently
+
+### Correct Answers
+- [0] Null coalescing: `$value = $data['title'] ?? 'n/a';`
+- [1] Nullsafe operator: `$label = $node?->label();`
+
+### Explanation
+`??` and `?->` are the modern, intentional tools. Error suppression with `@` hides problems; loose equality does not solve null access.
+
+### Question 89
+
+**Domain:** Fundamental Web Development Concepts
+
+What is the difference between `include` and `require` in PHP when the target file is missing?
+
+### Options
+- `require` emits a fatal error and stops execution; `include` emits a warning and continues.
+- They behave identically in all PHP versions.
+- `include` always fatals; `require` never fatals.
+- Both silently return `false` with no warning.
+
+### Correct Answers
+- [0] `require` emits a fatal error and stops execution; `include` emits a warning and continues.
+
+### Explanation
+Missing `require`/`require_once` is fatal. Missing `include`/`include_once` warns and continues.
+
+### Question 90
+
+**Domain:** Fundamental Web Development Concepts
+
+Which snippet correctly defines a simple PHP class with a constructor property promotion style used in modern PHP?
+
+### Options
+- `class Card { public function __construct(private string $title) {} }`
+- `class Card($title) { private string $title; }`
+- `class Card { function Card(string $title) { $this->title = $title; } }` as the only modern constructor form
+- `struct Card { string $title; }`
+
+### Correct Answers
+- [0] `class Card { public function __construct(private string $title) {} }`
+
+### Explanation
+Constructor property promotion declares and assigns properties in `__construct`. PHP has classes, not structs; old PHP4-style constructors are obsolete.
+
+### Question 91
+
+**Domain:** Fundamental Web Development Concepts
+
+You must check whether the key `url` exists in `$options` before reading it. Which expression is appropriate?
+
+### Options
+- `array_key_exists('url', $options)` or `isset($options['url'])` depending on null handling needs
+- `in_array('url', $options)` which tests keys
+- `property_exists($options, 'url')` for arrays
+- `$options->has('url')` on a plain array
+
+### Correct Answers
+- [0] `array_key_exists('url', $options)` or `isset($options['url'])` depending on null handling needs
+
+### Explanation
+`array_key_exists` detects keys even when the value is `null`; `isset` is false for null. `in_array` checks values, not keys.
+
+### Question 92
+
+**Domain:** Fundamental Web Development Concepts
+
+In a theme preprocess function, which variable is the standard by-reference array you modify to pass data into Twig?
+
+### Options
+- `$variables`
+- `$form_state`
+- `$_SESSION`
+- `$GLOBALS['twig']`
+
+### Correct Answers
+- [0] `$variables`
+
+### Explanation
+`hook_preprocess_HOOK(&$variables)` receives `$variables` by reference; values you set become Twig variables.
+
+### Question 93
+
+**Domain:** Fundamental Web Development Concepts
+
+Which PHP string function returns the portion of `$haystack` starting at the first occurrence of `$needle`, or `false` if not found?
+
+### Options
+- `strpos($haystack, $needle)` for the position; use `strstr($haystack, $needle)` for the substring from the match
+- `explode($haystack, $needle)`
+- `implode($haystack, $needle)`
+- `str_split($needle)`
+
+### Correct Answers
+- [0] `strpos($haystack, $needle)` for the position; use `strstr($haystack, $needle)` for the substring from the match
+
+### Explanation
+`strpos` returns an offset (or false). `strstr` returns the matched tail. Explode/implode split/join on delimiters.
+
+### Question 94
+
+**Domain:** Fundamental Web Development Concepts
+
+Which two statements about PHP namespaces and `use` imports are true? (Choose two)
+
+### Options
+- `use Drupal\Core\Url;` imports the `Url` class into the current namespace.
+- Fully qualified names like `\Drupal\Core\Url::fromRoute()` work without a `use` statement.
+- `use` statements change the class file location on disk at runtime.
+- Namespaces are only available when Xdebug is enabled.
+
+### Correct Answers
+- [0] `use Drupal\Core\Url;` imports the `Url` class into the current namespace.
+- [1] Fully qualified names like `\Drupal\Core\Url::fromRoute()` work without a `use` statement.
+
+### Explanation
+`use` is an alias/import for shorter names; FQCN always works. Autoloading resolves files; namespaces do not depend on Xdebug.
+
+### Question 95
+
+**Domain:** Fundamental Web Development Concepts
+
+What does this PHP match expression assign to `$label` when `$status` is `'published'`?
+
+```php
+$label = match ($status) {
+  'draft' => 'Draft',
+  'published' => 'Live',
+  default => 'Unknown',
+};
+```
+
+### Options
+- `'Live'`
+- `'Draft'`
+- `'Unknown'`
+- `true`
+
+### Correct Answers
+- [0] `'Live'`
+
+### Explanation
+`match` is a strict comparison expression introduced in PHP 8; the `'published'` arm returns `'Live'`.
+
+### Question 96
+
+**Domain:** Fundamental Web Development Concepts
+
+Which approach correctly catches any `Throwable` (including `Error` and `Exception`) in PHP 7+?
+
+### Options
+- `try { ... } catch (\Throwable $e) { ... }`
+- `try { ... } catch ($e) { ... }` without a type (invalid syntax in modern PHP)
+- `on error resume next`
+- `catch_all { ... }`
+
+### Correct Answers
+- [0] `try { ... } catch (\Throwable $e) { ... }`
+
+### Explanation
+`Throwable` is the shared interface for `Error` and `Exception`. Typed catch blocks are required.
+
+### Question 97
+
+**Domain:** Fundamental Web Development Concepts
+
+Which Drupal PHP helper escapes text for safe HTML element body output?
+
+### Options
+- `\Drupal\Component\Utility\Html::escape($text)`
+- `strip_tags($text)` alone when you need to keep tags visible as text entities
+- `Markup::create($text)` for untrusted editor input
+- `print $text;` in a preprocess function
+
+### Correct Answers
+- [0] `\Drupal\Component\Utility\Html::escape($text)`
+
+### Explanation
+`Html::escape()` converts special characters to entities. `Markup::create()` marks trusted HTML; do not use it for untrusted strings.
+
+### Question 98
+
+**Domain:** Fundamental Web Development Concepts
+
+You need to pass a callable into `array_map`. Which two forms are valid callables in PHP? (Choose two)
+
+### Options
+- An anonymous function: `function ($item) { return $item; }`
+- A string function name such as `'strtoupper'`
+- An arbitrary integer like `42`
+- A plain object without `__invoke` or a method reference
+
+### Correct Answers
+- [0] An anonymous function: `function ($item) { return $item; }`
+- [1] A string function name such as `'strtoupper'`
+
+### Explanation
+Closures and global function name strings are callables. Random integers/objects are not unless they implement `__invoke` or use `[$obj, 'method']` form.
+
+### Question 99
+
+**Domain:** Fundamental Web Development Concepts
+
+What is the value of `$result` after this code runs?
+
+```php
+$a = ['x' => 1, 'y' => 2];
+$b = ['y' => 9, 'z' => 3];
+$result = $a + $b;
+```
+
+### Options
+- `['x' => 1, 'y' => 2, 'z' => 3]` (left-hand keys win on conflict)
+- `['x' => 1, 'y' => 9, 'z' => 3]` (right-hand keys always overwrite)
+- `['y' => 9, 'z' => 3]`
+- `[1, 2, 9, 3]`
+
+### Correct Answers
+- [0] `['x' => 1, 'y' => 2, 'z' => 3]` (left-hand keys win on conflict)
+
+### Explanation
+The `+` operator for arrays unions keys and keeps the left-hand value when keys collide. Use `array_merge` for different overwrite rules.
+
+### Question 100
+
+**Domain:** Fundamental Web Development Concepts
+
+Which statement best describes a PHP interface?
+
+### Options
+- It defines a contract of method signatures that implementing classes must provide.
+- It stores instance property values shared across all objects.
+- It replaces Composer autoloading.
+- It is identical to a trait and may contain property defaults in all PHP versions.
+
+### Correct Answers
+- [0] It defines a contract of method signatures that implementing classes must provide.
+
+### Explanation
+Interfaces specify what methods a class must implement. Traits are for reusable method sets; they are not the same construct.
 
 ## Theming Concepts
 
-### Question 76
+### Question 101
 
 **Domain:** Theming Concepts
 
@@ -1458,8 +1856,7 @@ You are creating a new theme called `aurora` that should inherit from Olivero. W
 ### Explanation
 The base theme declaration handles template inheritance, while library dependencies ensure script and style order. Importing or copying assets breaks update compatibility.
 
-
-### Question 77
+### Question 102
 
 **Domain:** Theming Concepts
 
@@ -1477,8 +1874,7 @@ Editors need a promotional layout that only loads its CSS when a block is placed
 ### Explanation
 Component-specific libraries keep assets scoped to their usage and avoid bloating every page. Global libraries run everywhere regardless of need.
 
-
-### Question 78
+### Question 103
 
 **Domain:** Theming Concepts
 
@@ -1496,8 +1892,7 @@ You must add a new breakpoint to support ultrawide monitors. Where do you define
 ### Explanation
 Drupal reads breakpoints from the dedicated YAML file for responsive images and Layout Builder. Other locations are ignored.
 
-
-### Question 79
+### Question 104
 
 **Domain:** Theming Concepts
 
@@ -1515,8 +1910,7 @@ Your theme needs to override a paragraph template. Which file naming pattern sho
 ### Explanation
 Drupal uses `paragraph--BUNDLE` naming for paragraph templates. Other patterns will not register.
 
-
-### Question 80
+### Question 105
 
 **Domain:** Theming Concepts
 
@@ -1534,27 +1928,25 @@ Site builders request a theme setting to toggle a secondary logo. How do you exp
 ### Explanation
 Theme settings are added through the alter hook, ensuring stored configuration and UI integration. Info YAML lines are ignored for settings.
 
-
-### Question 81
+### Question 106
 
 **Domain:** Theming Concepts
 
-You need to provide editors with a list of pre-defined background classes for Layout Builder sections. What's the best way to do this?
+You need to provide editors with a list of pre-defined background styles for Layout Builder sections. What is a sound approach?
 
 ### Options
-- Use Layout Builder Styles module and register the classes in `aurora.layout_builder.styles.yml`.
-- Ask editors to type class names into a text field.
-- Hardcode the classes in Twig based on section IDs.
-- Override Layout Builder templates to add radio buttons.
+- Use a module such as Layout Builder Styles and define reusable styles as configuration (UI/config export), not a made-up theme YAML registry filename.
+- Ask editors to type arbitrary class names into an unconstrained text field on every section.
+- Hardcode classes in Twig based on section UUIDs.
+- Override Layout Builder templates to invent radio buttons without storing config.
 
 ### Correct Answers
-- [0] Use Layout Builder Styles module and register the classes in `aurora.layout_builder.styles.yml`.
+- [0] Use a module such as Layout Builder Styles and define reusable styles as configuration (UI/config export), not a made-up theme YAML registry filename.
 
 ### Explanation
-Layout Builder Styles integrates cleanly with section UIs, allowing reusable classes without custom template hacks or manual entry.
+Layout Builder Styles stores styles as config entities. There is no core discovery of `*.layout_builder.styles.yml` in the theme.
 
-
-### Question 82
+### Question 107
 
 **Domain:** Theming Concepts
 
@@ -1572,27 +1964,25 @@ Drupal core adds a new toolbar breakpoints library that conflicts with your them
 ### Explanation
 `libraries-override` lets themes replace specific asset references while keeping dependencies intact, avoiding hacks or module removal.
 
-
-### Question 83
+### Question 108
 
 **Domain:** Theming Concepts
 
-You want to expose a pattern library of Twig components stored in `components/`. Which configuration enables Single Directory Components?
+You want to expose a pattern library of Twig components stored in `components/`. Which approach enables core Single Directory Components?
 
 ### Options
-- Add a `component-libraries` section to `aurora.info.yml` pointing to `components`.
-- Register the directory in `services.yml`.
-- Declare the path in `aurora.libraries.yml` as a CSS asset.
-- Duplicate the Twig files into the `templates/` directory.
+- Keep components under `THEME/components/` with `*.component.yml` + `*.twig` (and optional matching assets) so Drupal auto-discovers them.
+- Add a `component-libraries` section to `THEME.info.yml` pointing to `components` (required for core SDC).
+- Register the directory in `services.yml` as a Twig loader.
+- Declare the path in `THEME.libraries.yml` as a CSS asset only.
 
 ### Correct Answers
-- [0] Add a `component-libraries` section to `aurora.info.yml` pointing to `components`.
+- [0] Keep components under `THEME/components/` with `*.component.yml` + `*.twig` (and optional matching assets) so Drupal auto-discovers them.
 
 ### Explanation
-Single Directory Components rely on the `component-libraries` declaration, letting Drupal auto-discover Twig, YAML, and library files in one folder.
+Core SDC discovers components under `components/`. `component-libraries` belongs to the contrib Components module, not core SDC registration.
 
-
-### Question 84
+### Question 109
 
 **Domain:** Theming Concepts
 
@@ -1610,8 +2000,7 @@ An icon sprite loads twice because both subtheme and base theme declare it. How 
 ### Explanation
 Base themes already provide their assets; extending themes should depend on them rather than duplicating attachments.
 
-
-### Question 85
+### Question 110
 
 **Domain:** Theming Concepts
 
@@ -1629,8 +2018,7 @@ You must provide a custom `html.html.twig` template. Where do you place it in th
 ### Explanation
 Drupal scans `templates/` for twig overrides like `html.html.twig`. Subdirectories are optional but the base folder must exist in the theme root.
 
-
-### Question 86
+### Question 111
 
 **Domain:** Theming Concepts
 
@@ -1648,8 +2036,7 @@ The design team wants to swap the default Olivero blue palette. Which Sass strat
 ### Explanation
 Adjusting Sass variables upstream maintains compatibility with Olivero updates, whereas editing compiled CSS leads to conflicts.
 
-
-### Question 87
+### Question 112
 
 **Domain:** Theming Concepts
 
@@ -1667,8 +2054,7 @@ You are defining theme regions. Which file should list them so blocks become pla
 ### Explanation
 Region definitions live in the theme's info file, informing Drupal where blocks can render. Other files handle different concerns.
 
-
-### Question 88
+### Question 113
 
 **Domain:** Theming Concepts
 
@@ -1686,8 +2072,7 @@ To reduce render-blocking CSS, you want to load non-critical styles asynchronous
 ### Explanation
 Library attributes support preload semantics, and the onload handler swaps it to a stylesheet after fetching. Other settings do not change load behavior.
 
-
-### Question 89
+### Question 114
 
 **Domain:** Theming Concepts
 
@@ -1705,8 +2090,7 @@ You need to apply different layout styles when a block is in the `sidebar_second
 ### Explanation
 Preprocess hooks can add utility classes based on placement, keeping templates clean and reducing duplication.
 
-
-### Question 90
+### Question 115
 
 **Domain:** Theming Concepts
 
@@ -1724,8 +2108,7 @@ You're adding a new Twig debug comment. Which service configuration allows theme
 ### Explanation
 Twig debug is controlled via service configuration; enabling it locally supports template discovery without impacting production.
 
-
-### Question 91
+### Question 116
 
 **Domain:** Theming Concepts
 
@@ -1743,8 +2126,7 @@ You need to ensure compiled CSS includes a comment header with deployment metada
 ### Explanation
 Using a build plugin ensures consistent headers across builds without manual intervention or runtime hacks.
 
-
-### Question 92
+### Question 117
 
 **Domain:** Theming Concepts
 
@@ -1762,8 +2144,7 @@ You must add Favicons and app icons to the theme. Where should the markup live?
 ### Explanation
 Favicons belong in the document `<head>`, handled by the `html` template override. Node templates or JS injection are inappropriate.
 
-
-### Question 93
+### Question 118
 
 **Domain:** Theming Concepts
 
@@ -1781,27 +2162,25 @@ Your theme uses Tailwind. How do you prevent unused utility classes from inflati
 ### Explanation
 Tailwind's purge settings remove unused utilities automatically, keeping bundles tight. Manual deletions are unsustainable.
 
-
-### Question 94
+### Question 119
 
 **Domain:** Theming Concepts
 
-While overriding `node--article.html.twig`, you want to reuse markup from the base template. How do you include it without copy-paste?
+While overriding `node--article.html.twig`, you want to reuse shared markup without copy-paste from core’s node template. What is the most practical Drupal approach?
 
 ### Options
-- Use Twig's `{% extends 'node.html.twig' %}` and override only necessary blocks.
-- Include the entire base template via `{% include %}`.
-- Duplicate the markup and maintain both files.
-- Use PHP includes.
+- Extract shared markup into includes, SDC components, or a custom base template that defines real `{% block %}` regions you control.
+- Use `{% extends 'node.html.twig' %}` and override blocks, because core `node.html.twig` is designed as a block-based parent.
+- Duplicate the full markup into every suggestion file permanently.
+- Use PHP `include` from the Twig file.
 
 ### Correct Answers
-- [0] Use Twig's `{% extends 'node.html.twig' %}` and override only necessary blocks.
+- [0] Extract shared markup into includes, SDC components, or a custom base template that defines real `{% block %}` regions you control.
 
 ### Explanation
-Extending preserves base structure while replacing specific blocks, ensuring updates propagate from core templates.
+Core node templates are not reliable Twig block parents. Shared partials/SDC (or your own base template with blocks) is the maintainable pattern.
 
-
-### Question 95
+### Question 120
 
 **Domain:** Theming Concepts
 
@@ -1819,8 +2198,7 @@ You discover that the theme loads both `global-styling` and `global-scripts` lib
 ### Explanation
 Twig can conditionally attach libraries based on route context. `libraries.yml` lacks conditional logic, and removing assets entirely breaks other pages.
 
-
-### Question 96
+### Question 121
 
 **Domain:** Theming Concepts
 
@@ -1838,8 +2216,7 @@ You're moving inline Drupal behaviors to ES modules. How do you register a behav
 ### Explanation
 Drupal behaviors still register on `Drupal.behaviors`; bundlers should export modules that set up the behavior on load. Skipping registration breaks Ajax contexts.
 
-
-### Question 97
+### Question 122
 
 **Domain:** Theming Concepts
 
@@ -1857,8 +2234,7 @@ Editors want to use a `gradient` class that relies on a compiled CSS custom prop
 ### Explanation
 Stacking fallback values ensures older browsers render a sensible color even if custom properties fail.
 
-
-### Question 98
+### Question 123
 
 **Domain:** Theming Concepts
 
@@ -1876,8 +2252,7 @@ During a UX review, you learn that editors need a shorter site name for narrow v
 ### Explanation
 Theme settings provide editors with configurable values that templates can toggle based on layout needs, preventing duplication.
 
-
-### Question 99
+### Question 124
 
 **Domain:** Theming Concepts
 
@@ -1895,8 +2270,7 @@ You must ensure that a custom library only loads on admin pages. Which hook allo
 ### Explanation
 `hook_page_attachments()` lets you append assets at request time and check for admin context. Attaching everywhere or editing core is risky.
 
-
-### Question 100
+### Question 125
 
 **Domain:** Theming Concepts
 
@@ -1914,27 +2288,25 @@ You need to ensure a theme library loads after a contrib module's library for de
 ### Explanation
 Declaring dependencies in library YAML ensures Drupal enqueues assets in the correct order. Naming conventions alone do not guarantee sequence.
 
-
-### Question 101
+### Question 126
 
 **Domain:** Theming Concepts
 
 The theme includes a custom breakpoint group for responsive images, but editors need a fallback when the theme is disabled. What is the best approach?
 
 ### Options
-- Export the breakpoint group to configuration and ship it with a supporting module.
+- Define the breakpoint group in a supporting module’s `MODULE.breakpoints.yml` so it remains available independent of the theme.
 - Define breakpoints only in the theme so they disappear with the theme.
 - Hardcode image styles in Twig templates.
 - Ask editors to recreate breakpoints manually on each site.
 
 ### Correct Answers
-- [0] Export the breakpoint group to configuration and ship it with a supporting module.
+- [0] Define the breakpoint group in a supporting module’s `MODULE.breakpoints.yml` so it remains available independent of the theme.
 
 ### Explanation
-Moving shared configuration into a module keeps responsive image mappings available even if themes change.
+Breakpoints come from `*.breakpoints.yml` plugins. Shipping them from a module keeps responsive image mappings usable if the theme changes.
 
-
-### Question 102
+### Question 127
 
 **Domain:** Theming Concepts
 
@@ -1952,8 +2324,7 @@ You want to override a library only on specific routes. What's the recommended m
 ### Explanation
 `hook_page_attachments_alter()` allows runtime adjustments of attachments, enabling route-specific overrides without editing source definitions.
 
-
-### Question 103
+### Question 128
 
 **Domain:** Theming Concepts
 
@@ -1971,8 +2342,7 @@ While extending Claro for admin theming, you need to inject additional JavaScrip
 ### Explanation
 Attaching assets in form alters scopes them to the widget, preventing global load while ensuring the behavior is available when needed.
 
-
-### Question 104
+### Question 129
 
 **Domain:** Theming Concepts
 
@@ -1990,46 +2360,43 @@ You must bundle theme JavaScript with ES modules while supporting Drupal behavio
 ### Explanation
 Specifying `type: module` tells Drupal to output the script with ES module semantics, allowing modern bundling while respecting library order.
 
-
-### Question 105
+### Question 130
 
 **Domain:** Theming Concepts
 
-Your subtheme wants to reuse component templates from a parent theme's Single Directory Components library. How can you achieve this cleanly?
+Your subtheme wants to reuse Single Directory Components from a parent theme. How can you achieve this cleanly?
 
 ### Options
-- Declare the same `component-libraries` entry in the subtheme pointing to the parent theme path using a relative reference.
-- Copy all component directories into the subtheme.
+- Include parent components with SDC syntax such as `{{ include('parent_theme:component_name') }}` (parent components remain discoverable).
+- Declare the same `component-libraries` entry in the subtheme pointing at the parent path.
+- Copy all component directories into the subtheme for every release.
 - Use `hook_theme_registry_alter()` to inject include paths manually.
-- Symlink the parent component folder into the subtheme.
 
 ### Correct Answers
-- [0] Declare the same `component-libraries` entry in the subtheme pointing to the parent theme path using a relative reference.
+- [0] Include parent components with SDC syntax such as `{{ include('parent_theme:component_name') }}` (parent components remain discoverable).
 
 ### Explanation
-Component libraries can reference external directories, letting subthemes share components without duplication.
+SDC components are addressed as `theme_machine_name:component_name`. You do not redeclare contrib `component-libraries` namespaces for core SDC reuse.
 
-
-### Question 106
+### Question 131
 
 **Domain:** Theming Concepts
 
-While debugging a template override you want to confirm which theme suggestions Drupal is currently providing—all from core tooling with no build pipeline required. Which Drush command gives you that information?
+While debugging a template override you want to confirm which theme suggestions Drupal is providing, using core tooling. What should you do?
 
 ### Options
-- `drush theme:debug node`
-- `drush cache:rebuild theme-registry`
-- `drush pm:list --type=theme`
-- `drush config:status`
+- Enable Twig debug (and rebuild caches) so Drupal prints theme-suggestion comments in the HTML source for the rendered element.
+- Run `drush theme:debug node` to dump suggestions for the node hook.
+- Run `drush pm:list --type=theme` to list suggestions.
+- Run `drush config:status` to see template suggestions.
 
 ### Correct Answers
-- [0] `drush theme:debug node`
+- [0] Enable Twig debug (and rebuild caches) so Drupal prints theme-suggestion comments in the HTML source for the rendered element.
 
 ### Explanation
-`drush theme:debug` (alias `td`) lists available themes, theme engines, and template suggestions for a given hook such as `node`. Cache rebuilds, extension listings, or config status reports don't expose the suggestion map you need for theming.
+There is no standard `drush theme:debug node` suggestion dump. Twig debug comments (or newer theme-dev tooling) are the reliable approach.
 
-
-### Question 107
+### Question 132
 
 **Domain:** Theming Concepts
 
@@ -2047,8 +2414,7 @@ The project uses the UI Styles module to provide block-level class selections. D
 ### Explanation
 UI Styles reads from its YAML definition. Adding entries there exposes selectable classes to editors.
 
-
-### Question 108
+### Question 133
 
 **Domain:** Theming Concepts
 
@@ -2066,27 +2432,25 @@ When exporting configuration, you notice theme color settings are not included. 
 ### Explanation
 Drupal stores theme settings in configuration; exporting them ensures consistent deployments. Hardcoding in `settings.php` reduces flexibility.
 
-
-### Question 109
+### Question 134
 
 **Domain:** Theming Concepts
 
-You must expose additional tokens to Twig, such as a sanitized site slogan. Which hook lets you pass data to all templates?
+You must expose an additional variable such as a sanitized site slogan to Twig templates broadly. Which approach is appropriate?
 
 ### Options
-- Use `hook_preprocess_html()` to add the variable to `$variables`.
-- Modify Twig directly to read from global PHP variables.
+- Implement `hook_preprocess()` (generic) or a Twig extension to add variables available across templates; use `hook_preprocess_html()` only if the value is HTML-document-specific.
+- Always use `hook_preprocess_html()` because it injects variables into every template automatically.
 - Insert the value into `drupalSettings` and expect Twig to read it server-side.
-- Override Twig with a custom loader.
+- Modify Twig to read arbitrary global PHP variables.
 
 ### Correct Answers
-- [0] Use `hook_preprocess_html()` to add the variable to `$variables`.
+- [0] Implement `hook_preprocess()` (generic) or a Twig extension to add variables available across templates; use `hook_preprocess_html()` only if the value is HTML-document-specific.
 
 ### Explanation
-Preprocess hooks populate template variables, making data available consistently without hacking Twig internals.
+`hook_preprocess_html()` only affects `html.html.twig`. For cross-template variables, use generic preprocess or a Twig extension.
 
-
-### Question 110
+### Question 135
 
 **Domain:** Theming Concepts
 
@@ -2104,8 +2468,7 @@ Your theme uses CSS logical properties. How do you ensure fallback support for l
 ### Explanation
 The PostCSS plugin ensures compatibility by generating fallback physical properties, keeping source CSS modern and clean.
 
-
-### Question 111
+### Question 136
 
 **Domain:** Theming Concepts
 
@@ -2123,8 +2486,7 @@ Designers request a custom icon font. To keep performance acceptable, what is th
 ### Explanation
 Subsetting reduces file size while WOFF2 and `font-display` ensure quick rendering and fallbacks.
 
-
-### Question 112
+### Question 137
 
 **Domain:** Theming Concepts
 
@@ -2142,8 +2504,7 @@ Your team needs to ensure theme libraries work with the Asset Injector module. W
 ### Explanation
 Asset Injector relies on proper library usage; inline scripts bypass dependency tracking and make debugging harder.
 
-
-### Question 113
+### Question 138
 
 **Domain:** Theming Concepts
 
@@ -2161,8 +2522,7 @@ You want to expose a `--brand-color` CSS variable to editors while constraining 
 ### Explanation
 Configuration schema validates theme settings and ensures exported config stays consistent. Without it, settings might not serialize correctly.
 
-
-### Question 114
+### Question 139
 
 **Domain:** Theming Concepts
 
@@ -2180,8 +2540,7 @@ You have updated several Twig templates and library definitions, and you need Dr
 ### Explanation
 `drush cache:rebuild` (alias `drush cr`) clears and rebuilds Drupal's caches, including the theme registry, so new Twig templates and libraries take effect. Theme debugging, exporting configuration, or reading state do not refresh cached template data.
 
-
-### Question 115
+### Question 140
 
 **Domain:** Theming Concepts
 
@@ -2199,8 +2558,7 @@ You're building a theme for a multisite installation. How do you share theme con
 ### Explanation
 Sharing configuration through code ensures consistency and repeatability across sites, aligning with Drupal deployment workflows.
 
-
-### Question 116
+### Question 141
 
 **Domain:** Theming Concepts
 
@@ -2218,8 +2576,7 @@ Design wants to use CSS nesting in source files. What setup keeps output compati
 ### Explanation
 PostCSS can compile nesting to regular CSS, ensuring compatibility with browsers that lack native support.
 
-
-### Question 117
+### Question 142
 
 **Domain:** Theming Concepts
 
@@ -2237,8 +2594,7 @@ A front-end module needs to register a custom toolbar item with theme-specific i
 ### Explanation
 Themes can provide assets via libraries that modules depend on, keeping responsibilities clear while leveraging dependency management.
 
-
-### Question 118
+### Question 143
 
 **Domain:** Theming Concepts
 
@@ -2256,8 +2612,7 @@ You must ensure all Twig templates follow coding standards. Which tool helps aut
 ### Explanation
 TwigCS enforces template standards automatically, preventing drift without manual policing.
 
-
-### Question 119
+### Question 144
 
 **Domain:** Theming Concepts
 
@@ -2275,8 +2630,7 @@ Design introduces a dark mode. How do you structure theme assets so toggling mod
 ### Explanation
 CSS variables allow instant theming without reloading or swapping stylesheets, keeping performance optimal.
 
-
-### Question 120
+### Question 145
 
 **Domain:** Theming Concepts
 
@@ -2294,8 +2648,7 @@ Editors request a print stylesheet. How should you deliver it in the theme?
 ### Explanation
 Print-specific libraries keep styles modular and load only for print contexts. Inline styles are harder to manage.
 
-
-### Question 121
+### Question 146
 
 **Domain:** Theming Concepts
 
@@ -2313,8 +2666,7 @@ You are integrating Storybook with Drupal components. How do you ensure Twig tem
 ### Explanation
 Sharing Twig templates via loaders keeps parity between Drupal rendering and Storybook previews, reducing drift.
 
-
-### Question 122
+### Question 147
 
 **Domain:** Theming Concepts
 
@@ -2332,27 +2684,25 @@ The project demands CSS variables be available to JavaScript for dynamic theming
 ### Explanation
 `getComputedStyle` accesses runtime variable values, ensuring JS remains in sync with CSS without duplication.
 
-
-### Question 123
+### Question 148
 
 **Domain:** Theming Concepts
 
-You want to ship a custom error page layout. Which template override targets HTTP 500 pages while leaving others untouched?
+You want a custom HTML experience for fatal errors. What is accurate about theming HTTP 500 responses in Drupal?
 
 ### Options
-- `page--500.html.twig`
-- `page--status-500.html.twig`
-- `page--error.html.twig`
-- `page--exception.html.twig`
+- Core does not reliably theme 500 responses via `page--500.html.twig` the way it does 403/404; use an exception subscriber and/or server-level static error page for true 500s.
+- Override `page--500.html.twig` exactly like `page--404.html.twig` for all fatals.
+- Use `page--status-500.html.twig` as a core suggestion.
+- Use `page--exception.html.twig`, which core always invokes for fatals.
 
 ### Correct Answers
-- [0] `page--500.html.twig`
+- [0] Core does not reliably theme 500 responses via `page--500.html.twig` the way it does 403/404; use an exception subscriber and/or server-level static error page for true 500s.
 
 ### Explanation
-Drupal looks for `page--STATUSCODE` templates when rendering error responses, letting you customize the specific page.
+Many 500 failures never reach normal page theming. Do not assume a status-code page suggestion works like 404.
 
-
-### Question 124
+### Question 149
 
 **Domain:** Theming Concepts
 
@@ -2370,8 +2720,7 @@ You want to add a small JavaScript enhancement to the existing Olivero `core/dru
 ### Explanation
 `libraries-extend` lets themes augment existing libraries while keeping core definitions untouched. Duplicating or hardcoding scripts risks maintenance issues and inconsistent loading.
 
-
-### Question 125
+### Question 150
 
 **Domain:** Theming Concepts
 
@@ -2389,8 +2738,7 @@ Olivero ships a carousel stylesheet that conflicts with your custom layout. You 
 ### Explanation
 `libraries-override` cleanly removes individual asset entries from inherited libraries. Deleting core files or unscoped overrides makes updates fragile, and dropping the base theme eliminates desired assets.
 
-
-### Question 126
+### Question 151
 
 **Domain:** Theming Concepts
 
@@ -2408,65 +2756,61 @@ You added a theme setting that lets editors choose an accent color. A front-end 
 ### Explanation
 Preprocess functions run before rendering and can safely expose configuration through `drupalSettings`, which is cached and delivered with the page. Inline globals and extra network calls are brittle, and client-side storage doesn't help first paint.
 
-
-### Question 127
+### Question 152
 
 **Domain:** Theming Concepts
 
-Your theme stores reusable Twig partials in `/themes/custom/skyline/components/partials`. You want to reference them via `@skyline/partials/card.twig` without relative paths. What do you need?
+Your theme stores reusable Twig partials and you want `@skyline/...` namespaces without relative paths. Using the contrib Components module approach, what do you need?
 
 ### Options
-- Define a Twig namespace in `skyline.services.yml` under `twig.loader` pointing to the component directory.
-- Use `component-libraries` in `skyline.info.yml`.
+- Configure Components namespaces (historically `component-libraries`, modernly `components.namespaces`) in `skyline.info.yml` pointing at the partials directory.
+- Define a Twig namespace in `skyline.services.yml` under `twig.loader` from the theme.
 - Add the path to `settings.php` under `$settings['twig_tweak']`.
-- Register the directory via `hook_theme()`.
+- Register the directory via `hook_theme()` only.
 
 ### Correct Answers
-- [0] Define a Twig namespace in `skyline.services.yml` under `twig.loader` pointing to the component directory.
+- [0] Configure Components namespaces (historically `component-libraries`, modernly `components.namespaces`) in `skyline.info.yml` pointing at the partials directory.
 
 ### Explanation
-Themes can declare Twig namespaces via service overrides so templates are addressable with the `@namespace` syntax. Component libraries control SDC discovery, not Twig loaders, and settings.php doesn't configure namespaces.
+Theme packages do not normally register Twig namespaces via `THEME.services.yml`. The Components module provides namespace configuration in the theme info file.
 
-
-### Question 128
+### Question 153
 
 **Domain:** Theming Concepts
 
-The design system splits Single Directory Components into `components/base` and `components/patterns`. How do you expose both directories to Drupal?
+The design system splits Single Directory Components into `components/base` and `components/patterns`. How do you expose both to core SDC?
 
 ### Options
-- Add multiple entries under `component-libraries` in the theme's `.info.yml`, each mapping a library name to a directory.
+- Keep both directories nested under `components/`; core SDC scans subdirectories automatically without `component-libraries` entries.
+- Add multiple `component-libraries` entries in `.info.yml`, one per subdirectory (required for core SDC).
 - List the directories under `libraries:` in `.info.yml`.
-- Import the directories in `libraries.yml` with a custom key.
 - Symlink the directories into `templates/`.
 
 ### Correct Answers
-- [0] Add multiple entries under `component-libraries` in the theme's `.info.yml`, each mapping a library name to a directory.
+- [0] Keep both directories nested under `components/`; core SDC scans subdirectories automatically without `component-libraries` entries.
 
 ### Explanation
-Single Directory Components rely on the `component-libraries` section where each library points to a folder. Libraries.yml references assets, not directories, and symlinks do not register components.
+Core SDC recursively discovers components under `components/`. Separate `component-libraries` maps are a contrib Components pattern, not a core SDC requirement.
 
-
-### Question 129
+### Question 154
 
 **Domain:** Theming Concepts
 
-Editors using CKEditor 5 want the back office preview to match front-end typography. Where do you declare theme stylesheets so the editor loads them?
+Editors using CKEditor 5 want the back-office preview to match front-end typography. Where do you declare theme stylesheets so CKEditor 5 loads them?
 
 ### Options
-- Add the CSS files to the `ckeditor_stylesheets` array in your theme's `.info.yml`.
-- Attach the stylesheet with `attach_library()` inside `node--form.html.twig`.
-- Place the stylesheet in `libraries.yml` under the global library.
-- Load the stylesheet via JavaScript inside the editor.
+- Add the CSS files to the `ckeditor5-stylesheets` array in the theme’s `.info.yml`.
+- Add them to the legacy `ckeditor_stylesheets` key used by CKEditor 4.
+- Attach the stylesheet with `attach_library()` inside `node--form.html.twig` only.
+- Load the stylesheet via JavaScript inside the editor iframe manually.
 
 ### Correct Answers
-- [0] Add the CSS files to the `ckeditor_stylesheets` array in your theme's `.info.yml`.
+- [0] Add the CSS files to the `ckeditor5-stylesheets` array in the theme’s `.info.yml`.
 
 ### Explanation
-The `ckeditor_stylesheets` entry ensures CKEditor loads additional theme CSS inside the editing iframe. Attaching libraries on forms or injecting CSS with JS is unreliable.
+CKEditor 5 uses the hyphenated `ckeditor5-stylesheets` info key. `ckeditor_stylesheets` is the older CKEditor 4 key.
 
-
-### Question 130
+### Question 155
 
 **Domain:** Theming Concepts
 
@@ -2484,8 +2828,7 @@ You output the text "Primary navigation" from `THEME.theme`, but translators nee
 ### Explanation
 Providing context through the `t()` function helps translators distinguish identical strings. Gettext alone bypasses Drupal's translation system, and manual replacements are brittle.
 
-
-### Question 131
+### Question 156
 
 **Domain:** Theming Concepts
 
@@ -2503,8 +2846,7 @@ A contrib module loads an inline CSS reset that conflicts with your design. You 
 ### Explanation
 `hook_css_alter()` lets themes remove CSS assets loaded by modules when overrides are not possible. Duplicating libraries or manipulating DOM nodes is fragile.
 
-
-### Question 132
+### Question 157
 
 **Domain:** Theming Concepts
 
@@ -2522,8 +2864,7 @@ Your theme's global styling library includes compiled CSS and JS bundles. What e
 ### Explanation
 Declaring libraries under the `libraries` key tells Drupal to attach them globally. Manual attachments are error-prone, and overrides are for altering existing libraries.
 
-
-### Question 133
+### Question 158
 
 **Domain:** Theming Concepts
 
@@ -2541,8 +2882,7 @@ A hero animation should load only on the front page. What is the cleanest way to
 ### Explanation
 `hook_page_attachments()` lets themes conditionally attach assets at render time. Embedding scripts in Twig or loading assets everywhere wastes bandwidth and hurts caching.
 
-
-### Question 134
+### Question 159
 
 **Domain:** Theming Concepts
 
@@ -2560,8 +2900,7 @@ A Single Directory Component needs editors to pass a button style (primary or se
 ### Explanation
 Single Directory Components store property definitions and validation in the accompanying `.component.yml` file. Info.yml and theme settings do not validate component props.
 
-
-### Question 135
+### Question 160
 
 **Domain:** Theming Concepts
 
@@ -2579,8 +2918,7 @@ You created a custom theme with regions for header, content, and footer. When si
 ### Explanation
 The `default_region` key in `.info.yml` defines where new blocks are placed by default. PHP or JavaScript overrides are unnecessary.
 
-
-### Question 136
+### Question 161
 
 **Domain:** Theming Concepts
 
@@ -2588,22 +2926,21 @@ The design requires hiding the site slogan control from theme settings because t
 
 ### Options
 - Set `features:
-  - logo
-  - favicon` and omit `name` and `slogan` in the theme's `.info.yml`.
+- logo
+- favicon` and omit `name` and `slogan` in the theme's `.info.yml`.
 - Delete the slogan field from `system.site` configuration.
 - Override the theme settings form and remove the field with JavaScript.
 - Ignore it; Drupal removes unused fields automatically.
 
 ### Correct Answers
 - [0] Set `features:
-  - logo
-  - favicon` and omit `name` and `slogan` in the theme's `.info.yml`.
+- [1] logo
+- [2] favicon` and omit `name` and `slogan` in the theme's `.info.yml`.
 
 ### Explanation
 The `features` key controls which standard theme settings (logo, name, slogan, favicon) are exposed. Removing slogan from the list hides it without affecting other themes.
 
-
-### Question 137
+### Question 162
 
 **Domain:** Theming Concepts
 
@@ -2621,8 +2958,7 @@ You need to add BEM modifiers like `menu__item--depth-2` to primary navigation l
 ### Explanation
 Menu preprocess hooks let the theme modify render array attributes before Twig renders the menu, keeping markup clean and ensuring classes stay in sync with depth.
 
-
-### Question 138
+### Question 163
 
 **Domain:** Theming Concepts
 
@@ -2630,22 +2966,17 @@ Your theme's hero library should preload its critical CSS. How do you declare th
 
 ### Options
 - Set `attributes:
-    rel: preload
-    as: style` on the CSS file entry.
 - Add `preload: true` next to the CSS file path.
 - Inline the CSS in Twig with a `<style>` tag.
 - Add a `<link rel="preload">` tag manually in `html.html.twig`.
 
 ### Correct Answers
 - [0] Set `attributes:
-    rel: preload
-    as: style` on the CSS file entry.
 
 ### Explanation
 Library asset entries support an `attributes` map for each file, allowing you to mark stylesheets as preload while keeping Drupal's asset management intact.
 
-
-### Question 139
+### Question 164
 
 **Domain:** Theming Concepts
 
@@ -2663,8 +2994,7 @@ Your theme bundle includes a preview image stored at `/themes/custom/skyline/scr
 ### Explanation
 Themes declare their preview image in the `screenshot` key of `.info.yml`, relative to the theme directory.
 
-
-### Question 140
+### Question 165
 
 **Domain:** Theming Concepts
 
@@ -2682,8 +3012,7 @@ You maintain a corporate base theme and now need to launch a campaign theme that
 ### Explanation
 Subthemes inherit templates, libraries, and regions from their base theme, minimizing duplication. Copying files breaks the update chain, and modules are not needed for theming.
 
-
-### Question 141
+### Question 166
 
 **Domain:** Theming Concepts
 
@@ -2701,8 +3030,7 @@ Your theme needs to serve flipped CSS for RTL languages. How do you declare the 
 ### Explanation
 Drupal libraries support RTL variants with the `rtl:` key, allowing automatic swapping when rendering RTL interfaces. Other approaches duplicate logic or rely on fragile scripting.
 
-
-### Question 142
+### Question 167
 
 **Domain:** Theming Concepts
 
@@ -2720,8 +3048,7 @@ You want to add a `layout__region--empty` class whenever a region has no blocks 
 ### Explanation
 Region preprocess hooks allow themes to adjust region attributes centrally based on the render array. Twig conditionals or JavaScript scatter the logic and duplicate work.
 
-
-### Question 143
+### Question 168
 
 **Domain:** Theming Concepts
 
@@ -2739,8 +3066,7 @@ You are building a foundation theme that other teams will subtheme but should no
 ### Explanation
 The `hidden` flag keeps base themes out of the theme listing while still allowing subthemes to inherit from them.
 
-
-### Question 144
+### Question 169
 
 **Domain:** Theming Concepts
 
@@ -2758,8 +3084,7 @@ Your layout should add a `theme--has-sidebar` class to the `<body>` tag whenever
 ### Explanation
 `hook_preprocess_html()` runs before `html.html.twig`, giving the theme a central place to add body classes based on region content. Editing each template or using JavaScript is redundant.
 
-
-### Question 145
+### Question 170
 
 **Domain:** Theming Concepts
 
@@ -2767,22 +3092,21 @@ A theme library adds interactive tabs written as an ES module that relies on `Dr
 
 ### Options
 - Declare `dependencies:
-  - core/drupal
-  - core/once` in the library definition.
+- core/drupal
+- core/once` in the library definition.
 - Load the scripts manually with `<script>` tags before your module.
 - Import them from a CDN at runtime.
 - Wrap your code in `window.addEventListener('load')`.
 
 ### Correct Answers
 - [0] Declare `dependencies:
-  - core/drupal
-  - core/once` in the library definition.
+- [1] core/drupal
+- [2] core/once` in the library definition.
 
 ### Explanation
 Listing dependencies ensures Drupal loads required libraries before your asset, maintaining order and avoiding race conditions. Manual script tags or load events do not guarantee availability.
 
-
-### Question 146
+### Question 171
 
 **Domain:** Theming Concepts
 
@@ -2800,8 +3124,7 @@ A contrib module loads an inline CSS reset that conflicts with your design. You 
 ### Explanation
 `hook_css_alter()` lets themes remove CSS assets loaded by modules when overrides are not possible. Duplicating libraries or manipulating DOM nodes is fragile.
 
-
-### Question 147
+### Question 172
 
 **Domain:** Theming Concepts
 
@@ -2819,8 +3142,7 @@ Your theme's global styling library includes compiled CSS and JS bundles. What e
 ### Explanation
 Declaring libraries under the `libraries` key tells Drupal to attach them globally. Manual attachments are error-prone, and overrides are for altering existing libraries.
 
-
-### Question 148
+### Question 173
 
 **Domain:** Theming Concepts
 
@@ -2828,22 +3150,17 @@ Your theme's hero library should preload its critical CSS. How do you declare th
 
 ### Options
 - Set `attributes:
-    rel: preload
-    as: style` on the CSS file entry.
 - Add `preload: true` next to the CSS file path.
 - Inline the CSS in Twig with a `<style>` tag.
 - Add a `<link rel="preload">` tag manually in `html.html.twig`.
 
 ### Correct Answers
 - [0] Set `attributes:
-    rel: preload
-    as: style` on the CSS file entry.
 
 ### Explanation
 Library asset entries support an `attributes` map for each file, allowing you to mark stylesheets as preload while keeping Drupal's asset management intact.
 
-
-### Question 149
+### Question 174
 
 **Domain:** Theming Concepts
 
@@ -2861,29 +3178,481 @@ A typography toggle is stored as a theme setting named `font_stack`. How should 
 ### Explanation
 `theme_get_setting()` fetches theme settings with runtime overrides. Preprocess functions can then pass the value to Twig. Querying the database or relying on Twig alone is brittle.
 
-
-### Question 150
+### Question 175
 
 **Domain:** Theming Concepts
 
 You want every image rendered by your theme to lazy-load by default. Where should you add the `loading="lazy"` attribute?
 
 ### Options
-- Implement `hook_preprocess_image()` in `THEME.theme` and set `#attributes['loading'] = 'lazy'` when appropriate.
-- Edit every image field template and hardcode the attribute.
-- Modify core's ImageFormatter plugin.
-- Add JavaScript that sets the attribute on load.
+- Implement `hook_preprocess_image()` in `THEME.theme` and set `$variables['attributes']['loading'] = 'lazy'` when appropriate.
+- Implement `hook_preprocess_image()` and set `#attributes['loading'] = 'lazy'` on the render array key inside `$variables`.
+- Modify core’s ImageFormatter plugin for every site.
+- Add JavaScript that sets the attribute after load.
 
 ### Correct Answers
-- [0] Implement `hook_preprocess_image()` in `THEME.theme` and set `#attributes['loading'] = 'lazy'` when appropriate.
+- [0] Implement `hook_preprocess_image()` in `THEME.theme` and set `$variables['attributes']['loading'] = 'lazy'` when appropriate.
 
 ### Explanation
-Image preprocess hooks give the theme a central place to adjust attributes on all images. Editing every template or relying on JavaScript duplicates effort.
+Image preprocess receives `$variables['attributes']`, not render-array `#attributes`. Prefer preprocess (or the formatter) over JS.
 
+### Question 176
+
+**Domain:** Theming Concepts
+
+You are creating a custom Drupal 11 front-end theme that needs a stable, minimally opinionated base with predictable markup. Which core base theme is the usual choice?
+
+### Options
+- Stable9 as the base theme for a minimally styled, forward-compatible starter.
+- Claro as the front-end base theme for anonymous visitor pages.
+- Olivero only as a hidden base theme that cannot be sub-themed.
+- Seven, which remains the default Drupal 11 admin theme.
+
+### Correct Answers
+- [0] Stable9 as the base theme for a minimally styled, forward-compatible starter.
+
+### Explanation
+Stable9 is the core stable base theme intended for sub-theming with predictable markup. Claro is the admin theme; Seven is not the Drupal 11 admin theme; Olivero is a full front-end theme that can be sub-themed but is more opinionated than Stable9.
+
+### Question 177
+
+**Domain:** Theming Concepts
+
+Your theme must load a global CSS file on every page and a JS file that depends on Drupal's once library. Where do you declare this?
+
+### Options
+- In the theme's *.libraries.yml, defining library assets and a dependency on core/once, then attaching the library.
+- Only inside settings.php with $config['styles'] entries.
+- By dropping files into /core/misc so Drupal auto-discovers them.
+- Exclusively via a <link> tag hard-coded in node.html.twig.
+
+### Correct Answers
+- [0] In the theme's *.libraries.yml, defining library assets and a dependency on core/once, then attaching the library.
+
+### Explanation
+Asset libraries are declared in *.libraries.yml with dependencies such as core/once, then attached via info.yml, hook_page_attachments, Twig attach_library, or similar. Core should not be patched for theme assets.
+
+### Question 178
+
+**Domain:** Theming Concepts
+
+You are defining theme breakpoints for responsive image styles and CSS. Which file and concept apply in Drupal 10/11?
+
+### Options
+- Declare breakpoints in THEMENAME.breakpoints.yml with media query labels reusable by Responsive Image and themes.
+- Breakpoints may only be defined in PHP inside settings.local.php.
+- Drupal reads breakpoints exclusively from Bootstrap's grid SCSS.
+- Breakpoint YAML is ignored unless the theme is Olivero.
+
+### Correct Answers
+- [0] Declare breakpoints in THEMENAME.breakpoints.yml with media query labels reusable by Responsive Image and themes.
+
+### Explanation
+Themes and modules expose breakpoints through *.breakpoints.yml. Responsive image styles and front-end code can reference those named breakpoints.
+
+### Question 179
+
+**Domain:** Theming Concepts
+
+You are building Single Directory Components (SDC) in a Drupal 10/11 theme. Which statements are true? (Choose two)
+
+### Options
+- An SDC typically colocates template, CSS/JS, and component metadata in one component directory.
+- Components are defined with a *.component.yml (metadata) alongside the Twig template.
+- SDC components must be stored only under /core/modules and cannot live in themes.
+- SDC replaces the need for any *.libraries.yml entry site-wide, including non-component assets.
+
+### Correct Answers
+- [0] An SDC typically colocates template, CSS/JS, and component metadata in one component directory.
+- [1] Components are defined with a *.component.yml (metadata) alongside the Twig template.
+
+### Explanation
+SDC keeps a component's Twig, assets, and YAML metadata together and can live in themes or modules. It does not eliminate libraries.yml for all other theme assets, nor is it limited to core paths.
+
+### Question 180
+
+**Domain:** Theming Concepts
+
+Your sub-theme must override Olivero's color and typography while keeping most templates. What is the correct sub-theme setup?
+
+### Options
+- Set base theme: olivero in the sub-theme *.info.yml and override libraries/CSS (and templates only where needed).
+- Copy the entire core Olivero folder into /themes and edit core files in place.
+- Set base theme: false and manually re-implement every Olivero template.
+- Change the active theme in the database only, without an info.yml base theme key.
+
+### Correct Answers
+- [0] Set base theme: olivero in the sub-theme *.info.yml and override libraries/CSS (and templates only where needed).
+
+### Explanation
+Sub-themes declare base theme: olivero in info.yml and override assets or templates selectively. Editing core theme files directly is not upgrade-safe.
+
+### Question 181
+
+**Domain:** Theming Concepts
+
+Claro is enabled as the administration theme. A front-end developer wants visitor-facing pages to use a custom theme. How should this be configured?
+
+### Options
+- Set the custom theme as the default (front-end) theme and keep Claro as the admin theme.
+- Use Claro for both admin and front-end because Drupal allows only one theme.
+- Disable themes entirely and render routes with raw PHP includes.
+- Put the custom theme under /core/themes so it replaces Claro automatically.
+
+### Correct Answers
+- [0] Set the custom theme as the default (front-end) theme and keep Claro as the admin theme.
+
+### Explanation
+Drupal separates the default theme (front-end) from the administration theme. Claro typically remains admin while a custom or Olivero-based theme serves visitors.
+
+### Question 182
+
+**Domain:** Theming Concepts
+
+You need a library to load only on the article content type full view, not globally. Which approach fits Drupal theming?
+
+### Options
+- Attach the library in a preprocess (or equivalent) when the article full view is being rendered.
+- Add the CSS file to every page via the theme info.yml stylesheets-remove key only.
+- Place the CSS in html.html.twig unconditionally.
+- Register the file in core.libraries.yml inside the Drupal core repo.
+
+### Correct Answers
+- [0] Attach the library in a preprocess (or equivalent) when the article full view is being rendered.
+
+### Explanation
+Conditional attachment in preprocess (or Twig attach_library in the right template) scopes assets to the article full display. Global info.yml inclusion and core edits are the wrong tools.
+
+### Question 183
+
+**Domain:** Theming Concepts
+
+When defining a theme library that includes CSS and JS, which libraries.yml details matter? (Choose two)
+
+### Options
+- List CSS under css with the appropriate SMACSS category such as theme or component.
+- Declare dependencies (for example core/drupal or core/once) so scripts load in the correct order.
+- Omit file paths because Drupal scans the theme folder recursively for *.js.
+- Put PHP classes inside libraries.yml to bootstrap the theme registry.
+
+### Correct Answers
+- [0] List CSS under css with the appropriate SMACSS category such as theme or component.
+- [1] Declare dependencies (for example core/drupal or core/once) so scripts load in the correct order.
+
+### Explanation
+libraries.yml must reference explicit asset paths, SMACSS groups for CSS, and JS dependencies. It is not a PHP class registry and does not auto-discover every script.
+
+### Question 184
+
+**Domain:** Theming Concepts
+
+Your theme info.yml needs to register regions used in page.html.twig. What happens if you print a region in Twig that is not declared in info.yml?
+
+### Options
+- The region will not be available for blocks in the UI; undeclared regions are not proper theme regions.
+- Drupal auto-creates any Twig variable name as a block region.
+- Twig silently maps unknown regions to the header region.
+- Regions are defined only in views and ignore info.yml.
+
+### Correct Answers
+- [0] The region will not be available for blocks in the UI; undeclared regions are not proper theme regions.
+
+### Explanation
+Theme regions must be declared in *.info.yml to appear in Block layout and to be first-class page regions. Printing an undeclared variable does not register a region.
+
+### Question 185
+
+**Domain:** Theming Concepts
+
+You want to override a core Twig template for nodes of type page in your theme. Which file name pattern should you use?
+
+### Options
+- node--page.html.twig in the theme's templates directory (with correct theme suggestion enabled).
+- node.page.tpl.php like Drupal 7.
+- page--node.html.twig to override all node templates of every type.
+- entity--node--page.html.twig as the only valid suggestion.
+
+### Correct Answers
+- [0] node--page.html.twig in the theme's templates directory (with correct theme suggestion enabled).
+
+### Explanation
+Drupal's theme hook suggestions use node--page.html.twig for the page content type. Drupal 7 PHPTemplate names no longer apply.
+
+### Question 186
+
+**Domain:** Theming Concepts
+
+A starter theme should not inherit Stable9's CSS but still use its templates/markup stability. Which info.yml approach is appropriate?
+
+### Options
+- Use base theme: stable9 and manage libraries carefully (including overriding or not extending unwanted CSS libraries).
+- Delete Stable9 from core so no CSS can load.
+- Set base theme: classy, which ships as the Drupal 11 default base.
+- Set core_version_requirement only; base themes are unused in Drupal 11.
+
+### Correct Answers
+- [0] Use base theme: stable9 and manage libraries carefully (including overriding or not extending unwanted CSS libraries).
+
+### Explanation
+Stable9 provides stable markup as a base; themes control which libraries they extend or override. Classy was removed from Drupal core earlier; deleting core themes is not supported.
+
+### Question 187
+
+**Domain:** Theming Concepts
+
+You are attaching an SDC in Twig within a Drupal 11 theme. Which call pattern is correct?
+
+### Options
+- Include the component with the Twig embed/include syntax for SDC (for example {% include 'mytheme:card' %}) using the theme's component namespace.
+- Call theme('sdc') in PHPTemplate with a .tpl.php file.
+- Only render SDCs through Layout Builder's XML schema.
+- Reference components with jQuery.load('/components/card.html').
+
+### Correct Answers
+- [0] Include the component with the Twig embed/include syntax for SDC (for example {% include 'mytheme:card' %}) using the theme's component namespace.
+
+### Explanation
+SDCs are rendered from Twig using the component namespace (provider:component). They are not PHPTemplate theme hooks or jQuery HTML fetches.
+
+### Question 188
+
+**Domain:** Theming Concepts
+
+Your theme must add a libraries-extend entry so custom CSS loads whenever core's drupal.dialog library loads. Where is libraries-extend declared?
+
+### Options
+- In the theme's *.info.yml under libraries-extend targeting the core library name.
+- In robots.txt as a Disallow rule.
+- In composer.json under extra.drupal-libraries.
+- In a node field formatter YAML only.
+
+### Correct Answers
+- [0] In the theme's *.info.yml under libraries-extend targeting the core library name.
+
+### Explanation
+libraries-extend in *.info.yml lets a theme attach additional assets whenever another library is attached, which is ideal for styling core dialogs without editing core.
+
+### Question 189
+
+**Domain:** Theming Concepts
+
+Which practices keep a custom theme upgrade-safe on Drupal 10/11? (Choose two)
+
+### Options
+- Override templates and libraries in your theme or sub-theme instead of editing files under /core.
+- Use theme hook suggestions and preprocess hooks to alter output without patching core themes unnecessarily.
+- Modify Olivero templates directly in /core/themes/olivero for every project.
+- Disable the theme system and print HTML from controllers for all pages.
+
+### Correct Answers
+- [0] Override templates and libraries in your theme or sub-theme instead of editing files under /core.
+- [1] Use theme hook suggestions and preprocess hooks to alter output without patching core themes unnecessarily.
+
+### Explanation
+Upgrade-safe theming keeps customizations in custom themes/modules via overrides, suggestions, and preprocess. Editing core theme files is fragile across updates.
+
+### Question 190
+
+**Domain:** Theming Concepts
+
+You need to remove a library that a base theme attaches globally. Which Drupal mechanism is designed for this?
+
+### Options
+- Use libraries-override in the sub-theme info.yml to remove or replace the base library/asset.
+- Delete the base theme's libraries.yml from core after each composer update.
+- Set $settings['suppress_libraries'] in settings.php with the library name.
+- Comment out aggregate CSS in .htaccess.
+
+### Correct Answers
+- [0] Use libraries-override in the sub-theme info.yml to remove or replace the base library/asset.
+
+### Explanation
+libraries-override is the supported way for themes to remove or replace assets defined by base themes or modules.
+
+### Question 191
+
+**Domain:** Theming Concepts
+
+Block layout shows regions from the active theme. A new 'preface' region was added to info.yml but does not appear. What should you do next?
+
+### Options
+- Rebuild caches so Drupal rereads the theme info and registers the new region.
+- Reinstall MySQL because regions are stored only in the database engine.
+- Add the region to core.extension.yml manually.
+- Rename the theme machine name to force Composer to rebuild core.
+
+### Correct Answers
+- [0] Rebuild caches so Drupal rereads the theme info and registers the new region.
+
+### Explanation
+Theme info is cached. After adding regions to info.yml, a cache rebuild makes them available in Block layout.
+
+### Question 192
+
+**Domain:** Theming Concepts
+
+Olivero defines CSS custom properties for colors. Your sub-theme should retint the brand without rewriting every rule. What is the best approach?
+
+### Options
+- Override the relevant CSS custom properties in a sub-theme library that loads after Olivero's styles.
+- Fork Drupal core to change Olivero's default hex values permanently.
+- Use JavaScript to rewrite computed styles on every paint.
+- Replace Twig with Blade so variables can recolor CSS.
+
+### Correct Answers
+- [0] Override the relevant CSS custom properties in a sub-theme library that loads after Olivero's styles.
+
+### Explanation
+Olivero's design tokens are exposed as CSS variables; a sub-theme library can override those properties cleanly without forking core.
+
+### Question 193
+
+**Domain:** Theming Concepts
+
+You are documenting theme assets for a multi-developer Drupal 11 project. Which file declares the theme's name, base theme, regions, and global libraries?
+
+### Options
+- THEMENAME.info.yml
+- THEMENAME.services.yml only
+- THEMENAME.routing.yml
+- THEMENAME.breakpoints.yml exclusively for all metadata
+
+### Correct Answers
+- [0] THEMENAME.info.yml
+
+### Explanation
+The *.info.yml file is the theme's primary metadata: name, base theme, regions, libraries, and related keys. Breakpoints and services use their own YAML files.
+
+### Question 194
+
+**Domain:** Theming Concepts
+
+A component needs scoped CSS that should not be a global theme library. Using SDC, where should that CSS live?
+
+### Options
+- Beside the component Twig/metadata in the component directory so SDC can attach it with the component.
+- Only in /core/assets/vendor to guarantee load order.
+- In the database as a serialized blob in config export.
+- Inline in settings.local.php as a heredoc string.
+
+### Correct Answers
+- [0] Beside the component Twig/metadata in the component directory so SDC can attach it with the component.
+
+### Explanation
+SDC is designed for colocated component assets. Component CSS belongs with the component, not in core vendor paths or settings.php.
+
+### Question 195
+
+**Domain:** Theming Concepts
+
+Which statements about Drupal theme inheritance are correct? (Choose two)
+
+### Options
+- A sub-theme inherits templates from its base theme unless it provides its own overrides.
+- libraries-override and libraries-extend in the sub-theme can alter assets coming from base themes or modules.
+- A sub-theme cannot override any Twig file provided by its base theme.
+- Base theme relationships are defined in Twig using {% extends 'olivero' %} instead of info.yml.
+
+### Correct Answers
+- [0] A sub-theme inherits templates from its base theme unless it provides its own overrides.
+- [1] libraries-override and libraries-extend in the sub-theme can alter assets coming from base themes or modules.
+
+### Explanation
+Inheritance is configured with base theme in info.yml; templates fall through to the base unless overridden, and library override/extend hooks adjust assets. Twig extends is not how theme base relationships are declared.
+
+### Question 196
+
+**Domain:** Theming Concepts
+
+You must ensure your theme's CSS is picked up by Drupal's aggregation on production. What is required?
+
+### Options
+- Register CSS through the libraries system (libraries.yml / attach) rather than ad-hoc hard-coded <link> tags that bypass aggregation.
+- Upload CSS only through the Color module UI.
+- Store CSS in public:// and include it with an absolute file:// URL.
+- Disable the render pipeline so aggregation can scan the theme folder.
+
+### Correct Answers
+- [0] Register CSS through the libraries system (libraries.yml / attach) rather than ad-hoc hard-coded <link> tags that bypass aggregation.
+
+### Explanation
+Assets attached via Drupal libraries participate in aggregation and dependency ordering. Raw hard-coded links often bypass the asset pipeline.
+
+### Question 197
+
+**Domain:** Theming Concepts
+
+Your theme provides a custom page template suggestion for a specific path. Where do you typically add the suggestion?
+
+### Options
+- In hook_theme_suggestions_page_alter() (or a related suggestions hook) in the theme's .theme file.
+- In index.php before the kernel boots.
+- In a Composer post-install script that renames Twig files.
+- In Claro's maintainers.yml upstream.
+
+### Correct Answers
+- [0] In hook_theme_suggestions_page_alter() (or a related suggestions hook) in the theme's .theme file.
+
+### Explanation
+Theme suggestion alter hooks in THEMENAME.theme are the standard way to add template suggestions such as path-specific page templates.
+
+### Question 198
+
+**Domain:** Theming Concepts
+
+Responsive Image styles reference breakpoints from a provider. Your theme defines those breakpoints. What must be true for them to be selectable?
+
+### Options
+- The theme must be installed/enabled and its *.breakpoints.yml group available to the Responsive Image configuration.
+- Breakpoints from disabled themes are always listed as if enabled.
+- Only modules may define breakpoints; theme YAML is ignored by design.
+- Breakpoints apply only when using the Stark theme.
+
+### Correct Answers
+- [0] The theme must be installed/enabled and its *.breakpoints.yml group available to the Responsive Image configuration.
+
+### Explanation
+Breakpoint sets come from enabled extensions' breakpoints.yml files. A theme's breakpoints are available when that theme (or the defining extension) is present and enabled as applicable.
+
+### Question 199
+
+**Domain:** Theming Concepts
+
+You are choosing between extending Olivero and starting from Stable9 for a highly custom marketing site. Which guideline is sound?
+
+### Options
+- Extend Olivero when you want its templates/components as a starting point; use Stable9 when you want minimal styling and full design control.
+- Always extend Claro for anonymous marketing pages.
+- Stable9 cannot be a base theme in Drupal 11.
+- Olivero cannot be sub-themed; you must copy it outside the docroot.
+
+### Correct Answers
+- [0] Extend Olivero when you want its templates/components as a starting point; use Stable9 when you want minimal styling and full design control.
+
+### Explanation
+Olivero is a full-featured front-end theme suitable to sub-theme; Stable9 is the minimal stable base for custom designs. Claro is aimed at administration UIs.
+
+### Question 200
+
+**Domain:** Theming Concepts
+
+A theme library's JavaScript must run after Drupal settings are available and should use behaviors. Which dependency declaration is most appropriate?
+
+### Options
+- Depend on core/drupal and core/drupalSettings (and core/once when using once) in libraries.yml.
+- Depend on core/jquery.ui.accordion only, which includes Drupal settings automatically.
+- No dependencies are allowed in theme libraries.yml files.
+- Depend on ckeditor5.admin for all front-end behaviors.
+
+### Correct Answers
+- [0] Depend on core/drupal and core/drupalSettings (and core/once when using once) in libraries.yml.
+
+### Explanation
+Front-end behaviors typically need core/drupal and core/drupalSettings; once requires core/once. Declaring these dependencies ensures correct load order.
 
 ## Templates and Preprocess Functions
 
-### Question 151
+### Question 201
 
 **Domain:** Templates and Preprocess Functions
 
@@ -2901,27 +3670,25 @@ You must expose contextual data to a paragraph template, including the parent no
 ### Explanation
 The paragraph preprocess hook runs for each paragraph render array, letting you append the parent node title to `$variables` before Twig renders.
 
-
-### Question 152
+### Question 202
 
 **Domain:** Templates and Preprocess Functions
 
-Your Twig template must avoid blank markup by skipping empty render arrays. What is the idiomatic Twig condition?
+Your Twig template must avoid blank markup when a field has no values. What is the idiomatic check?
 
 ### Options
-- `{% if content.field_summary is not empty %}`
-- `{% if content.field_summary %}`
-- `{% if content.field_summary|length > 0 %}`
-- `{% if content.field_summary|render %}`
+- Check the entity field (for example `{% if node.field_summary is not empty %}`) and then print `{{ content.field_summary }}`.
+- `{% if content.field_summary is not empty %}` because empty field render arrays are always Twig-empty.
+- `{% if content.field_summary %}` alone is always sufficient.
+- `{% if content.field_summary|length > 0 %}` on the render array.
 
 ### Correct Answers
-- [0] `{% if content.field_summary is not empty %}`
+- [0] Check the entity field (for example `{% if node.field_summary is not empty %}`) and then print `{{ content.field_summary }}`.
 
 ### Explanation
-Twig's `is not empty` safely checks for renderable arrays without triggering rendering, unlike filters that might cause unwanted output.
+Empty field render arrays still contain metadata, so `content.field_* is not empty` is unreliable. Prefer entity field emptiness checks.
 
-
-### Question 153
+### Question 203
 
 **Domain:** Templates and Preprocess Functions
 
@@ -2939,8 +3706,7 @@ You're debugging template suggestions for a block. Which configuration enables T
 ### Explanation
 Twig debugging is controlled through service configuration; enabling it locally reveals template suggestions and auto reload behavior.
 
-
-### Question 154
+### Question 204
 
 **Domain:** Templates and Preprocess Functions
 
@@ -2958,8 +3724,7 @@ While customizing `node--article.html.twig`, you must include the parent templat
 ### Explanation
 Extending and calling `parent()` within the block reuses base markup while allowing overrides.
 
-
-### Question 155
+### Question 205
 
 **Domain:** Templates and Preprocess Functions
 
@@ -2977,27 +3742,25 @@ You need to preprocess data for a view row template `views-view-fields--articles
 ### Explanation
 `hook_preprocess_views_view_fields()` prepares variables for views row field templates, matching the naming convention of the Twig file.
 
-
-### Question 156
+### Question 206
 
 **Domain:** Templates and Preprocess Functions
 
 The design team wants to display a component only when a field has values. How do you check this in Twig without rendering the field twice?
 
 ### Options
-- `{% if content.field_tags|render %}`
-- `{% if content.field_tags['#items'] %}`
-- `{% if content.field_tags is not empty %}`
-- `{% if node.field_tags.value %}`
+- `{% if node.field_tags is not empty %}` (or `not node.field_tags.isEmpty`) then render `{{ content.field_tags }}` once.
+- `{% if content.field_tags is not empty %}` on the render array.
+- `{% if content.field_tags|render %}` every time you need a boolean check.
+- `{% if content.field_tags %}` without inspecting the entity.
 
 ### Correct Answers
-- [2] `{% if content.field_tags is not empty %}`
+- [0] `{% if node.field_tags is not empty %}` (or `not node.field_tags.isEmpty`) then render `{{ content.field_tags }}` once.
 
 ### Explanation
-`is not empty` uses the render array's metadata to confirm presence without invoking the render pipeline multiple times.
+Inspect the entity field for emptiness. Checking `content.* is not empty` is a common false positive because of render metadata.
 
-
-### Question 157
+### Question 207
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3015,8 +3778,7 @@ You must add a custom template suggestion when a node has a particular taxonomy 
 ### Explanation
 Theme suggestion alter hooks let you append new template names based on runtime conditions like taxonomy terms.
 
-
-### Question 158
+### Question 208
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3034,8 +3796,7 @@ In Twig, you need to loop through a render array's items and output the plain te
 ### Explanation
 Rendering then stripping tags outputs sanitized text. Accessing internal keys or using `raw` risks injecting unsafe markup.
 
-
-### Question 159
+### Question 209
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3053,8 +3814,7 @@ You want to pass additional attributes to a field template. Which PHP function h
 ### Explanation
 Attribute objects manage class lists safely, preventing duplicates and ensuring proper escaping.
 
-
-### Question 160
+### Question 210
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3072,8 +3832,7 @@ Your template requires a default placeholder image when a media field is empty. 
 ### Explanation
 Preprocess logic can supply fallback values to Twig, keeping presentation logic clean and consistent.
 
-
-### Question 161
+### Question 211
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3086,13 +3845,12 @@ You want to add a Twig filter that formats phone numbers. How do you register it
 - Add a global function in `settings.php`.
 
 ### Correct Answers
-- [0] Create a service tagged with `twig.extension` and define the filter in PHP.
+- [1] Create a service tagged with `twig.extension` and define the filter in PHP.
 
 ### Explanation
-Twig extensions are registered via services; themes can ship lightweight modules or use theme-level service files to expose new filters.
+Custom Twig filters are registered via a `twig.extension` service (typically from a module). `hook_theme_suggestions_alter()` does not register filters.
 
-
-### Question 162
+### Question 212
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3102,7 +3860,6 @@ In a preprocess function you need to check if you are on a specific view mode. W
 - `$variables['elements']['#view_mode']`
 - `$variables['node']->view_mode`
 - `
-  \Drupal::routeMatch()->getParameter('view_mode')`
 - `$variables['theme_hook_original']`
 
 ### Correct Answers
@@ -3111,8 +3868,7 @@ In a preprocess function you need to check if you are on a specific view mode. W
 ### Explanation
 Render array metadata contains the active view mode, making it accessible during preprocessing without routing assumptions.
 
-
-### Question 163
+### Question 213
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3130,8 +3886,7 @@ You are building a modal component that should reuse markup via Twig macros. How
 ### Explanation
 `import` loads macro definitions under an alias, allowing reusable render functions inside Twig.
 
-
-### Question 164
+### Question 214
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3149,8 +3904,7 @@ The design system sets BEM classes on templates. How do you add multiple modifie
 ### Explanation
 `addClass` accepts arrays and handles whitespace automatically. Direct concatenation risks double spaces or missing classes.
 
-
-### Question 165
+### Question 215
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3168,8 +3922,7 @@ You must output a custom data attribute on a DOM element in Twig. Which method e
 ### Explanation
 Using attribute methods keeps escaping consistent and merges with existing attribute arrays cleanly.
 
-
-### Question 166
+### Question 216
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3187,8 +3940,7 @@ You notice duplicate markup when a region has no blocks. How do you conditionall
 ### Explanation
 Region variables evaluate to empty when unused; a simple truthy check prevents extra markup without triggering rendering.
 
-
-### Question 167
+### Question 217
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3201,13 +3953,12 @@ You must inject a library when a view row uses a specific template suggestion. W
 - Alter the view in the UI to include the library globally.
 
 ### Correct Answers
-- [0] Inside `hook_preprocess_views_view_fields()` call `#attached['library'][]` on the render array.
+- [1] Add `attach_library` in the Twig file.
 
 ### Explanation
-Attaching libraries in preprocess ensures they only load when the specific template suggestion is active, keeping asset scope tight.
+For a specific Twig suggestion, `{{ attach_library(...) }}` in that template scopes the library correctly. A broad views preprocess attachment is easier to over-apply.
 
-
-### Question 168
+### Question 218
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3225,8 +3976,7 @@ During preprocess you need to pass a boolean to Twig. How should you cast it to 
 ### Explanation
 Assigning a boolean ensures Twig can evaluate it in conditions without string comparisons.
 
-
-### Question 169
+### Question 219
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3244,8 +3994,7 @@ Your theme uses the Render Cache. How do you ensure a preprocess alteration resp
 ### Explanation
 Setting cache metadata ensures Drupal varies cache entries appropriately when preprocess modifies render output.
 
-
-### Question 170
+### Question 220
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3263,8 +4012,7 @@ You want to reuse a pattern in multiple templates but allow overriding blocks. W
 ### Explanation
 `embed` imports a template and allows overriding its blocks locally, combining features of `include` and `extends`.
 
-
-### Question 171
+### Question 221
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3282,8 +4030,7 @@ You must print a sanitized string that contains limited HTML, such as `<strong>`
 ### Explanation
 Call `striptags()` with the permitted elements to remove disallowed markup, then mark the sanitized string as safe via `|raw` so Twig outputs the remaining `<strong>` tag. Printing it raw without stripping tags could expose unsafe HTML, and plain escaping would convert `<strong>` into text.
 
-
-### Question 172
+### Question 222
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3301,27 +4048,25 @@ In a preprocess function, you need the raw field value instead of the rendered o
 ### Explanation
 Entity objects expose field API methods that return raw values, which you can use in preprocess before formatting or rendering.
 
-
-### Question 173
+### Question 223
 
 **Domain:** Templates and Preprocess Functions
 
-You must prevent translation of a label printed in Twig. What filter should you apply?
+You must print a label in Twig without running it through Drupal’s translation system. What should you output?
 
 ### Options
+- `{{ 'Label' }}` without `|t` / `|trans`.
 - `{{ 'Label'|t }}`
 - `{{ 'Label'|raw }}`
-- `{{ 'Label'|trans }}
-- `{{ 'Label' }}` without filters.
+- `{{ 'Label'|trans }}`
 
 ### Correct Answers
-- [0] `{{ 'Label' }}` without filters.
+- [0] `{{ 'Label' }}` without `|t` / `|trans`.
 
 ### Explanation
-Leaving the string unfiltered prints it literally. The `t` filter sends it to translation, while `raw` affects escaping.
+Omitting `|t`/`|trans` prevents translation lookup. `|raw` is about escaping, not translation.
 
-
-### Question 174
+### Question 224
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3339,8 +4084,7 @@ You are adding a theme hook for a new component. Which hook provides metadata to
 ### Explanation
 `hook_theme()` registers templates, functions, and variables with Drupal's theme system, allowing preprocess and Twig rendering to function.
 
-
-### Question 175
+### Question 225
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3358,8 +4102,7 @@ You need to include a partial template inside another while passing custom varia
 ### Explanation
 `include` with `with` passes custom variables to partials without inheriting the parent context unnecessarily.
 
-
-### Question 176
+### Question 226
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3377,27 +4120,25 @@ While building a custom theme hook, you must define default variables. Where sho
 ### Explanation
 Theme hook definitions provide default variables so preprocess and Twig can rely on known keys even when callers omit values.
 
-
-### Question 177
+### Question 227
 
 **Domain:** Templates and Preprocess Functions
 
-You must remove a field from rendering but keep it available for preprocess logic. How do you suppress it in Twig?
+You must print a field in a custom place in the same Twig file without also printing it via `{{ content }}`. How do you suppress the duplicate?
 
 ### Options
-- Use `{{ content|without('field_name') }}` so the field stays available to preprocess while Twig omits it.
-- Set the field's render array to `#access = FALSE` in preprocess.
-- Print the field and hide via CSS.
-- Remove the field from the display mode.
+- Print the field explicitly and use `{{ content|without('field_name') }}` so `content` does not output it again.
+- Use `without` so the field remains available to preprocess after Twig runs.
+- Print the field twice and hide one with CSS.
+- Remove the field from the display mode even though editors still need it on that display.
 
 ### Correct Answers
-- [0] Use `{{ content|without('field_name') }}` so the field stays available to preprocess while Twig omits it.
+- [0] Print the field explicitly and use `{{ content|without('field_name') }}` so `content` does not output it again.
 
 ### Explanation
-The `without` filter strips selected keys from the render array during output, keeping the data intact for preprocess or other logic while preventing duplicate markup. CSS hiding still renders the field, and removing it upstream makes it unavailable to preprocess.
+`without` affects Twig output of the render array. Preprocess has already run before the template executes.
 
-
-### Question 178
+### Question 228
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3415,8 +4156,7 @@ You want to generate theme suggestions for media entities based on bundle. Which
 ### Explanation
 Entity-specific suggestion hooks allow you to define additional template names derived from bundle or other context.
 
-
-### Question 179
+### Question 229
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3434,8 +4174,7 @@ Twig templates need access to a helper service. How do you expose the service wi
 ### Explanation
 Twig should remain presentation-only; preprocess functions can leverage services and provide results to templates without direct service access.
 
-
-### Question 180
+### Question 230
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3453,8 +4192,7 @@ You must translate dynamic strings in preprocess before sending them to Twig. Wh
 ### Explanation
 `t()` handles translation and sanitization for placeholders, keeping preprocess strings safe and localizable.
 
-
-### Question 181
+### Question 231
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3472,8 +4210,7 @@ You want to inspect the final render array in preprocess for debugging without b
 ### Explanation
 Logging preserves the request flow while outputting data to logs. Dumping directly interrupts rendering and exposes data to end users.
 
-
-### Question 182
+### Question 232
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3491,8 +4228,7 @@ Your Twig template should avoid whitespace around inline elements. Which tag ens
 ### Explanation
 Twig's trim markers remove surrounding whitespace for fine-grained control without needing the deprecated `spaceless` tag.
 
-
-### Question 183
+### Question 233
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3510,8 +4246,7 @@ You must render a link with dynamic attributes inside Twig. What's the recommend
 ### Explanation
 Twig's `link` function handles attribute sanitization and ensures URLs render correctly, avoiding manual HTML concatenation.
 
-
-### Question 184
+### Question 234
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3529,8 +4264,7 @@ You require conditional markup around a field only when certain view modes rende
 ### Explanation
 Preprocess can supply `view_mode`, letting Twig evaluate it without delving into render array internals.
 
-
-### Question 185
+### Question 235
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3548,8 +4282,7 @@ While building a `menu--main.html.twig`, you need to identify the active trail. 
 ### Explanation
 Menu item render arrays include the `in_active_trail` boolean for marking active path ancestors.
 
-
-### Question 186
+### Question 236
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3567,8 +4300,7 @@ You must add a `data-theme` attribute to the `<html>` element. Where do you set 
 ### Explanation
 The global `html` template controls `<html>` attributes; adding the attribute there ensures consistent output across pages.
 
-
-### Question 187
+### Question 237
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3586,8 +4318,7 @@ To avoid repeating markup for field items, which Twig structure iterates over th
 ### Explanation
 Field templates already expose `items` arrays with renderable `content`. Looping in Twig respects caching and formatting.
 
-
-### Question 188
+### Question 238
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3605,8 +4336,7 @@ You must output a block title only when it exists. Which Twig pattern avoids pri
 ### Explanation
 Block titles evaluate to empty strings when absent; a simple truthy check suppresses output.
 
-
-### Question 189
+### Question 239
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3624,8 +4354,7 @@ How do you add template suggestions for taxonomy term pages based on vocabulary?
 ### Explanation
 Suggestion alter hooks allow vocabulary-specific template names without modifying base templates.
 
-
-### Question 190
+### Question 240
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3638,13 +4367,12 @@ You must create a template for a specific block plugin and region combination. W
 - `block--plugin-id.html.twig`
 
 ### Correct Answers
-- [3] `block--plugin-id.html.twig`
+- [0] `block--plugin-id--region.html.twig`
 
 ### Explanation
-Core generates default block template suggestions based on the block plugin ID (for example, `block--promo-banner.html.twig`). Drupal does not provide a native plugin+region suggestion; combine them only after adding a custom suggestion.
+Core may not generate a plugin+region suggestion by default, but `block--plugin-id--region.html.twig` is the conventional name to target when you add that suggestion via `hook_theme_suggestions_block_alter()`.
 
-
-### Question 191
+### Question 241
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3662,8 +4390,7 @@ In preprocess you want to add CSS classes to specific menu links. Where should y
 ### Explanation
 Menu preprocess hooks allow you to alter link attributes before rendering, keeping logic in PHP and preserving caching.
 
-
-### Question 192
+### Question 242
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3681,8 +4408,7 @@ Your template requires escaping a variable differently (URL vs HTML). Which Twig
 ### Explanation
 Twig's escape filter accepts contexts such as `url` to encode characters properly for use in URLs.
 
-
-### Question 193
+### Question 243
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3700,8 +4426,7 @@ You must move a field above the title without altering the display mode. How do 
 ### Explanation
 Preprocess can rearrange render arrays prior to output, keeping display configuration intact.
 
-
-### Question 194
+### Question 244
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3719,8 +4444,7 @@ When writing Twig tests, you want to ensure the theme doesn't break under minima
 ### Explanation
 Unit tests can instantiate Twig and render templates with stub data, catching syntax errors before deployment.
 
-
-### Question 195
+### Question 245
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3738,8 +4462,7 @@ You must ensure that preprocess-derived classes participate in caching contexts 
 ### Explanation
 Adding cache contexts ensures the render cache varies for language, keeping classes accurate per context.
 
-
-### Question 196
+### Question 246
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3757,8 +4480,7 @@ You must output structured data inside Twig and ensure it doesn't escape JSON. W
 ### Explanation
 Encoding to JSON then marking raw prevents double-escaping while keeping the data serialised properly.
 
-
-### Question 197
+### Question 247
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3776,8 +4498,7 @@ You want to add a wrapper `<div>` around the entire page content via preprocess.
 ### Explanation
 Adding `#prefix` and `#suffix` to the page render array injects wrapping markup without rewriting the template.
 
-
-### Question 198
+### Question 248
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3795,8 +4516,7 @@ Multiple templates render the same call-to-action button markup with minor varia
 ### Explanation
 Twig macros let you reuse markup with parameters, keeping templates DRY. Copying markup or using JavaScript increases maintenance and complexity.
 
-
-### Question 199
+### Question 249
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3814,8 +4534,7 @@ A teaser view mode should add a `field--teaser` class to `field_image` so CSS ca
 ### Explanation
 Field preprocess functions provide access to the render array, letting you adjust classes for specific view modes before Twig runs. Template conditionals or JavaScript duplicate logic.
 
-
-### Question 200
+### Question 250
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3833,8 +4552,7 @@ You need a dedicated template for the user registration form to add onboarding c
 ### Explanation
 Form suggestion alter hooks let you append template names based on form ID, enabling targeted overrides without touching other forms.
 
-
-### Question 201
+### Question 251
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3852,8 +4570,7 @@ A preprocess function adds the current user's role to a render array so the temp
 ### Explanation
 When preprocess logic depends on user roles, you must add the relevant cache context so Drupal varies the cached markup appropriately. Simply disabling caching wastes performance.
 
-
-### Question 202
+### Question 252
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3871,27 +4588,25 @@ You want to turn a taxonomy term name into a safe CSS modifier inside Twig. How 
 ### Explanation
 The `clean_class` filter converts arbitrary text into safe CSS class names. Concatenating raw text can introduce spaces or invalid characters.
 
-
-### Question 203
+### Question 253
 
 **Domain:** Templates and Preprocess Functions
 
 You have a testimonial partial that expects a `quote` and `author`. From `node.html.twig`, how do you pass only those values to the partial?
 
 ### Options
-- Use `{% include '@components/testimonial.twig' with { quote: node.field_quote, author: author_name } %}`.
+- `{% include '@components/testimonial.twig' with { quote: node.field_quote, author: author_name } only %}`
+- `{% include '@components/testimonial.twig' with { quote: node.field_quote, author: author_name } %}` without `only`
 - Set global Twig variables and include the partial without context.
-- Render the partial via `{{ drupal_render() }}`.
 - Attach the partial as a library dependency.
 
 ### Correct Answers
-- [0] Use `{% include '@components/testimonial.twig' with { quote: node.field_quote, author: author_name } %}`.
+- [0] `{% include '@components/testimonial.twig' with { quote: node.field_quote, author: author_name } only %}`
 
 ### Explanation
-The Twig `include ... with` syntax passes a custom context to partials, keeping data explicit. Global variables or render functions add unnecessary coupling.
+The `only` keyword prevents the included template from inheriting the full parent context.
 
-
-### Question 204
+### Question 254
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3909,27 +4624,25 @@ A banner paragraph includes optional background video assets that require a lazy
 ### Explanation
 Preprocess hooks can conditionally attach libraries based on field values before rendering, ensuring assets load only when needed.
 
-
-### Question 205
+### Question 255
 
 **Domain:** Templates and Preprocess Functions
 
-You register a custom theme hook named `marketing_card` in `hook_theme()`. Which preprocess function name will Drupal look for?
+You register a custom theme hook named `marketing_card` in `hook_theme()`. Which preprocess function name can a theme implement for that hook?
 
 ### Options
-- `template_preprocess_marketing_card()`
-- `THEME_preprocess_marketing_card()`
-- `hook_preprocess_marketing_card()`
-- `marketing_card_preprocess()`
+- `THEME_preprocess_marketing_card()` in the theme’s `.theme` file.
+- Only `template_preprocess_marketing_card()` is ever invoked; themes cannot preprocess custom hooks.
+- `hook_preprocess_marketing_card()` as a literal function name in PHP.
+- `marketing_card_preprocess()`.
 
 ### Correct Answers
-- [0] `template_preprocess_marketing_card()`
+- [0] `THEME_preprocess_marketing_card()` in the theme’s `.theme` file.
 
 ### Explanation
-Custom theme hooks use the global `template_preprocess_HOOK()` naming. Theme-specific preprocessors (`THEME_preprocess_HOOK`) run in addition but require the generic function as the base.
+Drupal invokes `module/theme_preprocess_HOOK` implementations. Themes commonly implement `THEME_preprocess_marketing_card()`; a `template_preprocess_*` base is not required.
 
-
-### Question 206
+### Question 256
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3947,8 +4660,7 @@ You need to embed a user-supplied value inside a `data-label` attribute. How sho
 ### Explanation
 The `escape('html_attr')` context encodes characters appropriately for HTML attributes. Printing raw or using the wrong context risks broken markup or XSS.
 
-
-### Question 207
+### Question 257
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3966,8 +4678,7 @@ In `node.html.twig`, you want to print all fields except `field_tags`. What is t
 ### Explanation
 The `without` filter returns the render array minus specified keys, keeping templates readable. Preprocess unsets work but move presentation logic to PHP, and CSS leaves markup behind.
 
-
-### Question 208
+### Question 258
 
 **Domain:** Templates and Preprocess Functions
 
@@ -3985,8 +4696,7 @@ A template adds an ARIA attribute to a region wrapper based on context. What is 
 ### Explanation
 Drupal passes attribute objects with helper methods like `setAttribute()` and `addClass()`. Direct mutation or string concatenation bypasses escaping safeguards.
 
-
-### Question 209
+### Question 259
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4004,27 +4714,25 @@ You need to add a CSS class to a specific Views field output without altering th
 ### Explanation
 `hook_preprocess_views_view_field()` runs for each field in a view row, letting you adjust options before Twig renders `views-view-field--VIEW--FIELD.html.twig`.
 
-
-### Question 210
+### Question 260
 
 **Domain:** Templates and Preprocess Functions
 
-A preprocess function wants to reuse the `marketing_card` theme hook inside another template. How can it render the card in PHP?
+A preprocess function wants to reuse the `marketing_card` theme hook inside another template. How should it expose the card to Twig?
 
 ### Options
-- Return `['#theme' => 'marketing_card', '#title' => $title, '#link' => $url]` from the preprocess function.
-- Call `render('marketing_card')` directly.
-- Include the Twig file manually with `include()`.
-- Print HTML strings inside preprocess.
+- Assign a render array to a variable, e.g. `$variables['card'] = ['#theme' => 'marketing_card', '#title' => $title, '#link' => $url];` then print `{{ card }}` in Twig.
+- Return that render array from the preprocess function.
+- Call `render('marketing_card')` directly as a string API.
+- Include the Twig file manually with PHP `include()`.
 
 ### Correct Answers
-- [0] Return `['#theme' => 'marketing_card', '#title' => $title, '#link' => $url]` from the preprocess function.
+- [0] Assign a render array to a variable, e.g. `$variables['card'] = ['#theme' => 'marketing_card', '#title' => $title, '#link' => $url];` then print `{{ card }}` in Twig.
 
 ### Explanation
-Setting `#theme` on a render array lets Drupal invoke the theme hook and template in PHP contexts. Manual includes or string concatenation bypass Twig and caching.
+Preprocess hooks are void and mutate `$variables` by reference. They do not return render arrays.
 
-
-### Question 211
+### Question 261
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4042,8 +4750,7 @@ Some landing pages have an optional hero partial. If the partial is missing, the
 ### Explanation
 The `ignore missing` flag tells Twig to continue if the template cannot be found. Preprocess or PHP checks are unnecessary.
 
-
-### Question 212
+### Question 262
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4061,8 +4768,7 @@ You need to output `field_summary` inside a paragraph template. What is the corr
 ### Explanation
 Printing the render array lets Drupal manage cache metadata and formatters automatically. Calling `|render` or accessing internals bypasses the render pipeline and can break caching.
 
-
-### Question 213
+### Question 263
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4080,8 +4786,7 @@ A component template must pull in its own CSS/JS bundle. Where should you attach
 ### Explanation
 `attach_library()` in Twig ensures assets load only when the template renders. Global attachments load everywhere, and inline assets break caching.
 
-
-### Question 214
+### Question 264
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4099,8 +4804,7 @@ How do you translate a literal string in Twig according to Drupal conventions?
 ### Explanation
 Drupal exposes the `|t` filter for translating Twig strings. Calling PHP functions or custom filters inside Twig is not standard.
 
-
-### Question 215
+### Question 265
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4118,8 +4822,7 @@ You need to show a node's updated date in Twig using the site's default format. 
 ### Explanation
 The `format_date` filter renders timestamps using Drupal's date formatter service. PHP's `date()` ignores site settings.
 
-
-### Question 216
+### Question 266
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4137,8 +4840,7 @@ A boolean field determines whether a link field should open in a new tab. Where 
 ### Explanation
 The link preprocess hook lets you modify link attributes dynamically based on context before markup is generated.
 
-
-### Question 217
+### Question 267
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4156,8 +4858,7 @@ You inject a marketing banner render array into the node content and need it to 
 ### Explanation
 Render arrays use integer weights; lower values render earlier. Other properties are ignored.
 
-
-### Question 218
+### Question 268
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4175,8 +4876,7 @@ A render array uses the default `container` theme wrapper, adding extra <div> ma
 ### Explanation
 Removing `#theme_wrappers` from the render array prevents Drupal from wrapping the output. CSS or Twig hacks leave unnecessary markup.
 
-
-### Question 219
+### Question 269
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4194,8 +4894,7 @@ You want all tables rendered by Drupal to include the class `table--responsive`.
 ### Explanation
 The table preprocess hook lets you adjust table attributes globally before `table.html.twig` renders.
 
-
-### Question 220
+### Question 270
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4213,8 +4912,7 @@ You need to remove whitespace around an inline SVG snippet in Twig while keeping
 ### Explanation
 Twig 3 replaces the legacy `spaceless` tag with the `apply spaceless` filter, trimming whitespace in a block while leaving source formatting intact.
 
-
-### Question 221
+### Question 271
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4232,8 +4930,7 @@ You need to show a node's updated date in Twig using the site's default format. 
 ### Explanation
 The `format_date` filter renders timestamps using Drupal's date formatter service. PHP's `date()` ignores site settings.
 
-
-### Question 222
+### Question 272
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4251,8 +4948,7 @@ You need a shortened `display_title` variable inside `node.html.twig`. Where do 
 ### Explanation
 Preprocess functions populate template variables in PHP before rendering. Twig-only assignments would duplicate logic, and global settings are inappropriate.
 
-
-### Question 223
+### Question 273
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4270,8 +4966,7 @@ A Views row template needs to output the row number starting at 1. Which Twig co
 ### Explanation
 Twig provides the `loop` variable when iterating; `loop.index` delivers the current iteration starting at 1, avoiding manual counters.
 
-
-### Question 224
+### Question 274
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4289,8 +4984,7 @@ You are building a custom wrapper around a render array fragment and need a fres
 ### Explanation
 `create_attribute()` generates a fresh attribute object that supports methods like `addClass()`, maintaining Drupal's attribute handling conventions.
 
-
-### Question 225
+### Question 275
 
 **Domain:** Templates and Preprocess Functions
 
@@ -4308,10 +5002,464 @@ Accessibility requires each block wrapper to reference its title via `aria-label
 ### Explanation
 Block preprocess hooks allow you to adjust wrapper attributes before Twig renders the block, keeping accessibility logic centralized.
 
+### Question 276
+
+**Domain:** Templates and Preprocess Functions
+
+You are theming an Article node and need a dedicated Twig file that only applies in the Teaser view mode. Which template filename should you create in your theme?
+
+### Options
+- node--article--teaser.html.twig
+- node--teaser--article.html.twig
+- article--node--teaser.html.twig
+- node-article-teaser.html.twig
+
+### Correct Answers
+- [0] node--article--teaser.html.twig
+
+### Explanation
+Drupal theme suggestions for nodes use the pattern node--{bundle}--{view_mode}.html.twig. For Article teasers that resolves to node--article--teaser.html.twig after cache rebuild with Twig debug enabled to confirm suggestions.
+
+### Question 277
+
+**Domain:** Templates and Preprocess Functions
+
+In a custom theme preprocess function you must ensure a CSS/JS library loads whenever nodes of type event render. Which approach correctly attaches the library to the render array?
+
+### Options
+- $variables['#attached']['library'][] = 'mytheme/event';
+- $variables['attributes']['library'] = 'mytheme/event';
+- drupal_add_library('mytheme/event');
+- $variables['attached_library'] = 'mytheme/event';
+
+### Correct Answers
+- [0] $variables['#attached']['library'][] = 'mytheme/event';
+
+### Explanation
+Libraries are attached through the render array's #attached key. In preprocess, push the library name onto $variables['#attached']['library']. drupal_add_library() is a Drupal 7 API and does not exist in Drupal 10/11.
+
+### Question 278
+
+**Domain:** Templates and Preprocess Functions
+
+A card component template should render all node fields except the hero image and tags, which are printed separately. Which Twig expression correctly excludes those fields from the remaining content?
+
+### Options
+- {{ content|without('field_hero_image', 'field_tags') }}
+- {{ content|exclude('field_hero_image', 'field_tags') }}
+- {{ content|remove(['field_hero_image', 'field_tags']) }}
+- {% unset content.field_hero_image %}{{ content }}
+
+### Correct Answers
+- [0] {{ content|without('field_hero_image', 'field_tags') }}
+
+### Explanation
+Drupal's Twig extension provides the without filter to omit named children from a render array while leaving the rest intact. There is no exclude or remove filter for this purpose, and unset is not valid Twig for render arrays.
+
+### Question 279
+
+**Domain:** Templates and Preprocess Functions
+
+Editors report that a custom search form needs an extra CSS class on the textfield and a placeholder attribute. Where should you implement this change?
+
+### Options
+- hook_form_FORM_ID_alter() and modify $form['keys']['#attributes']
+- hook_preprocess_page() and alter the rendered HTML string
+- hook_theme_suggestions_form_alter() to rename the template only
+- A Twig {% set %} block that rewrites the form markup after render
+
+### Correct Answers
+- [0] hook_form_FORM_ID_alter() and modify $form['keys']['#attributes']
+
+### Explanation
+Form alter hooks run before rendering and are the supported place to change element attributes such as class and placeholder. Preprocess-of-page string surgery and post-render Twig rewrites are brittle and not the Drupal form API pattern.
+
+### Question 280
+
+**Domain:** Templates and Preprocess Functions
+
+You need a Twig-only way to load a theme library from node--article.html.twig without PHP. Which statement is correct?
+
+### Options
+- {{ attach_library('mytheme/article') }}
+- {% library 'mytheme/article' %}
+- {{ attach_css('mytheme/article') }}
+- {% include library('mytheme/article') %}
+
+### Correct Answers
+- [0] {{ attach_library('mytheme/article') }}
+
+### Explanation
+Drupal adds the attach_library() Twig function so templates can declare libraries. The library name must match a key defined in the theme or module *.libraries.yml file.
+
+### Question 281
+
+**Domain:** Templates and Preprocess Functions
+
+A site builder wants different markup when a Paragraph of type callout appears inside a Layout Builder section versus a default node body. Which two techniques correctly vary the template? (Choose two)
+
+### Options
+- Implement hook_theme_suggestions_paragraph_alter() and append a suggestion based on the parent entity or view mode.
+- Create paragraph--callout--default.html.twig and paragraph--callout--{view_mode}.html.twig using Drupal's suggestion pattern.
+- Rename the paragraph entity type machine name at runtime in preprocess to force a new template.
+- Override html.html.twig and branch on the paragraph bundle with a giant if/else.
+
+### Correct Answers
+- [0] Implement hook_theme_suggestions_paragraph_alter() and append a suggestion based on the parent entity or view mode.
+- [1] Create paragraph--callout--default.html.twig and paragraph--callout--{view_mode}.html.twig using Drupal's suggestion pattern.
+
+### Explanation
+Theme suggestion alter hooks and the standard paragraph--{bundle}--{view_mode} filenames are the supported ways to select alternate Twig templates. Renaming entity types or overloading html.html.twig are not valid approaches.
+
+### Question 282
+
+**Domain:** Templates and Preprocess Functions
+
+While debugging why node--page.html.twig is not used, you enable Twig debug. Which configuration change is the Drupal 10/11-supported local setup?
+
+### Options
+- Set parameters.twig.config.debug (and usually auto_reload) to true under development.services.yml / services.local.yml and clear caches.
+- Add $settings['twig_debug'] = TRUE; alone in settings.php with no services change.
+- Create a file named twig.debug in the theme root.
+- Run drush theme:twig-debug-enable which permanently writes to production services.yml.
+
+### Correct Answers
+- [0] Set parameters.twig.config.debug (and usually auto_reload) to true under development.services.yml / services.local.yml and clear caches.
+
+### Explanation
+Twig debug is a container parameter under twig.config. Drupal's development.services.yml pattern (often copied to services.local.yml) enables debug and auto_reload; caches must be cleared afterward.
+
+### Question 283
+
+**Domain:** Templates and Preprocess Functions
+
+In mytheme.theme you need variables available only to the block template for the site branding block. Which hook is the most specific correct choice?
+
+### Options
+- mytheme_preprocess_block(&$variables) and check $variables['plugin_id'] or derivative id before adding data
+- mytheme_preprocess_html(&$variables) for every page
+- mytheme_preprocess_page(&$variables) and hope Twig inherits the keys
+- mytheme_form_alter() because branding is always a form
+
+### Correct Answers
+- [0] mytheme_preprocess_block(&$variables) and check $variables['plugin_id'] or derivative id before adding data
+
+### Explanation
+Block-specific data belongs in hook_preprocess_block(), gated by plugin/derivative ID so other blocks are unaffected. Page/html preprocess do not cleanly target a single block template.
+
+### Question 284
+
+**Domain:** Templates and Preprocess Functions
+
+A design requires adding classes to the node wrapper based on field values. Which two approaches are valid in Drupal 10/11? (Choose two)
+
+### Options
+- In hook_preprocess_node(), call $variables['attributes']->addClass('is-featured') when conditions match.
+- In the Twig template, use {{ attributes.addClass('is-featured') }} when printing the wrapper.
+- Edit core's NodeViewBuilder class in the web/core directory for that content type.
+- Set $variables['classes'][] = 'is-featured' and expect core Attribute objects to pick it up automatically in all themes.
+
+### Correct Answers
+- [0] In hook_preprocess_node(), call $variables['attributes']->addClass('is-featured') when conditions match.
+- [1] In the Twig template, use {{ attributes.addClass('is-featured') }} when printing the wrapper.
+
+### Explanation
+Both preprocess Attribute::addClass() and Twig attributes.addClass() are supported. Patching core view builders is not acceptable, and a bare classes array is not the Attribute API used by modern classy/stable9-style templates.
+
+### Question 285
+
+**Domain:** Templates and Preprocess Functions
+
+You must print a translated UI string from Twig that includes a dynamic username. Which pattern is correct?
+
+### Options
+- {{ 'Hello @name'|t({'@name': username}) }}
+- {{ t('Hello ' ~ username) }}
+- {{ 'Hello ' ~ username|raw }}
+- {% trans %}Hello {{ username|raw }}{% endtrans %} without placeholders
+
+### Correct Answers
+- [0] {{ 'Hello @name'|t({'@name': username}) }}
+
+### Explanation
+The |t filter (and {% trans %} blocks) should use placeholders such as @name so translations stay intact and values are escaped appropriately. Concatenating variables into the source string breaks translation and can create XSS risks.
+
+### Question 286
+
+**Domain:** Templates and Preprocess Functions
+
+A field formatter renders complex markup. In the node template you only need the plain text label of a taxonomy term reference for a data attribute. What is the safest approach?
+
+### Options
+- Read from the entity object in Twig (e.g. node.field_category.entity.label) or prepare a sanitized variable in preprocess, rather than |raw on rendered HTML.
+- Use {{ content.field_category|render|raw }} and parse tags in Twig.
+- Disable Twig autoescape globally in services.yml for the theme.
+- Print {{ content.field_category }} inside an HTML attribute without changes.
+
+### Correct Answers
+- [0] Read from the entity object in Twig (e.g. node.field_category.entity.label) or prepare a sanitized variable in preprocess, rather than |raw on rendered HTML.
+
+### Explanation
+For attribute values and plain text, use entity getters or preprocess to supply a clean string. Piping rendered HTML through raw, disabling autoescape, or dumping field render arrays into attributes are incorrect or unsafe.
+
+### Question 287
+
+**Domain:** Templates and Preprocess Functions
+
+You registered a custom theme hook mytheme_card in hook_theme() with a template card. Which preprocess function name will Drupal invoke for that hook?
+
+### Options
+- hook_preprocess_mytheme_card() / THEMENAME_preprocess_mytheme_card()
+- hook_preprocess_theme_card()
+- hook_preprocess_template_card()
+- hook_card_preprocess()
+
+### Correct Answers
+- [0] hook_preprocess_mytheme_card() / THEMENAME_preprocess_mytheme_card()
+
+### Explanation
+Preprocess callbacks follow hook_preprocess_HOOK() where HOOK is the theme hook name (mytheme_card). Naming must match the theme registry key, not an invented template_ prefix.
+
+### Question 288
+
+**Domain:** Templates and Preprocess Functions
+
+A Views unformatted row template must receive a computed 'reading_time' variable. Which preprocess hook targets that template family?
+
+### Options
+- hook_preprocess_views_view_unformatted()
+- hook_preprocess_views_view_fields() only, for every display style
+- hook_preprocess_node() because Views always uses node templates
+- hook_views_pre_render() to inject Twig variables into $variables directly
+
+### Correct Answers
+- [0] hook_preprocess_views_view_unformatted()
+
+### Explanation
+Each Views theme hook has a matching preprocess. For the unformatted style template, hook_preprocess_views_view_unformatted() is the correct place to add row variables. hook_views_pre_render() alters the view result/render array, not Twig $variables for that template.
+
+### Question 289
+
+**Domain:** Templates and Preprocess Functions
+
+You want to reuse a macros file across several templates. Which Twig approach is idiomatic in Drupal themes?
+
+### Options
+- {% import '@mytheme/macros.html.twig' as macros %} then call macros.button(...)
+- {% php include 'macros.php' %}
+- {{ attach_library('mytheme/macros') }} which auto-imports Twig macros
+- {% extends '@mytheme/macros.html.twig' %} for every card partial
+
+### Correct Answers
+- [0] {% import '@mytheme/macros.html.twig' as macros %} then call macros.button(...)
+
+### Explanation
+Drupal's Twig namespace (@mytheme) plus {% import %} / {% from %} is the supported way to share macros. Libraries attach CSS/JS, not Twig macros, and extends is for template inheritance, not macro imports.
+
+### Question 290
+
+**Domain:** Templates and Preprocess Functions
+
+Which two statements about Twig auto-escaping in Drupal 10/11 are correct? (Choose two)
+
+### Options
+- Auto-escape is enabled by default for Twig templates.
+- Render arrays and MarkupInterface objects can be printed without |raw because Drupal marks them as safe when appropriate.
+- You should routinely append |raw to all field output to avoid double-escaping.
+- Setting debug: true in twig.config disables auto-escape for production.
+
+### Correct Answers
+- [0] Auto-escape is enabled by default for Twig templates.
+- [1] Render arrays and MarkupInterface objects can be printed without |raw because Drupal marks them as safe when appropriate.
+
+### Explanation
+Drupal enables Twig auto-escaping by default. Early-rendered content and safe Markup objects print correctly without |raw. Blind use of |raw is a security risk, and Twig debug does not turn off escaping.
+
+### Question 291
+
+**Domain:** Templates and Preprocess Functions
+
+You need to add a cache context so a node template variable varies by the current user roles. Where should you declare it?
+
+### Options
+- In preprocess, add to $variables['#cache']['contexts'][] = 'user.roles';
+- In Twig with {% cachecontext 'user.roles' %}
+- Only in settings.php as $settings['cache_contexts'][]
+- As a data-cache-context attribute on the <body> tag
+
+### Correct Answers
+- [0] In preprocess, add to $variables['#cache']['contexts'][] = 'user.roles';
+
+### Explanation
+Cacheability metadata belongs on the render array via #cache. Preprocess can bubble contexts such as user.roles. There is no Twig cachecontext tag for this, and settings.php is not where per-template contexts are declared.
+
+### Question 292
+
+**Domain:** Templates and Preprocess Functions
+
+A form ID is node_article_form. You want an alter that runs only for that form. Which hook name is correct?
+
+### Options
+- hook_form_node_article_form_alter()
+- hook_form_alter_node_article()
+- hook_node_article_form_alter()
+- hook_form_id_node_article_form()
+
+### Correct Answers
+- [0] hook_form_node_article_form_alter()
+
+### Explanation
+Drupal supports targeted form alters as hook_form_FORM_ID_alter(). For FORM_ID node_article_form the implementation is hook_form_node_article_form_alter().
+
+### Question 293
+
+**Domain:** Templates and Preprocess Functions
+
+You are overriding field.html.twig for a specific field on Article nodes. Which suggestion filename matches core's pattern?
+
+### Options
+- field--node--field-summary--article.html.twig
+- field--article--field-summary--node.html.twig
+- node--field-summary--article.html.twig
+- field-summary--article--node.html.twig
+
+### Correct Answers
+- [0] field--node--field-summary--article.html.twig
+
+### Explanation
+Field suggestions commonly include entity type, field name, and bundle, e.g. field--node--field-summary--article.html.twig. Confirm with Twig debug output because suggestion order can include additional variants.
+
+### Question 294
+
+**Domain:** Templates and Preprocess Functions
+
+Which two methods correctly pass variables into an included Twig partial in Drupal? (Choose two)
+
+### Options
+- {% include '@mytheme/partials/card.html.twig' with { title: label, url: url } %}
+- {% include '@mytheme/partials/card.html.twig' with { title: label } only %}
+- {% include '@mytheme/partials/card.html.twig' variables title=label %}
+- {{ include_php('@mytheme/partials/card.html.twig', title) }}
+
+### Correct Answers
+- [0] {% include '@mytheme/partials/card.html.twig' with { title: label, url: url } %}
+- [1] {% include '@mytheme/partials/card.html.twig' with { title: label } only %}
+
+### Explanation
+Twig's include tag supports a with hash of variables, and the only keyword prevents leaking the parent scope. Drupal does not provide include_php or a variables= keyword for includes.
+
+### Question 295
+
+**Domain:** Templates and Preprocess Functions
+
+A module must alter theme suggestions for every HTML element theme hook (the 'html' theme hook). Which alter is appropriate?
+
+### Options
+- hook_theme_suggestions_html_alter(array &$suggestions, array $variables)
+- hook_preprocess_html_alter()
+- hook_html_theme_suggestions()
+- hook_template_suggestions_alter() without a theme hook suffix
+
+### Correct Answers
+- [0] hook_theme_suggestions_html_alter(array &$suggestions, array $variables)
+
+### Explanation
+Suggestion alters are hook_theme_suggestions_HOOK_alter(). For the html theme hook that is hook_theme_suggestions_html_alter(). Preprocess alters variables, not the suggestion list.
+
+### Question 296
+
+**Domain:** Templates and Preprocess Functions
+
+You need to build an Attribute object in Twig for a custom element that has no attributes variable. Which Drupal Twig function should you use?
+
+### Options
+- create_attribute({'class': ['button'], 'id': 'cta'})
+- new Attribute({'class': ['button']})
+- attribute_create(['class' => 'button'])
+- drupal_attributes(['class' => ['button']])
+
+### Correct Answers
+- [0] create_attribute({'class': ['button'], 'id': 'cta'})
+
+### Explanation
+Drupal provides create_attribute() in Twig to instantiate Attribute objects. PHP constructors and invented helpers like drupal_attributes() are not available inside Twig templates.
+
+### Question 297
+
+**Domain:** Templates and Preprocess Functions
+
+Content editors paste links into a formatted text field. In Twig you must output the field as configured by the text format. What should you print?
+
+### Options
+- {{ content.field_body }}
+- {{ node.field_body.value|raw }}
+- {{ node.field_body.0.value }} without filters
+- {{ content.field_body|striptags|raw }}
+
+### Correct Answers
+- [0] {{ content.field_body }}
+
+### Explanation
+Printing the field from the content render array applies the correct formatter, text format filters, and cacheability. Dumping raw field values bypasses formatters and can skip important filtering.
+
+### Question 298
+
+**Domain:** Templates and Preprocess Functions
+
+Which two actions are required after adding a new node--article--full.html.twig file to a custom theme before it is used? (Choose two)
+
+### Options
+- Rebuild caches so the theme registry picks up the new template.
+- Ensure the suggestion appears in Twig debug output for that node/view mode.
+- Delete the database and reinstall Drupal.
+- Convert the file to PHPTemplate .tpl.php format for Drupal 10.
+
+### Correct Answers
+- [0] Rebuild caches so the theme registry picks up the new template.
+- [1] Ensure the suggestion appears in Twig debug output for that node/view mode.
+
+### Explanation
+New templates are discovered via the theme registry after a cache rebuild. Twig debug confirms the active suggestion. PHPTemplate is long gone; reinstalling Drupal is unnecessary.
+
+### Question 299
+
+**Domain:** Templates and Preprocess Functions
+
+In preprocess you must move title_suffix (contextual links) next to a custom heading variable without losing accessibility wrappers. What should you do?
+
+### Options
+- Keep printing {{ title_prefix }} / {{ title_suffix }} (or relocate those render arrays intact) rather than extracting only the link HTML.
+- Unset title_suffix and hardcode a pencil icon linking to /node/N/edit.
+- Strip contextual links with |without('title_suffix') and rebuild them in JavaScript.
+- Print only $variables['title_suffix']['#markup'] as a string.
+
+### Correct Answers
+- [0] Keep printing {{ title_prefix }} / {{ title_suffix }} (or relocate those render arrays intact) rather than extracting only the link HTML.
+
+### Explanation
+Contextual links and other title affixes are render arrays that must remain intact for permissions, attachments, and cacheability. Hardcoding edit URLs or stringifying #markup breaks the contextual links system.
+
+### Question 300
+
+**Domain:** Templates and Preprocess Functions
+
+A custom module uses hook_theme() to define a render element theme hook that should use a Twig file at templates/status-banner.html.twig. Which hook_theme() entry is correct?
+
+### Options
+- 'status_banner' => ['variables' => [...], 'template' => 'status-banner']
+- 'status_banner' => ['path' => 'status-banner.html.twig'] only
+- 'status-banner.html.twig' => ['render element' => 'elements']
+- 'status_banner' => ['file' => 'status-banner.tpl.php']
+
+### Correct Answers
+- [0] 'status_banner' => ['variables' => [...], 'template' => 'status-banner']
+
+### Explanation
+Theme hooks use machine names with underscores while the template key uses the Twig basename without extension (hyphenated). Drupal maps status-banner to status-banner.html.twig. PHPTemplate file keys are obsolete.
 
 ## Layout Configuration
 
-### Question 226
+### Question 301
 
 **Domain:** Layout Configuration
 
@@ -4329,8 +5477,7 @@ Editors want a landing page layout where certain sections can be rearranged per 
 ### Explanation
 Per-content overrides let editors customize section ordering while maintaining a shared default layout.
 
-
-### Question 227
+### Question 302
 
 **Domain:** Layout Configuration
 
@@ -4348,8 +5495,7 @@ You need to add a block only for a specific Layout Builder section. What's the s
 ### Explanation
 Inline blocks are scoped to the section in which they're placed, providing content isolation without affecting other layouts.
 
-
-### Question 228
+### Question 303
 
 **Domain:** Layout Configuration
 
@@ -4367,27 +5513,25 @@ Your design requires a responsive two-column layout with adjustable widths. Whic
 ### Explanation
 Layout plugins provide column structures with width settings, removing the need for manual CSS or code edits.
 
-
-### Question 229
+### Question 304
 
 **Domain:** Layout Configuration
 
-You must ensure a block displays different view modes per breakpoint within Layout Builder. What's the recommended strategy?
+You must show different block presentations per breakpoint within Layout Builder. What is a realistic strategy in core?
 
 ### Options
-- Use Field Layout or Display Modes for blocks and attach responsive CSS classes per breakpoint.
-- Duplicate the block for each breakpoint and toggle visibility manually.
-- Write JavaScript to swap block markup.
-- Rely on inline styles.
+- Place variants (or duplicate blocks) and control visibility with CSS media queries / responsive utilities—core does not switch view modes by breakpoint automatically.
+- Use Field Layout so each breakpoint automatically selects a different view mode.
+- Write JavaScript to swap block markup as the only acceptable solution.
+- Rely on inline styles typed by editors per breakpoint.
 
 ### Correct Answers
-- [0] Use Field Layout or Display Modes for blocks and attach responsive CSS classes per breakpoint.
+- [0] Place variants (or duplicate blocks) and control visibility with CSS media queries / responsive utilities—core does not switch view modes by breakpoint automatically.
 
 ### Explanation
-Custom block display modes let you tailor markup while CSS handles responsive presentation without duplicating blocks.
+Neither Field Layout nor core Layout Builder provides breakpoint-aware view mode switching. Responsive show/hide of placements is the common approach.
 
-
-### Question 230
+### Question 305
 
 **Domain:** Layout Configuration
 
@@ -4405,8 +5549,7 @@ Editors complain that new Layout Builder sections inherit unwanted padding. Wher
 ### Explanation
 Custom layout templates allow consistent structural changes across all sections, avoiding per-node adjustments.
 
-
-### Question 231
+### Question 306
 
 **Domain:** Layout Configuration
 
@@ -4424,8 +5567,7 @@ You need to reuse a Layout Builder configuration across multiple nodes. What fea
 ### Explanation
 Default layouts stored in configuration can be exported and reused, providing a baseline for new entities.
 
-
-### Question 232
+### Question 307
 
 **Domain:** Layout Configuration
 
@@ -4443,8 +5585,7 @@ When building a view-based block for Layout Builder, what ensures the block resp
 ### Explanation
 Contextual filters allow the view to adapt to the host node, making the block reusable across Layout Builder placements.
 
-
-### Question 233
+### Question 308
 
 **Domain:** Layout Configuration
 
@@ -4462,27 +5603,25 @@ You want to add custom CSS classes to sections via Layout Builder UI. Which cont
 ### Explanation
 Layout Builder Styles integrates with the layout UI, providing dropdowns for classes without custom code.
 
-
-### Question 234
+### Question 309
 
 **Domain:** Layout Configuration
 
-Editors need to preview layout changes before saving. Which Layout Builder capability provides this safety?
+Editors need to preview layout changes before saving. Which Layout Builder capability provides this?
 
 ### Options
-- Draft and publish workflow integration via Layout Builder's moderation support.
-- A separate preview theme.
-- Inline editing in Twig.
+- Layout Builder’s tempstore-based UI keeps unsaved layout edits in a draft state until the editor saves.
+- Content moderation is required for any layout preview.
+- A separate preview theme is required by core.
 - Screenshot generation in Drupal core.
 
 ### Correct Answers
-- [0] Draft and publish workflow integration via Layout Builder's moderation support.
+- [0] Layout Builder’s tempstore-based UI keeps unsaved layout edits in a draft state until the editor saves.
 
 ### Explanation
-Layout Builder respects content moderation, letting editors preview drafts before publishing changes.
+Unsaved LB changes live in tempstore until save. Content moderation is a separate publishing workflow, not the preview mechanism itself.
 
-
-### Question 235
+### Question 310
 
 **Domain:** Layout Configuration
 
@@ -4500,8 +5639,7 @@ When exporting Layout Builder configuration, which command captures section defi
 ### Explanation
 Configuration export captures Layout Builder defaults and section definitions stored in config.
 
-
-### Question 236
+### Question 311
 
 **Domain:** Layout Configuration
 
@@ -4519,8 +5657,7 @@ You added a new custom layout plugin but it's not appearing in the UI. What migh
 ### Explanation
 Layout plugins are discovered via cache; clearing caches registers new plugin definitions with the UI.
 
-
-### Question 237
+### Question 312
 
 **Domain:** Layout Configuration
 
@@ -4538,8 +5675,7 @@ Editors need to restrict Layout Builder sections to a curated set for brand comp
 ### Explanation
 Layout Builder Restrictions lets you control available sections and blocks, ensuring brand consistency while retaining flexibility.
 
-
-### Question 238
+### Question 313
 
 **Domain:** Layout Configuration
 
@@ -4557,27 +5693,25 @@ You must ensure a Layout Builder section is full-width while the rest stay withi
 ### Explanation
 Custom layouts can output markup without the standard container, enabling full-width sections selectively.
 
-
-### Question 239
+### Question 314
 
 **Domain:** Layout Configuration
 
-Your team wants to log Layout Builder changes. Which tool keeps revision history when using per-node layouts?
+Your team wants layout override history for per-node Layout Builder layouts. What is required?
 
 ### Options
-- Enable content moderation and revisions for the entity, ensuring layout changes create new revisions.
-- Use watchdog logs.
+- Enable revisions for the entity so layout override changes can be stored per revision; content moderation is optional.
+- Enable content moderation; revisions alone cannot store layout overrides.
+- Use watchdog logs as the only history mechanism.
 - Export the layout after each change manually.
-- Track changes in a spreadsheet.
 
 ### Correct Answers
-- [0] Enable content moderation and revisions for the entity, ensuring layout changes create new revisions.
+- [0] Enable revisions for the entity so layout override changes can be stored per revision; content moderation is optional.
 
 ### Explanation
-When revisions are enabled, Layout Builder stores section changes with the entity revision history for auditing.
+Layout overrides are stored on the entity; revisions capture history. Moderation is optional workflow on top of revisions.
 
-
-### Question 240
+### Question 315
 
 **Domain:** Layout Configuration
 
@@ -4595,8 +5729,7 @@ You need to expose a custom form in Layout Builder allowing editors to configure
 ### Explanation
 Layout plugins support configuration forms in PHP, letting you add UI controls for backgrounds or other options.
 
-
-### Question 241
+### Question 316
 
 **Domain:** Layout Configuration
 
@@ -4614,8 +5747,7 @@ You want to display analytics about section usage across all landing pages. What
 ### Explanation
 Section placements reside in configuration and revisions, which you can query programmatically to gather usage metrics.
 
-
-### Question 242
+### Question 317
 
 **Domain:** Layout Configuration
 
@@ -4633,46 +5765,43 @@ A marketing team needs a three-column layout only available on article nodes. Ho
 ### Explanation
 Restrictions can limit layouts per bundle, ensuring specific structures appear only where appropriate.
 
-
-### Question 243
-
-**Domain:** Layout Configuration
-
-You must ensure certain blocks stay at the top of every Layout Builder page. What pattern keeps them locked?
-
-### Options
-- Add fixed sections via Layout Builder defaults and mark them as `locked` in configuration.
-- Ask editors not to move them.
-- Inject JavaScript to reset positions.
-- Hide the move controls with CSS.
-
-### Correct Answers
-- [0] Add fixed sections via Layout Builder defaults and mark them as `locked` in configuration.
-
-### Explanation
-Locked sections prevent editors from rearranging critical content while still allowing additional sections below.
-
-
-### Question 244
+### Question 318
 
 **Domain:** Layout Configuration
 
-You want to provide alternate layouts per language. How do you structure the solution?
+You must ensure certain sections stay fixed at the top of Layout Builder defaults and are hard for editors to rearrange. What is accurate?
 
 ### Options
-- Enable content translations and allow per-language Layout Builder overrides on the node.
-- Create separate content types per language.
-- Duplicate the node for each language without translation.
-- Use CSS `:lang()` selectors only.
+- Core Layout Builder does not provide a built-in `locked` section flag; use a contrib solution such as Layout Builder Lock (or restrict permissions / defaults carefully).
+- Mark sections as `locked` in core Layout Builder configuration.
+- Ask editors not to move them, with no technical control.
+- Inject JavaScript to reset positions after every edit.
 
 ### Correct Answers
-- [0] Enable content translations and allow per-language Layout Builder overrides on the node.
+- [0] Core Layout Builder does not provide a built-in `locked` section flag; use a contrib solution such as Layout Builder Lock (or restrict permissions / defaults carefully).
 
 ### Explanation
-Translations support independent Layout Builder configurations, letting each language tailor its layout while sharing content.
+Section locking is not a core LB feature. Contrib modules or permission/process controls are required for true locks.
 
+### Question 319
 
-### Question 245
+**Domain:** Layout Configuration
+
+You want alternate Layout Builder layouts per language on a translated node. What does core support?
+
+### Options
+- Core does not provide independent per-language Layout Builder overrides; the layout override is not per-translation in core.
+- Enable content translations and core will automatically store a separate LB override per language.
+- Create separate content types per language as the only core feature for this.
+- Use CSS `:lang()` selectors to create true alternate layouts in Layout Builder.
+
+### Correct Answers
+- [0] Core does not provide independent per-language Layout Builder overrides; the layout override is not per-translation in core.
+
+### Explanation
+Layout Builder overrides are not language-specific in core. Asymmetric layouts need contrib approaches or different architecture.
+
+### Question 320
 
 **Domain:** Layout Configuration
 
@@ -4690,8 +5819,7 @@ You must display upcoming events in a Layout Builder block filtered by taxonomy 
 ### Explanation
 Views handles filtering and caching, while Layout Builder integrates Views blocks seamlessly for contextual listings.
 
-
-### Question 246
+### Question 321
 
 **Domain:** Layout Configuration
 
@@ -4709,8 +5837,7 @@ You want to export Layout Builder content to a headless frontend. Which API endp
 ### Explanation
 JSON:API plus Layout Builder-specific enhancers expose structured layout and component data for decoupled consumers.
 
-
-### Question 247
+### Question 322
 
 **Domain:** Layout Configuration
 
@@ -4728,8 +5855,7 @@ Editors require a library of prebuilt sections (hero, testimonial) they can inse
 ### Explanation
 The Layout Builder Library module allows saving and reusing predefined sections, streamlining editor workflows.
 
-
-### Question 248
+### Question 323
 
 **Domain:** Layout Configuration
 
@@ -4747,8 +5873,7 @@ You must trigger a cache clear when Layout Builder configuration changes. Which 
 ### Explanation
 Layout changes alter render arrays, so clearing the render cache ensures new layouts appear immediately.
 
-
-### Question 249
+### Question 324
 
 **Domain:** Layout Configuration
 
@@ -4766,8 +5891,7 @@ For auditing purposes, you need to see who changed Layout Builder sections. Whic
 ### Explanation
 Revisions capture the author of each layout change, providing a history view inside the node revisions UI.
 
-
-### Question 250
+### Question 325
 
 **Domain:** Layout Configuration
 
@@ -4785,27 +5909,25 @@ You're building a custom layout plugin that outputs three regions. How do you de
 ### Explanation
 Layout plugin annotations define regions Drupal uses to display drop zones in the UI.
 
-
-### Question 251
+### Question 326
 
 **Domain:** Layout Configuration
 
-Editors need a conditional CTA that appears only when a node has a specific field value. How do you handle this in Layout Builder without custom code?
+Editors need a CTA block that appears only when a node field has a specific value. In Layout Builder without custom code, what should you do?
 
 ### Options
-- Use Layout Builder Conditions module to show/hide blocks based on field values.
-- Duplicate the layout for nodes meeting the condition.
-- Add JavaScript to hide the CTA.
-- Use CSS to toggle visibility.
+- Use a real visibility/conditions solution (for example Block Visibility Groups, Conditional Fields patterns, or a maintained LB conditions contrib module)—core LB alone does not evaluate arbitrary field values for components.
+- Install a module literally named “Layout Builder Conditions” that is guaranteed to exist in core.
+- Duplicate the entire layout for every node that matches.
+- Use CSS alone to evaluate field values server-side.
 
 ### Correct Answers
-- [0] Use Layout Builder Conditions module to show/hide blocks based on field values.
+- [0] Use a real visibility/conditions solution (for example Block Visibility Groups, Conditional Fields patterns, or a maintained LB conditions contrib module)—core LB alone does not evaluate arbitrary field values for components.
 
 ### Explanation
-Layout Builder Conditions provides UI-driven visibility rules, keeping logic accessible to site builders.
+Core Layout Builder lacks general field-value visibility rules. Choose a maintained contrib/visibility approach rather than inventing a core module name.
 
-
-### Question 252
+### Question 327
 
 **Domain:** Layout Configuration
 
@@ -4823,8 +5945,7 @@ You must provide reusable layout sections that include referenced media and text
 ### Explanation
 Fieldable custom blocks provide structured content reusable across layouts while keeping editing UI familiar.
 
-
-### Question 253
+### Question 328
 
 **Domain:** Layout Configuration
 
@@ -4842,8 +5963,7 @@ Layout Builder performance degrades when many sections load heavy views. What op
 ### Explanation
 Lazy builders defer rendering until necessary, reducing initial page build cost while keeping caching intact.
 
-
-### Question 254
+### Question 329
 
 **Domain:** Layout Configuration
 
@@ -4861,8 +5981,7 @@ After enabling Layout Builder on the Article content type, fields still render f
 ### Explanation
 When Layout Builder is active, you typically hide fields on the standard display to avoid duplicate output; editors then place the field blocks manually.
 
-
-### Question 255
+### Question 330
 
 **Domain:** Layout Configuration
 
@@ -4880,8 +5999,7 @@ Editors want to reuse the existing body field formatter inside Layout Builder so
 ### Explanation
 Layout Builder exposes field blocks that reuse the field's formatter settings, keeping output consistent without manual duplication.
 
-
-### Question 256
+### Question 331
 
 **Domain:** Layout Configuration
 
@@ -4899,27 +6017,25 @@ You want full view mode to use Layout Builder, but teasers should continue using
 ### Explanation
 Layout Builder can be enabled per view mode, allowing full layouts to be customized while other modes continue to use the standard display UI.
 
-
-### Question 257
+### Question 332
 
 **Domain:** Layout Configuration
 
-You replaced the two-column layout plugin with a design that needs custom markup. Which Twig template should you override?
+You need custom markup for core’s two-column layout plugin (`layout_twocol`). Which Twig template should you override?
 
 ### Options
+- `layout--twocol.html.twig`
 - `layout--two-column.html.twig`
 - `block--two-column.html.twig`
-- `page--layout.html.twig`
 - `section--two-column.html.twig`
 
 ### Correct Answers
-- [0] `layout--two-column.html.twig`
+- [0] `layout--twocol.html.twig`
 
 ### Explanation
-Layout Builder renders layout plugins through `layout--PLUGIN_ID.html.twig`. Overriding that template lets you adjust markup for the plugin.
+The core plugin id `layout_twocol` maps to `layout--twocol.html.twig`, not `two-column`.
 
-
-### Question 258
+### Question 333
 
 **Domain:** Layout Configuration
 
@@ -4937,8 +6053,7 @@ You created a custom layout plugin class in `src/Plugin/Layout`. Drupal is not l
 ### Explanation
 Layout plugins rely on the `@Layout` annotation so Drupal can discover them. Missing or incorrect annotations keep the plugin hidden.
 
-
-### Question 259
+### Question 334
 
 **Domain:** Layout Configuration
 
@@ -4956,8 +6071,7 @@ After adjusting the default layout for the "Product" content type in development
 ### Explanation
 Default layouts are configuration-managed. Entity-specific overrides are stored with the content entity and are unaffected by config deployment, so editors' custom layouts remain.
 
-
-### Question 260
+### Question 335
 
 **Domain:** Layout Configuration
 
@@ -4975,8 +6089,7 @@ When placing a field block in Layout Builder, editors see a "Formatter" dropdown
 ### Explanation
 Field blocks reuse the field formatters configured on Manage Display, keeping output consistent across Layout Builder and traditional displays.
 
-
-### Question 261
+### Question 336
 
 **Domain:** Layout Configuration
 
@@ -4989,13 +6102,12 @@ A custom layout plugin exposes a settings form, and you need to add an extra val
 - Add JavaScript validation only.
 
 ### Correct Answers
-- [0] Implement `hook_layout_builder_component_form_alter()`.
+- [1] Use `hook_form_FORM_ID_alter()`.
 
 ### Explanation
-`hook_layout_builder_component_form_alter()` lets modules and themes alter the configuration form for Layout Builder components, including custom validation.
+There is no `hook_layout_builder_component_form_alter()` in core. Alter the configure form with `hook_form_FORM_ID_alter()` or validate inside a custom layout plugin.
 
-
-### Question 262
+### Question 337
 
 **Domain:** Layout Configuration
 
@@ -5013,8 +6125,7 @@ You build a custom block plugin that reads the parent node's taxonomy terms when
 ### Explanation
 Context-aware blocks declare required contexts (like the current node) and Layout Builder supplies them when rendering entity layouts.
 
-
-### Question 263
+### Question 338
 
 **Domain:** Layout Configuration
 
@@ -5032,8 +6143,7 @@ An editor experimented with a node's custom layout and wants to revert to the de
 ### Explanation
 Layout Builder provides a UI action to discard overrides and restore the default layout for an entity.
 
-
-### Question 264
+### Question 339
 
 **Domain:** Layout Configuration
 
@@ -5051,8 +6161,7 @@ A marketing banner needs to appear on twenty landing pages and be editable in on
 ### Explanation
 Reusable custom blocks can be placed on many layouts while sharing content. Inline blocks duplicate the content per page.
 
-
-### Question 265
+### Question 340
 
 **Domain:** Layout Configuration
 
@@ -5070,8 +6179,7 @@ Layout changes should follow content revisions so editors can roll back a page. 
 ### Explanation
 Layout Builder stores overrides with the entity revision. Without revisions enabled, you cannot roll back layout changes.
 
-
-### Question 266
+### Question 341
 
 **Domain:** Layout Configuration
 
@@ -5089,8 +6197,7 @@ Editors should only view the front-end rendering; only site builders may modify 
 ### Explanation
 Layout Builder adds bundle-specific permissions such as "Configure layout for Article," which gate access to the editing UI.
 
-
-### Question 267
+### Question 342
 
 **Domain:** Layout Configuration
 
@@ -5108,8 +6215,7 @@ Editors need a dropdown on each section to choose between "boxed" and "full-widt
 ### Explanation
 Layout Builder Styles plugins let you register reusable options editors can apply per section, avoiding duplicate layout plugins or fragile scripting.
 
-
-### Question 268
+### Question 343
 
 **Domain:** Layout Configuration
 
@@ -5127,8 +6233,7 @@ You build a custom block plugin that reads the parent node's taxonomy terms when
 ### Explanation
 Context-aware blocks declare required contexts (like the current node) and Layout Builder supplies them when rendering entity layouts.
 
-
-### Question 269
+### Question 344
 
 **Domain:** Layout Configuration
 
@@ -5146,48 +6251,318 @@ An editor experimented with a node's custom layout and wants to revert to the de
 ### Explanation
 Layout Builder provides a UI action to discard overrides and restore the default layout for an entity.
 
-
-### Question 270
+### Question 345
 
 **Domain:** Layout Configuration
 
-Editors create inline blocks in Layout Builder, but they disappear when exporting configuration. Why?
+Editors create inline blocks in Layout Builder, but they do not appear when exporting configuration with `drush cex`. Why?
 
 ### Options
-- Inline blocks are stored with the entity override and are content, not configuration; use reusable custom blocks for shared content.
-- Drush `cex` requires `--inline-blocks` flag.
-- Inline blocks must live in a module's `config/install` directory.
-- Layout Builder does not support configuration export.
+- Inline blocks are content stored with the entity layout override, not configuration; configuration export will not ship them. Reusable custom blocks are also content entities, so plan a content deployment strategy.
+- Drush `cex` requires an `--inline-blocks` flag.
+- Inline blocks must live in a module’s `config/install` directory.
+- Layout Builder does not support configuration export of defaults at all.
 
 ### Correct Answers
-- [0] Inline blocks are stored with the entity override and are content, not configuration; use reusable custom blocks for shared content.
+- [0] Inline blocks are content stored with the entity layout override, not configuration; configuration export will not ship them. Reusable custom blocks are also content entities, so plan a content deployment strategy.
 
 ### Explanation
-Inline blocks belong to the entity's layout override and are saved as content. To share across sites, create reusable custom blocks which are configuration-aware.
+Inline blocks are content. Reusable blocks are also content entities—not a config-export substitute. Use content sync/default content strategies for deployment.
 
+### Question 346
+
+**Domain:** Layout Configuration
+
+Product owners want a default landing-page structure for a content type, but marketing must rearrange sections on individual nodes. Which Layout Builder configuration enables this?
+
+### Options
+- Enable Layout Builder for the view mode and allow content editors to customize layouts per entity (overrides).
+- Enable Layout Builder but lock overrides so only config defaults apply.
+- Place blocks only in the theme's header region via Block UI.
+- Use a single global custom block and hide sections with CSS per node.
+
+### Correct Answers
+- [0] Enable Layout Builder for the view mode and allow content editors to customize layouts per entity (overrides).
+
+### Explanation
+Layout Builder defaults define the shared structure; allowing per-entity overrides lets editors rearrange sections on specific nodes while new content still inherits the default.
+
+### Question 347
+
+**Domain:** Layout Configuration
+
+You need a reusable two-column section that editors can pick inside Layout Builder. What should you provide?
+
+### Options
+- A layout plugin (annotated Layout / layouts.yml) with a Twig template defining two regions.
+- A new content type for each column width.
+- A Views page display named twocol.
+- A preprocess function that splits the body field on a delimiter.
+
+### Correct Answers
+- [0] A layout plugin (annotated Layout / layouts.yml) with a Twig template defining two regions.
+
+### Explanation
+Layout Builder sections are layout plugins. Registering a layout with regions and a template makes it selectable in the Layout Builder UI without inventing content types or Views displays for structure.
+
+### Question 348
+
+**Domain:** Layout Configuration
+
+An "Related articles" listing must appear inside Layout Builder on Article nodes and show only content sharing the current node's category. How should the Views block be configured?
+
+### Options
+- Add a contextual filter on the category field (or taxonomy term) that provides a default value from the current entity/route context.
+- Hard-code a single term ID in a regular filter and clone the view per article.
+- Use an exposed filter and instruct editors to type the category each time.
+- Disable SQL rewriting and filter in Twig after loading all articles.
+
+### Correct Answers
+- [0] Add a contextual filter on the category field (or taxonomy term) that provides a default value from the current entity/route context.
+
+### Explanation
+Contextual filters with a default from the route/entity context make one Views block adapt to whichever node hosts it in Layout Builder. Hard-coded filters and Twig-side filtering do not scale.
+
+### Question 349
+
+**Domain:** Layout Configuration
+
+Editors need a call-to-action that exists only on one landing page layout and should not appear in the global Block layout list as a reusable site-wide block. What should you place in Layout Builder?
+
+### Options
+- Create an inline (custom) block within that Layout Builder section.
+- Place a custom block type instance in the Footer region for all pages.
+- Embed the CTA HTML in html.html.twig with a node ID check.
+- Add the CTA as a menu link in the main navigation.
+
+### Correct Answers
+- [0] Create an inline (custom) block within that Layout Builder section.
+
+### Explanation
+Layout Builder inline blocks are stored with the layout override/default and are scoped to that layout placement, unlike blocks placed globally in Block UI regions.
+
+### Question 350
+
+**Domain:** Layout Configuration
+
+Which two tasks belong in the Block layout UI rather than Layout Builder? (Choose two)
+
+### Options
+- Place the primary site navigation block into the theme's header region for all pages.
+- Configure visibility so a utility menu block appears only for authenticated users site-wide.
+- Arrange fields inside a single Article node's full view mode into two columns.
+- Override one About page node's section order without affecting other pages.
+
+### Correct Answers
+- [0] Place the primary site navigation block into the theme's header region for all pages.
+- [1] Configure visibility so a utility menu block appears only for authenticated users site-wide.
+
+### Explanation
+Block layout manages region placement and global visibility conditions. Per-node field arrangement and one-off section overrides are Layout Builder concerns for entity view modes.
+
+### Question 351
+
+**Domain:** Layout Configuration
+
+A content type uses Layout Builder for the Full view mode. Teasers in Views still show a stacked field list. What is the most likely reason?
+
+### Options
+- Layout Builder was enabled only for the Full view mode; Teaser still uses the field UI display.
+- Views cannot display nodes when Layout Builder is enabled on any view mode.
+- Teaser automatically inherits Full Layout Builder sections.
+- You must disable the Teaser view mode entirely when using Layout Builder.
+
+### Correct Answers
+- [0] Layout Builder was enabled only for the Full view mode; Teaser still uses the field UI display.
+
+### Explanation
+Layout Builder is configured per view mode. Enabling it for Full does not change Teaser or other modes until those displays are also configured (or you point Views at Full).
+
+### Question 352
+
+**Domain:** Layout Configuration
+
+You must expose a Views listing as something editors can place into a Layout Builder section. Which Views display type is appropriate?
+
+### Options
+- A Block display of the view, then place that Views block as a Layout Builder component.
+- A Feed display only.
+- A REST export display only.
+- An Attachment display without a block or page parent.
+
+### Correct Answers
+- [0] A Block display of the view, then place that Views block as a Layout Builder component.
+
+### Explanation
+Views Block displays become blocks that can be placed in Layout Builder (or Block UI). Feed and REST export serve other consumers; attachments depend on a parent display.
+
+### Question 353
+
+**Domain:** Layout Configuration
+
+Design requires different image crops for card grids versus the article hero. Which configuration combination is correct?
+
+### Options
+- Create separate responsive image styles (or image styles) and assign different formatters/view modes for teaser vs full displays.
+- Upload two physical files for every image and switch them with JavaScript.
+- Store crops only in the theme CSS background-position without image styles.
+- Use the same style everywhere and letterbox with HTML tables.
+
+### Correct Answers
+- [0] Create separate responsive image styles (or image styles) and assign different formatters/view modes for teaser vs full displays.
+
+### Explanation
+Drupal image styles and responsive image styles, applied via field formatters on the appropriate view modes, are the supported way to vary crops and sources by display context.
+
+### Question 354
+
+**Domain:** Layout Configuration
+
+Which two Layout Builder practices help keep configuration deployable across environments? (Choose two)
+
+### Options
+- Define shared structure as Layout Builder defaults for the entity view mode and export that configuration.
+- Prefer defaults plus controlled overrides rather than uniquely hand-building every node layout in production only.
+- Store all landing page HTML exclusively in the database theme settings blob.
+- Disable configuration management whenever Layout Builder is enabled.
+
+### Correct Answers
+- [0] Define shared structure as Layout Builder defaults for the entity view mode and export that configuration.
+- [1] Prefer defaults plus controlled overrides rather than uniquely hand-building every node layout in production only.
+
+### Explanation
+Defaults live in configuration and export cleanly. Minimizing one-off production-only overrides keeps environments consistent. Disabling config management or stuffing HTML into theme settings works against deployability.
+
+### Question 355
+
+**Domain:** Layout Configuration
+
+A theme defines regions in mytheme.info.yml. Editors place the breadcrumb block in the breadcrumb region, but the region never appears. What should you verify in the page template?
+
+### Options
+- That page.html.twig prints {{ page.breadcrumb }} (matching the region machine name).
+- That html.html.twig includes the region automatically without page.html.twig.
+- That the region is named in libraries.yml instead of info.yml.
+- That Twig debug is disabled or regions will not render.
+
+### Correct Answers
+- [0] That page.html.twig prints {{ page.breadcrumb }} (matching the region machine name).
+
+### Explanation
+Regions declared in the theme info file must be printed from page.html.twig using the page.<region_machine_name> variable. html.html.twig wraps the page but does not output theme regions by itself.
+
+### Question 356
+
+**Domain:** Layout Configuration
+
+You need a Views grid of promotional cards that uses custom markup from card.html.twig in your theme. Which approach aligns with Drupal theming?
+
+### Options
+- Set the view to show Content with a view mode (or use a row style) that your theme templates, e.g. node--promo--teaser.html.twig / field templates.
+- Put raw HTML in the Views header and hide the results.
+- Rewrite every field as absolute HTML in the Views UI and disable theming.
+- Override views-view.html.twig to hardcode node IDs for the grid.
+
+### Correct Answers
+- [0] Set the view to show Content with a view mode (or use a row style) that your theme templates, e.g. node--promo--teaser.html.twig / field templates.
+
+### Explanation
+Using entity view modes (or properly themed Views row/field templates) keeps markup in the theme and reuses display configuration. Hardcoded HTML rewrites in Views UI fight the theme system.
+
+### Question 357
+
+**Domain:** Layout Configuration
+
+Site builders want to prevent placing certain blocks inside Layout Builder for a content type. Which core capability addresses this?
+
+### Options
+- Layout Builder restrictions (manage which blocks/layouts are available per entity type/view mode) or equivalent allowed-block configuration.
+- Deleting the Block module.
+- Removing all regions from the theme info file.
+- Setting Twig autoescape to false.
+
+### Correct Answers
+- [0] Layout Builder restrictions (manage which blocks/layouts are available per entity type/view mode) or equivalent allowed-block configuration.
+
+### Explanation
+Drupal's Layout Builder restrictions UI lets administrators allow or deny specific blocks and layouts for a given entity display, guiding editors without removing Block UI entirely.
+
+### Question 358
+
+**Domain:** Layout Configuration
+
+A homepage hero must use Layout Builder, but the site logo and main menu must remain consistent on every page. Where should logo and menu live?
+
+### Options
+- In theme regions via Block layout (or the theme's branding/menu templates), not as one-off Layout Builder sections on every content type.
+- Only as Layout Builder inline blocks duplicated onto each content type default.
+- Inside each Views row template for every listing.
+- As unchecked checkboxes on the node edit form.
+
+### Correct Answers
+- [0] In theme regions via Block layout (or the theme's branding/menu templates), not as one-off Layout Builder sections on every content type.
+
+### Explanation
+Global chrome belongs in theme regions/Block layout (or theme templates). Layout Builder is ideal for entity content structure, not for re-placing global navigation on every bundle.
+
+### Question 359
+
+**Domain:** Layout Configuration
+
+Which two Views features are commonly used when building a filterable news listing block? (Choose two)
+
+### Options
+- Exposed filters so visitors can narrow results by category or keyword.
+- A Block display placed in a region or Layout Builder section.
+- A Migrate process plugin attached to each row.
+- hook_cron() inside the view to rebuild the listing HTML nightly.
+
+### Correct Answers
+- [0] Exposed filters so visitors can narrow results by category or keyword.
+- [1] A Block display placed in a region or Layout Builder section.
+
+### Explanation
+Exposed filters plus a Block display are standard for interactive listings. Migrate plugins and cron hooks are not Views display features for visitor-facing filters.
+
+### Question 360
+
+**Domain:** Layout Configuration
+
+You customize the markup for core's two-column layout used by Layout Builder. Which template name should you override in the theme?
+
+### Options
+- layout--twocol.html.twig (or the specific layout's template suggestion shown in Twig debug)
+- block--layout-builder.html.twig exclusively for all layouts
+- node--layout--twocol.html.twig for every entity type
+- page--twocol.html.twig
+
+### Correct Answers
+- [0] layout--twocol.html.twig (or the specific layout's template suggestion shown in Twig debug)
+
+### Explanation
+Layout plugins declare Twig templates such as layout--twocol.html.twig. Twig debug lists the exact suggestions. Node or page templates do not replace layout section templates.
 
 ## Performance
 
-### Question 271
+### Question 361
 
 **Domain:** Performance
 
-Audit logs reveal large CSS payloads on first paint. Which Drupal-friendly technique minimizes CSS without breaking aggregation?
+Audit logs reveal large CSS payloads on first paint. Which Drupal-friendly technique helps without inventing unsupported library keys?
 
 ### Options
-- Split critical CSS into a dedicated library and mark it as `preload`, leaving the rest aggregated with `preprocess: true`.
-- Disable CSS aggregation to simplify debugging.
-- Inline all CSS into Twig templates.
-- Serve CSS from a remote CDN without cache headers.
+- Keep a small critical CSS budget early (often inlined) and leave the bulk of theme CSS on aggregated libraries with aggregation enabled.
+- Mark a CSS library as `preload: true` in `libraries.yml`, which core fully supports for stylesheets.
+- Disable CSS aggregation permanently as the optimization strategy.
+- Inline all CSS into every Twig template.
 
 ### Correct Answers
-- [0] Split critical CSS into a dedicated library and mark it as `preload`, leaving the rest aggregated with `preprocess: true`.
+- [0] Keep a small critical CSS budget early (often inlined) and leave the bulk of theme CSS on aggregated libraries with aggregation enabled.
 
 ### Explanation
-Separating critical CSS while keeping aggregation ensures fast rendering and maintainable bundles without disabling Drupal's optimizations.
+Drupal does not provide a general `preload` flag for CSS libraries the way some answers claim. Critical CSS inlining plus aggregated remainder is the practical approach.
 
-
-### Question 272
+### Question 362
 
 **Domain:** Performance
 
@@ -5205,8 +6580,7 @@ PageSpeed Insights flags render-blocking JavaScript in the theme. What change im
 ### Explanation
 Deferred scripts respect execution order and allow HTML to render before running behaviors, enhancing performance without breaking dependencies.
 
-
-### Question 273
+### Question 363
 
 **Domain:** Performance
 
@@ -5224,8 +6598,7 @@ You detect duplicated dependencies across multiple libraries. How does Drupal he
 ### Explanation
 Drupal tracks dependencies; declaring them centrally ensures each asset loads once, improving caching and reducing payload.
 
-
-### Question 274
+### Question 364
 
 **Domain:** Performance
 
@@ -5243,8 +6616,7 @@ Database profiling shows slow view queries in a block placed in Layout Builder. 
 ### Explanation
 View caching stores query results, reducing repeated database hits while respecting context variations.
 
-
-### Question 275
+### Question 365
 
 **Domain:** Performance
 
@@ -5262,8 +6634,7 @@ You need to monitor front-end performance regressions automatically. Which tooli
 ### Explanation
 Automated performance testing alerts teams to regressions on every build, whereas manual audits are inconsistent.
 
-
-### Question 276
+### Question 366
 
 **Domain:** Performance
 
@@ -5281,8 +6652,7 @@ Theme developers add large hero videos. How can you keep the homepage fast witho
 ### Explanation
 Posters and lazy load techniques allow deferring heavy video files until a user opts in, improving initial paint metrics.
 
-
-### Question 277
+### Question 367
 
 **Domain:** Performance
 
@@ -5300,8 +6670,7 @@ Your build pipeline needs to purge old assets after deploying hashed files. What
 ### Explanation
 Hashed filenames combined with long caching guarantee users receive new bundles when they change, and old files can be purged safely.
 
-
-### Question 278
+### Question 368
 
 **Domain:** Performance
 
@@ -5319,8 +6688,7 @@ When analyzing the waterfall chart, you discover third-party fonts delay first p
 ### Explanation
 Preloading plus `font-display: swap` keeps text visible while fonts load, minimizing layout shifts and blank text.
 
-
-### Question 279
+### Question 369
 
 **Domain:** Performance
 
@@ -5338,8 +6706,7 @@ After enabling aggregation for launch you discover the site is still serving doz
 ### Explanation
 The Performance configuration page manages Drupal's core aggregation flags. Rebuilding front-end assets or deleting generated files won't change the configuration value, and overriding it in `settings.php` hardcodes env-specific state that bypasses normal config management.
 
-
-### Question 280
+### Question 370
 
 **Domain:** Performance
 
@@ -5357,8 +6724,7 @@ An API-driven block performs expensive fetches at runtime. How can you cache res
 ### Explanation
 Cache metadata allows Drupal to reuse expensive results while still invalidating caches when tagged data updates, balancing freshness and performance.
 
-
-### Question 281
+### Question 371
 
 **Domain:** Performance
 
@@ -5376,8 +6742,7 @@ Your personalized dashboard renders slowly because the entire page waits on an A
 ### Explanation
 BigPipe streams cacheable markup as soon as it's ready and fills dynamic placeholders afterward, reducing perceived latency without removing personalization.
 
-
-### Question 282
+### Question 372
 
 **Domain:** Performance
 
@@ -5395,8 +6760,7 @@ A marketing landing page rarely changes and should be cached by the CDN for an h
 ### Explanation
 Max-age declares how long downstream caches may reuse the response. Setting it on the render array propagates the header, enabling CDN caching without manual header hacks.
 
-
-### Question 283
+### Question 373
 
 **Domain:** Performance
 
@@ -5414,27 +6778,7 @@ Hero images load slowly on mobile because the same 2000px JPEG serves all device
 ### Explanation
 Responsive image styles generate size-specific derivatives tied to breakpoints, letting browsers pick the smallest suitable asset. Aggregation or inlining does not address oversized images.
 
-
-### Question 284
-
-**Domain:** Performance
-
-Your theme bundles third-party scripts totaling 500 KB, even on pages that don't use them. How can you reduce unnecessary downloads?
-
-### Options
-- Split the functionality into separate libraries and attach them only to templates that need them.
-- Increase PHP memory limits.
-- Disable JavaScript aggregation so files stay separate.
-- Add the scripts via CDN to leverage HTTP/2 multiplexing.
-
-### Correct Answers
-- [0] Split the functionality into separate libraries and attach them only to templates that need them.
-
-### Explanation
-Creating smaller, context-specific libraries ensures only required scripts load per page, reducing payload. Memory limits and CDN hosting do not eliminate unnecessary transfers.
-
-
-### Question 285
+### Question 374
 
 **Domain:** Performance
 
@@ -5452,10 +6796,118 @@ Your theme bundles third-party scripts totaling 500 KB, even on pages that don't
 ### Explanation
 Creating smaller, context-specific libraries ensures only required scripts load per page, reducing payload. Memory limits and CDN hosting do not eliminate unnecessary transfers.
 
+### Question 375
+
+**Domain:** Performance
+
+Your theme bundles third-party scripts totaling 500 KB, even on pages that don't use them. How can you reduce unnecessary downloads?
+
+### Options
+- Split the functionality into separate libraries and attach them only to templates that need them.
+- Increase PHP memory limits.
+- Disable JavaScript aggregation so files stay separate.
+- Add the scripts via CDN to leverage HTTP/2 multiplexing.
+
+### Correct Answers
+- [0] Split the functionality into separate libraries and attach them only to templates that need them.
+
+### Explanation
+Creating smaller, context-specific libraries ensures only required scripts load per page, reducing payload. Memory limits and CDN hosting do not eliminate unnecessary transfers.
+
+### Question 376
+
+**Domain:** Performance
+
+On a Drupal 11 marketing site, Performance settings show CSS and JavaScript aggregation enabled, yet the homepage still requests dozens of theme CSS files. A developer attached several libraries with preprocess disabled during local debugging. Which library.yml key prevents a CSS file from joining the aggregated bundle?
+
+### Options
+- Setting preprocess: false on that CSS asset entry in *.libraries.yml.
+- Omitting weight so Drupal treats the file as critical.
+- Declaring the file under js instead of css so aggregation skips it.
+- Adding dependencies: - core/drupal so aggregation is bypassed.
+
+### Correct Answers
+- [0] Setting preprocess: false on that CSS asset entry in *.libraries.yml.
+
+### Explanation
+In Drupal libraries, preprocess: false on a CSS or JS asset excludes that file from aggregation while aggregation remains globally enabled. Weight, moving the file to js, or adding core/drupal does not disable preprocessing.
+
+### Question 377
+
+**Domain:** Performance
+
+You are preparing a custom theme for production. Editors complain that anonymous pages are slow until caches warm. Which two core capabilities should you verify are enabled so anonymous traffic benefits from full-page caching and asset bundling?
+
+### Options
+- Internal Page Cache for anonymous users.
+- CSS and JavaScript aggregation on the Performance configuration page.
+- Twig debug mode so template suggestions are printed in HTML comments.
+- Disabling the Dynamic Page Cache module site-wide.
+
+### Correct Answers
+- [0] Internal Page Cache for anonymous users.
+- [1] CSS and JavaScript aggregation on the Performance configuration page.
+
+### Explanation
+Internal Page Cache serves complete cached pages to anonymous users, and aggregation reduces HTTP requests for CSS/JS. Twig debug hurts performance, and Dynamic Page Cache should remain available for authenticated/personalized responses—not disabled.
+
+### Question 378
+
+**Domain:** Performance
+
+A authenticated dashboard shows a personalized Welcome block that varies per user. The rest of the page is identical for all authenticated roles. Which approach lets Drupal stream the shared markup quickly while filling the personalized block later?
+
+### Options
+- Enable BigPipe so highly dynamic placeholders can be replaced after the initial payload.
+- Set #cache max-age to 0 on the entire page render array.
+- Disable Internal Page Cache and rely only on browser cache.
+- Move the Welcome block into settings.php as a hardcoded string.
+
+### Correct Answers
+- [0] Enable BigPipe so highly dynamic placeholders can be replaced after the initial payload.
+
+### Explanation
+BigPipe sends cacheable page structure first and streams personalized placeholders afterward, improving perceived performance without turning off caching for the whole page.
+
+### Question 379
+
+**Domain:** Performance
+
+A Views block lists recent articles and sits in a sidebar on many content types. After publishing a new article, the block still shows stale titles until a full cache rebuild. Which cache metadata should the view/block correctly bubble so the listing invalidates when article nodes change?
+
+### Options
+- Cache tags such as node_list (and relevant node tags) so list content invalidates on node updates.
+- A permanent max-age of Cache::PERMANENT with no tags.
+- Only the url.path cache context, ignoring entity changes.
+- Disabling the Render cache bin entirely in settings.php.
+
+### Correct Answers
+- [0] Cache tags such as node_list (and relevant node tags) so list content invalidates on node updates.
+
+### Explanation
+Listings of nodes should expose cache tags (for example node_list) so Drupal invalidates cached markup when content changes. Relying only on path context or clearing bins site-wide is inefficient and incorrect.
+
+### Question 380
+
+**Domain:** Performance
+
+Hero images on article teasers download a 2400px original on every listing page. Which Drupal configuration reduces bytes transferred across breakpoints without hardcoding widths in Twig?
+
+### Options
+- Configure a Responsive Image style that maps breakpoints/sizes to image style derivatives.
+- Enable CSS aggregation so images are automatically resized.
+- Store originals as Base64 in a preprocess hook.
+- Set preprocess: false on the theme’s global CSS library.
+
+### Correct Answers
+- [0] Configure a Responsive Image style that maps breakpoints/sizes to image style derivatives.
+
+### Explanation
+Responsive Image styles generate appropriately sized derivatives and emit srcset/sizes so browsers pick a suitable file. Aggregation and preprocess flags do not resize images.
 
 ## Security
 
-### Question 286
+### Question 381
 
 **Domain:** Security
 
@@ -5473,8 +6925,7 @@ Security review flags inline JavaScript in Twig templates. How should you move b
 ### Explanation
 Libraries ensure scripts are loaded safely with proper sanitation and CSP compliance, rather than embedding raw inline code.
 
-
-### Question 287
+### Question 382
 
 **Domain:** Security
 
@@ -5492,8 +6943,7 @@ You must prevent editors from injecting raw HTML into a text field. Which Drupal
 ### Explanation
 Text formats control which HTML is permitted and apply server-side filtering, providing a systematic defense against injected markup.
 
-
-### Question 288
+### Question 383
 
 **Domain:** Security
 
@@ -5511,8 +6961,7 @@ While building a custom Twig filter, you need to ensure dynamic output is escape
 ### Explanation
 Declaring safe outputs triggers Twig to skip escaping only for sanitized content; everything else remains escaped by default.
 
-
-### Question 289
+### Question 384
 
 **Domain:** Security
 
@@ -5530,8 +6979,7 @@ You must protect against clickjacking on personalized dashboards. Which HTTP hea
 ### Explanation
 `frame-ancestors` restricts which origins can embed the site, preventing clickjacking. Other headers serve different purposes.
 
-
-### Question 290
+### Question 385
 
 **Domain:** Security
 
@@ -5549,8 +6997,7 @@ Your theme exposes user profile images. How do you prevent direct hotlinking whi
 ### Explanation
 Private files enforce access control, ensuring only authorized requests receive profile images while templates can still reference generated URLs.
 
-
-### Question 291
+### Question 386
 
 **Domain:** Security
 
@@ -5568,27 +7015,25 @@ Pen testers discover the theme loads third-party scripts over HTTP. What is the 
 ### Explanation
 HTTPS prevents tampering in transit, and SRI adds integrity checks, preserving security when referencing third-party assets.
 
-
-### Question 292
+### Question 387
 
 **Domain:** Security
 
-You must sanitize data passed to JavaScript via `drupalSettings`. What's the secure practice?
+You must pass data to JavaScript via `drupalSettings` safely. What is the secure practice?
 
 ### Options
-- Encode values with `Html::escape()` or `Xss::filter()` before assigning them to `drupalSettings`.
-- Pass entities directly without sanitation.
-- Sanitize values inside JavaScript.
-- Disable `drupalSettings` usage.
+- Attach structured data with `#attached]['drupalSettings']` (JSON-encoded by Drupal) and escape/sanitize only when inserting values into the DOM in JavaScript.
+- Run `Html::escape()` or `Xss::filter()` on every value before assigning to `drupalSettings`.
+- Pass full entity objects directly into `drupalSettings` without structuring DTOs.
+- Disable `drupalSettings` and write globals into inline scripts instead.
 
 ### Correct Answers
-- [0] Encode values with `Html::escape()` or `Xss::filter()` before assigning them to `drupalSettings`.
+- [0] Attach structured data with `#attached]['drupalSettings']` (JSON-encoded by Drupal) and escape/sanitize only when inserting values into the DOM in JavaScript.
 
 ### Explanation
-Sanitizing server-side ensures data arriving in JS is safe, reducing XSS exposure in dynamic scripts.
+`drupalSettings` is JSON data, not HTML. HTML-escaping values before JSON encoding is the wrong layer; escape at DOM insertion time in JS.
 
-
-### Question 293
+### Question 388
 
 **Domain:** Security
 
@@ -5606,8 +7051,7 @@ Security policy requires that authenticated users log out automatically after a 
 ### Explanation
 Client-side idle scripts can call logout endpoints when combined with server-side session expiration, aligning with security policies.
 
-
-### Question 294
+### Question 389
 
 **Domain:** Security
 
@@ -5625,8 +7069,7 @@ You must audit the theme for third-party libraries with known vulnerabilities. W
 ### Explanation
 Regular dependency scans surface vulnerabilities early, enabling timely updates and compliance with security requirements.
 
-
-### Question 295
+### Question 390
 
 **Domain:** Security
 
@@ -5644,8 +7087,7 @@ Customer invoices uploaded through the admin UI should never be publicly accessi
 ### Explanation
 Private file schemes enforce Drupal access checks before serving files, preventing direct downloads. Public files remain web-accessible even with obfuscated paths.
 
-
-### Question 296
+### Question 391
 
 **Domain:** Security
 
@@ -5663,8 +7105,7 @@ Your theme outputs user-supplied quotes using a custom text format. To prevent e
 ### Explanation
 Text formats enforce trusted markup at input, preventing unsafe HTML from being stored or rendered. Twig filters and manual escaping are error-prone.
 
-
-### Question 297
+### Question 392
 
 **Domain:** Security
 
@@ -5682,27 +7123,25 @@ A custom settings form saves API credentials. How should you store the secret ke
 ### Explanation
 Secrets should live outside exported configuration, typically in `settings.php` or environment variables. Storing them in config or themes exposes them in version control.
 
-
-### Question 298
+### Question 393
 
 **Domain:** Security
 
-Users reported that staging URLs are indexed by search engines. Which Drupal security setting prevents host header spoofing and unintended access?
+Users reported that staging URLs are indexed by search engines. Trusted host patterns were suggested. What do they actually do?
 
 ### Options
-- Configure trusted host patterns in `settings.php`.
-- Disable CSS aggregation.
-- Enable maintenance mode permanently.
-- Use Layout Builder restrictions.
+- Trusted host patterns mitigate Host-header spoofing; they do not stop crawlers from indexing a publicly reachable staging site. Use auth, network restrictions, and/or `noindex`/`robots` controls for staging.
+- Trusted host patterns alone prevent search engines from indexing staging.
+- Disable CSS aggregation to prevent indexing.
+- Use Layout Builder restrictions to block crawlers.
 
 ### Correct Answers
-- [0] Configure trusted host patterns in `settings.php`.
+- [0] Trusted host patterns mitigate Host-header spoofing; they do not stop crawlers from indexing a publicly reachable staging site. Use auth, network restrictions, and/or `noindex`/`robots` controls for staging.
 
 ### Explanation
-Trusted host patterns restrict which hostnames Drupal responds to, blocking spoofed requests and accidental indexing of unintended domains.
+Trusted hosts protect against Host header attacks. Staging indexability needs access control and robots/noindex measures.
 
-
-### Question 299
+### Question 394
 
 **Domain:** Security
 
@@ -5720,27 +7159,113 @@ A custom REST endpoint accepts JSON payloads. How do you protect it against cros
 ### Explanation
 Drupal's REST endpoints should validate CSRF tokens for unsafe methods. Relying on origin headers or random parameters is insufficient.
 
-
-
-
-
-
-
-### Question 300
+### Question 395
 
 **Domain:** Security
 
-Security reviewers require that authenticated session cookies are HTTPS-only and inaccessible to JavaScript. Where do you enforce these flags in Drupal?
+Security reviewers require authenticated session cookies to be HTTPS-only and not readable by JavaScript. What is accurate in Drupal?
 
 ### Options
+- Serve the site over HTTPS so Secure cookies are used; HttpOnly is handled by Drupal’s session configuration—do not invent `$settings['cookie_secure']` / `$settings['cookie_httponly']` keys.
 - Set `$settings['cookie_secure'] = TRUE;` and `$settings['cookie_httponly'] = TRUE;` in `settings.php`.
-- Override the cookie headers in Twig templates.
-- Configure the theme's `.info.yml` file.
-- Enable maintenance mode.
+- Override cookie headers in Twig templates.
+- Configure the theme’s `.info.yml` file.
 
 ### Correct Answers
-- [0] Set `$settings['cookie_secure'] = TRUE;` and `$settings['cookie_httponly'] = TRUE;` in `settings.php`.
+- [0] Serve the site over HTTPS so Secure cookies are used; HttpOnly is handled by Drupal’s session configuration—do not invent `$settings['cookie_secure']` / `$settings['cookie_httponly']` keys.
 
 ### Explanation
-Secure and HTTP-only cookie flags are enforced via Drupal's settings. Modifying templates or maintenance mode does not adjust cookie behavior.
+Those `$settings` cookie keys are not valid Drupal settings. HTTPS + core session configuration is the correct approach.
+
+### Question 396
+
+**Domain:** Security
+
+A Twig template prints a plain-text field value with {{ content.field_summary }}. Why is this generally safer than concatenating unfiltered strings with the |raw filter?
+
+### Options
+- Twig auto-escaping (and Drupal’s render/ Twig integration) escapes unsafe strings by default, whereas |raw marks output as pre-escaped/trusted.
+- Drupal disables all HTML in every field regardless of text format.
+- |raw is required for all field output in Drupal 11.
+- Auto-escaping only applies inside {% trans %} blocks.
+
+### Correct Answers
+- [0] Twig auto-escaping (and Drupal’s render/ Twig integration) escapes unsafe strings by default, whereas |raw marks output as pre-escaped/trusted.
+
+### Explanation
+Drupal Twig autoescapes variables unless they are known-safe Markup or explicitly marked safe via |raw. Blind |raw is a common XSS footgun; render arrays/fields usually carry proper escaping/filtering already.
+
+### Question 397
+
+**Domain:** Security
+
+Editors with a restricted role paste HTML into a body field. Which two Drupal mechanisms are the primary server-side controls that determine which tags/attributes survive?
+
+### Options
+- The text format assigned to the field (filters such as Limit allowed HTML tags).
+- Filter permissions controlling which roles may use each text format.
+- Setting preprocess: false on the theme CSS library.
+- Enabling BigPipe for authenticated users.
+
+### Correct Answers
+- [0] The text format assigned to the field (filters such as Limit allowed HTML tags).
+- [1] Filter permissions controlling which roles may use each text format.
+
+### Explanation
+Text formats and the permissions that grant format use are core XSS controls for authored HTML. Asset aggregation and BigPipe are performance features, not HTML sanitizers.
+
+### Question 398
+
+**Domain:** Security
+
+A theme developer needs to output intentional HTML from a custom string built in preprocess. Which approach aligns with Drupal security practice?
+
+### Options
+- Sanitize/build safe markup in PHP (for example using Drupal’s XSS filtering or proper render/Markup APIs) before Twig, rather than piping untrusted input through |raw.
+- Always append |raw in Twig for any variable that might contain tags.
+- Disable Twig autoescape globally in the theme’s services definition.
+- Store the HTML in a cookie and document.write it in a behavior.
+
+### Correct Answers
+- [0] Sanitize/build safe markup in PHP (for example using Drupal’s XSS filtering or proper render/Markup APIs) before Twig, rather than piping untrusted input through |raw.
+
+### Explanation
+Trusted HTML should be created carefully in PHP with filtering/Markup APIs. Globally disabling autoescape or casually using |raw on untrusted data invites XSS.
+
+### Question 399
+
+**Domain:** Security
+
+Security testing finds a reflected XSS vector where a query parameter is printed in a custom Twig file as {{ app.request.query.get('q')|raw }}. What is the correct remediation?
+
+### Options
+- Remove |raw and avoid printing untrusted request input as markup; escape it or do not output it as HTML.
+- Enable CSS aggregation to neutralize script tags.
+- Grant the anonymous role the 'administer filters' permission so filters clean the query string.
+- Switch the site to HTTP to avoid mixed-content warnings.
+
+### Correct Answers
+- [0] Remove |raw and avoid printing untrusted request input as markup; escape it or do not output it as HTML.
+
+### Explanation
+Request parameters are untrusted. Printing them with |raw enables XSS. Aggregation and filter admin permissions do not sanitize arbitrary Twig output of query values.
+
+### Question 400
+
+**Domain:** Security
+
+You are hardening session security for a Drupal site that must run only over HTTPS in production. Which two practices belong in a typical secure deployment?
+
+### Options
+- Serve the site over HTTPS and ensure cookies are sent securely (Drupal’s production HTTPS setup / reverse proxy SSL termination).
+- Force users through HTTPS (for example via server redirect and trusted host / reverse proxy configuration) so session cookies are not exposed on cleartext HTTP.
+- Store session IDs in a public Twig variable for easier front-end debugging.
+- Disable the user.module to remove authentication entirely.
+
+### Correct Answers
+- [0] Serve the site over HTTPS and ensure cookies are sent securely (Drupal’s production HTTPS setup / reverse proxy SSL termination).
+- [1] Force users through HTTPS (for example via server redirect and trusted host / reverse proxy configuration) so session cookies are not exposed on cleartext HTTP.
+
+### Explanation
+HTTPS and secure cookie transport protect session identifiers. Exposing session IDs to Twig or removing authentication is not a hardening strategy.
 

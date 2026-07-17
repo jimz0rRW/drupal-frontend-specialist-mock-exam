@@ -15,9 +15,18 @@ A Vue.js practice app for the Drupal Front-End Specialist exam: one question at 
 
 ## Question bank
 
-Practice questions live in `src/questions/generated_questions.md` (~300 questions across the exam domains).
+Practice questions live in `src/questions/generated_questions.md` (**400** questions across the six Acquia Front End Specialist domains, weighted toward exam ratios).
 
-The bank is AI-assisted practice material. Treat scores as study signals, not official exam accuracy. Run `npm run validate:questions` to check markdown structure; spot-check answers before relying on them heavily.
+| Domain | Count | Exam weight |
+|--------|------:|:-----------:|
+| Fundamental Web Development Concepts | 100 | 25% |
+| Theming Concepts | 100 | 25% |
+| Templates and Preprocess Functions | 100 | 25% |
+| Layout Configuration | 60 | 15% |
+| Performance | 20 | 5% |
+| Security | 20 | 5% |
+
+The bank is practice material aligned to the [Acquia Certified Drupal Front End Specialist](https://docs.acquia.com/acquia-academy/acquia-certified-drupal-front-end-specialist) blueprint (Drupal 10/11). Fundamentals intentionally covers all four study-guide objectives—including **PHP programming concepts** (syntax, arrays, control structures, OOP basics, and Drupal-relevant PHP such as `$variables` / render arrays)—not only HTML/CSS. Treat scores as study signals, not official exam accuracy. Run `npm run validate:questions` to check markdown structure.
 
 ## Setup
 
