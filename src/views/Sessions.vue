@@ -141,8 +141,8 @@ const { examType } = storeToRefs(examStore)
 
 const sessions = ref([])
 
-async function ensureExamQuestions(type = 'extracted') {
-  const targetType = type || 'extracted'
+async function ensureExamQuestions(type = 'generated') {
+  const targetType = type || 'generated'
 
   if (examType.value === targetType && examStore.questions.length > 0) {
     return true
@@ -167,7 +167,7 @@ onMounted(async () => {
   await loadSessions()
 
   if (examStore.questions.length === 0) {
-    await ensureExamQuestions(examType.value || 'extracted')
+    await ensureExamQuestions(examType.value || 'generated')
   }
 })
 
@@ -205,16 +205,12 @@ function formatDate(dateString) {
 }
 
 function formatExamType(type) {
-  if (!type || type === 'extracted') {
-    return 'Extracted Exam'
-  }
-
-  if (type === 'generated') {
-    return 'Generated Exam'
-  }
-
   if (type === 'sample') {
     return 'Sample Exam'
+  }
+
+  if (!type || type === 'generated') {
+    return 'Practice Exam'
   }
 
   const normalized = String(type)
@@ -264,8 +260,7 @@ function formatTimerDuration(seconds) {
 
 async function viewSession(session) {
   try {
-    const targetType = session?.examType || 'extracted'
-    const loaded = await ensureExamQuestions(targetType)
+    const loaded = await ensureExamQuestions('generated')
 
     if (!loaded) {
       alert('Unable to load questions for this session. Please verify the question set exists.')
@@ -284,8 +279,7 @@ async function viewSession(session) {
 
 async function resumeSession(session) {
   try {
-    const targetType = session?.examType || 'extracted'
-    const loaded = await ensureExamQuestions(targetType)
+    const loaded = await ensureExamQuestions('generated')
 
     if (!loaded) {
       alert('Unable to load questions for this session. Please verify the question set exists.')

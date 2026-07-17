@@ -3,39 +3,43 @@ const Exam = () => import('../views/Exam.vue')
 const Review = () => import('../views/Review.vue')
 const SectionReview = () => import('../views/SectionReview.vue')
 const Sessions = () => import('../views/Sessions.vue')
-const Login = () => import('../views/Login.vue')
-import { useAuthStore } from '../stores/auth'
+const Profiles = () => import('../views/Profiles.vue')
+import { useProfileStore } from '../stores/profile'
 
 const routes = [
   {
+    path: '/profiles',
+    name: 'Profiles',
+    component: Profiles
+  },
+  {
     path: '/login',
-    name: 'Login',
-    component: Login
+    redirect: '/profiles'
   },
   {
     path: '/',
     name: 'Exam',
     component: Exam,
-    meta: { requiresAuth: true }
+    meta: { requiresProfile: true }
   },
   {
     path: '/section/:section/review',
     name: 'SectionReview',
     component: SectionReview,
     props: true,
-    meta: { requiresAuth: true }
+    meta: { requiresProfile: true }
   },
   {
     path: '/review',
     name: 'Review',
     component: Review,
-    meta: { requiresAuth: true }
+    meta: { requiresProfile: true }
   },
   {
     path: '/sessions',
     name: 'Sessions',
     component: Sessions,
-    meta: { requiresAuth: true }
+    meta: { requiresProfile: true }
   }
 ]
 
@@ -44,23 +48,22 @@ const router = createRouter({
   routes
 })
 
-// Navigation guard
-router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore()
-  
-  // Initialize auth if needed
-  if (!authStore.user && authStore.isAuthenticated === false) {
-    await authStore.initAuth()
+router.beforeEach((to, from, next) => {
+  const profileStore = useProfileStore()
+  profileStore.initProfiles()
+
+  if (to.meta.requiresProfile && !profileStore.hasActiveProfile) {
+    next('/profiles')
+    return
   }
-  
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next('/login')
-  } else if (to.path === '/login' && authStore.isAuthenticated) {
+
+  // Direct visit to /profiles with an active profile → continue into the exam
+  if (to.path === '/profiles' && profileStore.hasActiveProfile && !from.name) {
     next('/')
-  } else {
-    next()
+    return
   }
+
+  next()
 })
 
 export default router
-

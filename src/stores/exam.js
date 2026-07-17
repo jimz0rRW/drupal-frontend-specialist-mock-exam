@@ -5,7 +5,7 @@ import { answersMatch } from '../utils/scoring.js'
 
 export const useExamStore = defineStore('exam', () => {
   const questions = ref([])
-  const examType = ref('extracted')
+  const examType = ref('generated')
   const currentQuestionIndex = ref(0)
   const currentSection = ref(1) // 1-10 (20 questions per section)
   const answers = ref({})
@@ -191,7 +191,7 @@ export const useExamStore = defineStore('exam', () => {
     ))
   }
 
-  function loadQuestions(loadedQuestions, type = 'extracted') {
+  function loadQuestions(loadedQuestions, type = 'generated') {
     questions.value = loadedQuestions
     examType.value = type
     currentQuestionIndex.value = 0

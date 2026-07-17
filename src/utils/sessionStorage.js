@@ -1,13 +1,23 @@
-// Session storage utilities - now using API instead of localStorage
+import {
+  getActiveProfileId,
+  getSessionsForProfile,
+  saveSessionsForProfile
+} from './profileStorage'
 
-import { api } from './api'
+function requireProfileId() {
+  const profileId = getActiveProfileId()
+  if (!profileId) {
+    throw new Error('No active profile')
+  }
+  return profileId
+}
 
 /**
- * Get all saved sessions from API
+ * Get all saved sessions for the active profile
  */
 export async function getAllSessions() {
   try {
-    return await api.getSessions()
+    return getSessionsForProfile(requireProfileId())
   } catch (error) {
     console.error('Error loading sessions:', error)
     return []
@@ -15,11 +25,21 @@ export async function getAllSessions() {
 }
 
 /**
- * Save a session via API
+ * Save a session for the active profile
  */
 export async function saveSession(sessionData) {
   try {
-    await api.saveSession(sessionData)
+    const profileId = requireProfileId()
+    const sessions = getSessionsForProfile(profileId)
+    const existingIndex = sessions.findIndex((s) => s.id === sessionData.id)
+
+    if (existingIndex !== -1) {
+      sessions[existingIndex] = sessionData
+    } else {
+      sessions.unshift(sessionData)
+    }
+
+    saveSessionsForProfile(profileId, sessions.slice(0, 50))
     return true
   } catch (error) {
     console.error('Error saving session:', error)
@@ -33,7 +53,7 @@ export async function saveSession(sessionData) {
 export async function getSession(sessionId) {
   try {
     const sessions = await getAllSessions()
-    return sessions.find(s => s.id === sessionId)
+    return sessions.find((s) => s.id === sessionId) || null
   } catch (error) {
     console.error('Error getting session:', error)
     return null
@@ -41,11 +61,13 @@ export async function getSession(sessionId) {
 }
 
 /**
- * Delete a session via API
+ * Delete a session
  */
 export async function deleteSession(sessionId) {
   try {
-    await api.deleteSession(sessionId)
+    const profileId = requireProfileId()
+    const sessions = getSessionsForProfile(profileId).filter((s) => s.id !== sessionId)
+    saveSessionsForProfile(profileId, sessions)
     return true
   } catch (error) {
     console.error('Error deleting session:', error)
@@ -54,11 +76,12 @@ export async function deleteSession(sessionId) {
 }
 
 /**
- * Delete all sessions via API
+ * Delete all sessions for the active profile
  */
 export async function clearAllSessions() {
   try {
-    await api.clearAllSessions()
+    const profileId = requireProfileId()
+    saveSessionsForProfile(profileId, [])
     return true
   } catch (error) {
     console.error('Error clearing sessions:', error)
@@ -72,4 +95,3 @@ export async function clearAllSessions() {
 export function generateSessionId() {
   return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 }
-

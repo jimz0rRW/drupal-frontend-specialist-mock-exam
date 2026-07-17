@@ -1,6 +1,6 @@
 # Drupal Front-End Specialist Mock Exam
 
-A Vue.js practice app for the Drupal Front-End Specialist exam: one question at a time, instant feedback with explanations, section scoring, timers, dark mode, and login with file-based session storage.
+A Vue.js practice app for the Drupal Front-End Specialist exam: one question at a time, instant feedback with explanations, section scoring, timers, dark mode, and local profiles with browser-stored sessions.
 
 ## Features
 
@@ -9,18 +9,15 @@ A Vue.js practice app for the Drupal Front-End Specialist exam: one question at 
 - Progress tracking and question navigation
 - Section and full-exam review with scores
 - Questions stored as markdown
-- User authentication (username/password)
-- Session persistence via a local Express API (JSON files in `server/data/`)
+- Local profiles (no password / no server account)
+- Session persistence in `localStorage` per profile
 - Dark mode and responsive layout
 
-## Question banks
+## Question bank
 
-| Set | File | Count |
-|-----|------|-------|
-| Extracted | `src/questions/extracted_questions.md` | ~200 |
-| Generated | `src/questions/generated_questions.md` | ~300 |
+Practice questions live in `src/questions/generated_questions.md` (~300 questions across the exam domains).
 
-The generated bank is AI-assisted practice material. Treat scores as study signals, not official exam accuracy. Run `npm run validate:questions` to check markdown structure; spot-check answers before relying on them heavily.
+The bank is AI-assisted practice material. Treat scores as study signals, not official exam accuracy. Run `npm run validate:questions` to check markdown structure; spot-check answers before relying on them heavily.
 
 ## Setup
 
@@ -30,41 +27,18 @@ Requires [DDEV](https://ddev.com/). Details live in [`.ddev/README.md`](.ddev/RE
 
 ```bash
 ddev start
-```
-
-The API starts automatically. For frontend hot reload:
-
-```bash
 ddev npm install
 ddev exec npm run dev
 ```
 
 Then open the Vite HTTPS URL from `ddev describe` (typically port **5174**).
 
-`JWT_SECRET` and `VITE_API_URL` are set in `.ddev/config.yaml` for local use. Replace the JWT secret if you share the project beyond a trusted team.
+Or open the built site at the main DDEV URL after `npm run build` (docroot is `dist/`).
 
 ### Option B: npm only
 
-1. **Frontend**
-
 ```bash
-cp .env.example .env   # optional; defaults to http://localhost:3001/api
 npm install
-```
-
-2. **Backend**
-
-```bash
-cd server
-cp .env.example .env
-# Edit .env and set JWT_SECRET (e.g. openssl rand -base64 32)
-npm install
-npm start              # or: npm run dev
-```
-
-3. **Run the frontend** (from repo root)
-
-```bash
 npm run dev
 ```
 
@@ -72,11 +46,13 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 
 ## Usage
 
-1. Start the backend (DDEV or `npm start` in `server/`)
-2. Start the frontend
-3. Register or log in
-4. Choose an exam set and practice; sessions auto-save
-5. Resume past sessions from the Sessions page
+1. Start the frontend
+2. Create or select a **profile** (stored in this browser only)
+3. Practice the question bank; sessions auto-save for that profile
+4. Resume past sessions from the Sessions page
+5. Use **Profile: …** to switch or create another profile
+
+Clearing site data / using another browser or device starts fresh — profiles do not sync.
 
 ## Scripts
 
@@ -84,7 +60,6 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 |---------|-------------|
 | `npm run dev` | Vite dev server |
 | `npm run build` | Production frontend build → `dist/` |
-| `npm run server` / `npm run dev:server` | Start Express API |
 | `npm run validate:questions` | Validate markdown question banks |
 | `npm test` | Unit tests (Vitest) |
 
@@ -92,26 +67,16 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 
 ```
 src/          Vue 3 + Pinia + Vue Router + Tailwind
-server/       Express API, JWT auth, JSON file storage
 src/questions Markdown question banks
 scripts/      Content tooling and validators
-.ddev/        Local DDEV config (API daemon + Vite ports)
+.ddev/        Optional local DDEV config
 ```
 
-### API (requires auth unless noted)
+### Local data (`localStorage`)
 
-- `POST /api/register`, `POST /api/login`
-- `GET /api/user`
-- `GET|POST|DELETE /api/sessions`, `DELETE /api/sessions/:sessionId`
-
-### Data storage
-
-JSON files under `server/data/` (gitignored):
-
-- `users.json` — accounts with bcrypt-hashed passwords
-- `sessions.json` — exam sessions by user id
-
-Fine for local/team practice. For real production, use a proper database, HTTPS, rate limiting, and a strong unique `JWT_SECRET`.
+- `exam_profiles` — profile list
+- `exam_active_profile_id` — selected profile
+- `exam_sessions_<profileId>` — sessions for that profile (max 50)
 
 ## Question format
 
@@ -134,9 +99,3 @@ Question text here. (Choose two)
 ### Explanation
 Why the answer is correct.
 ```
-
-## Security notes
-
-- Passwords are hashed with bcrypt; auth uses JWT (7-day expiry)
-- Set `JWT_SECRET` via `server/.env` or DDEV `web_environment` — the server will not start without it
-- CORS allows DDEV, localhost, and private LAN origins only

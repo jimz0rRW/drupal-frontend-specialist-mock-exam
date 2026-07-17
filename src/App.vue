@@ -9,14 +9,12 @@
 import { onMounted } from 'vue'
 import { initDarkMode } from './utils/darkMode'
 import DarkModeToggle from './components/DarkModeToggle.vue'
-import { useAuthStore } from './stores/auth'
+import { useProfileStore } from './stores/profile'
 
-const authStore = useAuthStore()
+const profileStore = useProfileStore()
 
-onMounted(async () => {
+onMounted(() => {
   initDarkMode()
-  // Initialize authentication
-  await authStore.initAuth()
+  profileStore.initProfiles()
 })
 </script>
-

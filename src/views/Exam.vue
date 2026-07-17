@@ -3,33 +3,14 @@
     <!-- Timer Widget -->
     <ExamTimer />
     
-    <!-- Exam Selection -->
-    <div class="mb-4 sm:mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm">
-      <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Select Exam Set</label>
-      <select
-        :value="selectedExamType"
-        @change="onExamSelection($event.target.value)"
-        class="block w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400"
-      >
-        <option v-for="option in availableExamOptions" :key="option.value" :value="option.value">
-          {{ option.label }}
-        </option>
-      </select>
-      <p v-if="examLoadError" class="mt-2 text-sm text-red-600 dark:text-red-400">{{ examLoadError }}</p>
-    </div>
+    <p v-if="examLoadError" class="mb-4 text-sm text-red-600 dark:text-red-400">{{ examLoadError }}</p>
 
     <div v-if="isLoadingExam" class="text-center py-12">
-      <p class="text-gray-600 dark:text-gray-400">Loading {{ selectedExamLabel }}...</p>
+      <p class="text-gray-600 dark:text-gray-400">Loading practice questions...</p>
     </div>
 
     <div v-else-if="questions.length === 0" class="text-center py-12">
-      <p class="text-gray-600 dark:text-gray-400 mb-4">No questions loaded. Please verify the selected exam set has questions.</p>
-      <button 
-        @click="loadSampleQuestions" 
-        class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
-      >
-        Load Sample Questions
-      </button>
+      <p class="text-gray-600 dark:text-gray-400 mb-4">No questions loaded. Check <code class="text-sm">src/questions/generated_questions.md</code>.</p>
     </div>
 
     <div v-else>
@@ -53,10 +34,10 @@
               View Sessions
             </button>
             <button
-              @click="handleLogout"
+              @click="switchProfile"
               class="px-3 py-1 bg-gray-500 text-white rounded text-xs sm:text-sm hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700 w-full sm:w-auto"
             >
-              Logout ({{ authStore.user?.username }})
+              Profile: {{ profileStore.activeProfile?.name }}
             </button>
             <span v-if="currentSectionRange" class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
               {{ currentSectionRange }}
@@ -239,31 +220,18 @@ import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useExamStore } from '../stores/exam'
-import { useAuthStore } from '../stores/auth'
+import { useProfileStore } from '../stores/profile'
 import { loadQuestionsFromMarkdown } from '../utils/questionLoader'
 import ExamTimer from '../components/ExamTimer.vue'
 
 const router = useRouter()
 const examStore = useExamStore()
-const authStore = useAuthStore()
+const profileStore = useProfileStore()
 
-const { examType, sections, currentSectionData, currentSectionLabel, currentSectionRange } = storeToRefs(examStore)
+const { sections, currentSectionData, currentSectionLabel, currentSectionRange } = storeToRefs(examStore)
 
-const examCounts = ref({ extracted: 200, generated: 300 })
-
-const availableExamOptions = computed(() => [
-  { value: 'extracted', label: `Extracted Exam (${examCounts.value.extracted} questions)` },
-  { value: 'generated', label: `Generated Exam (${examCounts.value.generated} questions)` }
-])
-
-const selectedExamType = ref(examType.value || 'extracted')
 const isLoadingExam = ref(false)
 const examLoadError = ref('')
-
-const selectedExamLabel = computed(() => {
-  const option = availableExamOptions.value.find(opt => opt.value === selectedExamType.value)
-  return option ? option.label : 'Selected Exam'
-})
 
 const questions = computed(() => examStore.questions)
 const currentQuestion = computed(() => examStore.currentQuestion)
@@ -280,57 +248,25 @@ const isLastQuestionInSection = computed(() => examStore.isLastQuestionInSection
 const currentSectionStartIndex = computed(() => currentSectionData.value ? currentSectionData.value.startIndex : 0)
 const sectionDisplayName = computed(() => currentSectionLabel.value || `Section ${currentSection.value}`)
 
-watch(examType, (newType) => {
-  if (newType && newType !== selectedExamType.value) {
-    selectedExamType.value = newType
-  }
-})
-
-async function loadExamByType(type) {
-  const targetType = type || 'extracted'
+async function loadExam() {
   isLoadingExam.value = true
   examLoadError.value = ''
 
   try {
-    const loadedQuestions = await loadQuestionsFromMarkdown(targetType)
+    const loadedQuestions = await loadQuestionsFromMarkdown('generated')
     if (loadedQuestions.length === 0) {
-      examLoadError.value = 'No questions found for the selected exam.'
-      examStore.loadQuestions([], targetType)
+      examLoadError.value = 'No questions found.'
+      examStore.loadQuestions([], 'generated')
       return
     }
 
-    examCounts.value[targetType] = loadedQuestions.length
-    examStore.loadQuestions(loadedQuestions, targetType)
+    examStore.loadQuestions(loadedQuestions, 'generated')
   } catch (error) {
     console.error('Error loading questions:', error)
-    examLoadError.value = 'Failed to load questions for the selected exam.'
+    examLoadError.value = 'Failed to load questions.'
   } finally {
     isLoadingExam.value = false
   }
-}
-
-async function onExamSelection(type) {
-  if (!type) {
-    return
-  }
-
-  const currentType = examType.value || selectedExamType.value || 'extracted'
-
-  if (type === currentType && questions.value.length > 0) {
-    selectedExamType.value = type
-    return
-  }
-
-  if (questions.value.length > 0 && !isLoadingExam.value) {
-    const confirmReset = confirm('Switching exam will reset your current progress. Continue?')
-    if (!confirmReset) {
-      selectedExamType.value = currentType
-      return
-    }
-  }
-
-  selectedExamType.value = type
-  await loadExamByType(type)
 }
 
 // Check if current question has been submitted
@@ -373,20 +309,16 @@ const handleBeforeUnload = async (event) => {
 
 onMounted(async () => {
   try {
-    const initialType = examType.value || selectedExamType.value || 'extracted'
-    selectedExamType.value = initialType
-
     if (questions.value.length === 0) {
-      await loadExamByType(initialType)
+      await loadExam()
     } else {
-      examCounts.value[initialType] = questions.value.length
       currentSection.value = examStore.currentSection
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
   } catch (error) {
     console.error('Error loading questions:', error)
-    examLoadError.value = 'Failed to load questions for the selected exam.'
+    examLoadError.value = 'Failed to load questions.'
   }
 })
 
@@ -525,34 +457,9 @@ function goToSessions() {
   router.push('/sessions')
 }
 
-async function handleLogout() {
-  if (confirm('Are you sure you want to logout?')) {
-    await authStore.logout()
-    router.push('/login')
-  }
-}
-
-function loadSampleQuestions() {
-  // This will be replaced with actual markdown loading
-  const sampleQuestions = [
-    {
-      id: 1,
-      question: 'What is Vue.js?',
-      options: ['A JavaScript framework', 'A CSS library', 'A database', 'A server'],
-      correctAnswers: [0],
-      multipleAnswers: false
-    },
-    {
-      id: 2,
-      question: 'Which of the following are Vue.js features?',
-      options: ['Reactive data binding', 'Component-based architecture', 'Virtual DOM', 'All of the above'],
-      correctAnswers: [0, 1, 2],
-      multipleAnswers: true
-    }
-  ]
-  examLoadError.value = ''
-  isLoadingExam.value = false
-  examStore.loadQuestions(sampleQuestions, selectedExamType.value || 'extracted')
+function switchProfile() {
+  profileStore.clearActiveProfile()
+  router.push('/profiles')
 }
 </script>
 
