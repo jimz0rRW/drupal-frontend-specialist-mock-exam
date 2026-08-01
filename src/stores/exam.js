@@ -2,12 +2,15 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { saveSession, generateSessionId } from '../utils/sessionStorage'
 import { answersMatch } from '../utils/scoring.js'
+import { getExam, DEFAULT_EXAM_ID, normalizeExamId } from '../exams/registry.js'
+import { sampleSimulationQuestions } from '../utils/sampling.js'
 
 export const useExamStore = defineStore('exam', () => {
   const questions = ref([])
-  const examType = ref('generated')
+  const examId = ref(DEFAULT_EXAM_ID)
+  const mode = ref('practice') // 'practice' | 'simulation'
   const currentQuestionIndex = ref(0)
-  const currentSection = ref(1) // 1-10 (20 questions per section)
+  const currentSection = ref(1) // 1-based section index
   const answers = ref({})
   const submittedQuestions = ref({}) // Track which questions have been submitted
   const optionShuffling = ref({}) // Store shuffled option order for each question: { questionId: { shuffledOrder: [0,2,1,3], originalToShuffled: {0:0, 1:2, 2:1, 3:3}, shuffledToOriginal: {0:0, 1:2, 2:1, 3:3} } }
@@ -15,12 +18,21 @@ export const useExamStore = defineStore('exam', () => {
   const currentSessionId = ref(null) // Track current session ID
   const sessionStartTime = ref(null) // Track when session started
   const QUESTIONS_PER_SECTION = 20
-  
-  // Timer state
+
+  // Stopwatch state (practice mode)
   const timerElapsed = ref(0) // Total elapsed time in seconds
   const timerStartTime = ref(null) // When timer was started (for calculating pause/resume)
   const isTimerRunning = ref(false)
   let timerInterval = null
+
+  // Countdown state (simulation mode)
+  const countdownRemaining = ref(0) // Seconds left
+  const isCountdownRunning = ref(false)
+  const countdownExpired = ref(false) // Set when time runs out and the exam auto-submits
+  let countdownInterval = null
+
+  const examConfig = computed(() => getExam(examId.value))
+  const isSimulation = computed(() => mode.value === 'simulation')
 
   const totalQuestions = computed(() => questions.value.length)
 
@@ -191,22 +203,50 @@ export const useExamStore = defineStore('exam', () => {
     ))
   }
 
-  function loadQuestions(loadedQuestions, type = 'generated') {
+  function loadQuestions(loadedQuestions, id = DEFAULT_EXAM_ID, sessionMode = 'practice') {
     questions.value = loadedQuestions
-    examType.value = type
+    examId.value = normalizeExamId(id)
+    mode.value = sessionMode === 'simulation' ? 'simulation' : 'practice'
     currentQuestionIndex.value = 0
     currentSection.value = sections.value.length > 0 ? 1 : 0
     answers.value = {}
     submittedQuestions.value = {}
     optionShuffling.value = {}
     isExamComplete.value = false
-    // Reset timer
+    // Reset stopwatch and countdown
     resetTimer()
+    resetCountdown()
     // Start a new session
     currentSessionId.value = generateSessionId()
     sessionStartTime.value = new Date().toISOString()
   }
-  
+
+  // Start a timed simulation: weighted random sample + countdown.
+  function startSimulation(loadedQuestions, id = DEFAULT_EXAM_ID) {
+    const exam = getExam(id)
+    const sample = sampleSimulationQuestions(loadedQuestions, exam)
+    loadQuestions(sample, exam.id, 'simulation')
+    startCountdown(exam.simulation.durationMinutes * 60)
+  }
+
+  // Load the exact question set a saved session used (replays the simulation
+  // sample order via stored questionIds; practice sessions get the full bank).
+  function loadQuestionsForSession(bankQuestions, sessionData) {
+    const sessionExamId = normalizeExamId(sessionData.examId || sessionData.examType)
+    const sessionMode = sessionData.mode === 'simulation' ? 'simulation' : 'practice'
+
+    let sessionQuestions = bankQuestions
+    if (Array.isArray(sessionData.questionIds) && sessionData.questionIds.length > 0) {
+      const byId = new Map(bankQuestions.map(q => [q.id, q]))
+      const ordered = sessionData.questionIds.map(qId => byId.get(qId)).filter(Boolean)
+      if (ordered.length > 0) {
+        sessionQuestions = ordered
+      }
+    }
+
+    loadQuestions(sessionQuestions, sessionExamId, sessionMode)
+  }
+
   // Shuffle array using Fisher-Yates algorithm
   function shuffleArray(array) {
     const shuffled = [...array]
@@ -216,7 +256,7 @@ export const useExamStore = defineStore('exam', () => {
     }
     return shuffled
   }
-  
+
   // Get or create shuffled option order for a question
   function getShuffledOptions(questionId) {
     if (!optionShuffling.value[questionId]) {
@@ -224,22 +264,22 @@ export const useExamStore = defineStore('exam', () => {
       if (!question || !question.options) {
         return { shuffledOptions: [], originalToShuffled: {}, shuffledToOriginal: {} }
       }
-      
+
       // Create array of indices [0, 1, 2, 3, ...]
       const originalIndices = question.options.map((_, idx) => idx)
       // Shuffle the indices
       const shuffledOrder = shuffleArray(originalIndices)
-      
+
       // Create mapping: original index -> shuffled index
       const originalToShuffled = {}
       // Create mapping: shuffled index -> original index
       const shuffledToOriginal = {}
-      
+
       shuffledOrder.forEach((originalIdx, shuffledIdx) => {
         originalToShuffled[originalIdx] = shuffledIdx
         shuffledToOriginal[shuffledIdx] = originalIdx
       })
-      
+
       // Store the mapping
       optionShuffling.value[questionId] = {
         shuffledOrder,
@@ -247,21 +287,21 @@ export const useExamStore = defineStore('exam', () => {
         shuffledToOriginal
       }
     }
-    
+
     return optionShuffling.value[questionId]
   }
-  
+
   // Get shuffled options array for display
   function getShuffledOptionsArray(questionId) {
     const question = questions.value.find(q => q.id === questionId)
     if (!question || !question.options) {
       return []
     }
-    
+
     const shuffling = getShuffledOptions(questionId)
     return shuffling.shuffledOrder.map(originalIdx => question.options[originalIdx])
   }
-  
+
   // Convert shuffled index to original index
   function shuffledToOriginalIndex(questionId, shuffledIndex) {
     const shuffling = getShuffledOptions(questionId)
@@ -269,7 +309,7 @@ export const useExamStore = defineStore('exam', () => {
       ? shuffling.shuffledToOriginal[shuffledIndex]
       : shuffledIndex
   }
-  
+
   // Convert original index to shuffled index
   function originalToShuffledIndex(questionId, originalIndex) {
     const shuffling = getShuffledOptions(questionId)
@@ -277,12 +317,12 @@ export const useExamStore = defineStore('exam', () => {
       ? shuffling.originalToShuffled[originalIndex]
       : originalIndex
   }
-  
+
   // Check if a shuffled index is a correct answer
   function isShuffledIndexCorrect(questionId, shuffledIndex) {
     const question = questions.value.find(q => q.id === questionId)
     if (!question) return false
-    
+
     const originalIndex = shuffledToOriginalIndex(questionId, shuffledIndex)
     return question.correctAnswers && question.correctAnswers.includes(originalIndex)
   }
@@ -348,11 +388,12 @@ export const useExamStore = defineStore('exam', () => {
 
   async function finishExam() {
     isExamComplete.value = true
+    pauseCountdown()
     // Save session as completed when exam is finished
     await saveCurrentSession(true)
   }
-  
-  // Timer functions
+
+  // Stopwatch functions (practice mode)
   function startTimer() {
     if (!isTimerRunning.value) {
       isTimerRunning.value = true
@@ -366,7 +407,7 @@ export const useExamStore = defineStore('exam', () => {
       }, 1000)
     }
   }
-  
+
   function pauseTimer() {
     if (isTimerRunning.value) {
       isTimerRunning.value = false
@@ -382,16 +423,16 @@ export const useExamStore = defineStore('exam', () => {
       timerStartTime.value = null
     }
   }
-  
+
   function resetTimer() {
     pauseTimer()
     timerElapsed.value = 0
   }
-  
+
   function getTimerDuration() {
     return timerElapsed.value
   }
-  
+
   function formatTimerDuration(seconds) {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
@@ -401,8 +442,50 @@ export const useExamStore = defineStore('exam', () => {
     }
     return `${minutes}:${secs.toString().padStart(2, '0')}`
   }
-  
-  // Load timer state from session
+
+  // Countdown functions (simulation mode)
+  function startCountdown(seconds) {
+    if (typeof seconds === 'number') {
+      countdownRemaining.value = Math.max(0, Math.floor(seconds))
+    }
+    countdownExpired.value = false
+    if (isCountdownRunning.value || countdownRemaining.value <= 0) {
+      return
+    }
+
+    isCountdownRunning.value = true
+    countdownInterval = setInterval(() => {
+      countdownRemaining.value = Math.max(0, countdownRemaining.value - 1)
+      if (countdownRemaining.value <= 0) {
+        pauseCountdown()
+        handleCountdownExpired()
+      }
+    }, 1000)
+  }
+
+  function pauseCountdown() {
+    if (countdownInterval) {
+      clearInterval(countdownInterval)
+      countdownInterval = null
+    }
+    isCountdownRunning.value = false
+  }
+
+  function resetCountdown() {
+    pauseCountdown()
+    countdownRemaining.value = 0
+    countdownExpired.value = false
+  }
+
+  async function handleCountdownExpired() {
+    if (isExamComplete.value) {
+      return
+    }
+    countdownExpired.value = true
+    await finishExam()
+  }
+
+  // Load stopwatch state from session
   function loadTimerState(sessionData) {
     if (sessionData.timerElapsed) {
       timerElapsed.value = sessionData.timerElapsed
@@ -414,13 +497,13 @@ export const useExamStore = defineStore('exam', () => {
       timerInterval = null
     }
   }
-  
+
   // Save current session (in-progress or completed)
   async function saveCurrentSession(isComplete = false) {
     if (!currentSessionId.value || questions.value.length === 0) {
       return false
     }
-    
+
     const sessionData = {
       id: currentSessionId.value,
       startTime: sessionStartTime.value,
@@ -432,8 +515,10 @@ export const useExamStore = defineStore('exam', () => {
       currentSection: currentSection.value, // Save current section
       totalQuestions: totalQuestions.value,
       questionIds: questions.value.map(q => q.id),
-      timerElapsed: timerElapsed.value, // Save timer duration
-      examType: examType.value,
+      timerElapsed: timerElapsed.value, // Save stopwatch duration
+      examId: examId.value,
+      mode: mode.value,
+      countdownRemaining: countdownRemaining.value,
       // Only include endTime and results if completed
       ...(isComplete && {
         endTime: new Date().toISOString(),
@@ -441,7 +526,7 @@ export const useExamStore = defineStore('exam', () => {
         score: score.value
       })
     }
-    
+
     try {
       return await saveSession(sessionData)
     } catch (error) {
@@ -449,21 +534,21 @@ export const useExamStore = defineStore('exam', () => {
       return false
     }
   }
-  
+
   // Auto-save session (debounced)
   let autoSaveTimeout = null
   async function autoSaveSession() {
     if (autoSaveTimeout) {
       clearTimeout(autoSaveTimeout)
     }
-    
+
     autoSaveTimeout = setTimeout(async () => {
       if (!isExamComplete.value) {
         await saveCurrentSession(false) // Save as in-progress
       }
     }, 2000) // Debounce: save 2 seconds after last change
   }
-  
+
   // Load a saved session (in-progress or completed)
   function loadSession(sessionData) {
     // Load questions first if not already loaded
@@ -472,28 +557,34 @@ export const useExamStore = defineStore('exam', () => {
       console.warn('Questions must be loaded before loading a session')
       return false
     }
-    
+
     // Restore session state
     currentSessionId.value = sessionData.id
     sessionStartTime.value = sessionData.startTime
     answers.value = { ...sessionData.answers }
     submittedQuestions.value = { ...sessionData.submittedQuestions }
-    if (sessionData.examType) {
-      examType.value = sessionData.examType
+    if (sessionData.examId || sessionData.examType) {
+      examId.value = normalizeExamId(sessionData.examId || sessionData.examType)
     }
-    
+    mode.value = sessionData.mode === 'simulation' ? 'simulation' : 'practice'
+
     // Restore option shuffling if available (for in-progress sessions)
     if (sessionData.optionShuffling) {
       optionShuffling.value = { ...sessionData.optionShuffling }
     }
-    
-    // Restore timer state
+
+    // Restore stopwatch state
     loadTimerState(sessionData)
-    
+
+    // Restore countdown state (does not auto-start; the exam view restarts it)
+    if (mode.value === 'simulation' && typeof sessionData.countdownRemaining === 'number') {
+      countdownRemaining.value = sessionData.countdownRemaining
+    }
+
     // Restore position for in-progress sessions
     // If status is missing and endTime is missing, assume in-progress (backward compatibility)
     const isInProgress = sessionData.status === 'in-progress' || (!sessionData.status && !sessionData.endTime)
-    
+
     if (isInProgress) {
       currentQuestionIndex.value = sessionData.currentQuestionIndex ?? 0
       const sectionIdx = getSectionIndexForQuestion(currentQuestionIndex.value)
@@ -508,10 +599,10 @@ export const useExamStore = defineStore('exam', () => {
     } else {
       isExamComplete.value = true // Mark as complete
     }
-    
+
     return true
   }
-  
+
   // Resume an in-progress session
   async function resumeSession(sessionData) {
     if (loadSession(sessionData)) {
@@ -528,28 +619,29 @@ export const useExamStore = defineStore('exam', () => {
     submittedQuestions.value = {}
     optionShuffling.value = {}
     isExamComplete.value = false
-    // Reset timer
+    // Reset stopwatch and countdown
     resetTimer()
+    resetCountdown()
     // Start a new session
     currentSessionId.value = generateSessionId()
     sessionStartTime.value = new Date().toISOString()
   }
-  
+
   // Check if answer is correct for a question
   function isAnswerCorrect(questionId) {
     const question = questions.value.find(q => q.id === questionId)
     if (!question) return false
-    
+
     const userAnswer = getAnswer(questionId) || []
     const correctAnswer = question.correctAnswers || []
     return answersMatch(userAnswer, correctAnswer)
   }
-  
+
   // Mark question as submitted
   function submitAnswer(questionId) {
     submittedQuestions.value[questionId] = true
   }
-  
+
   // Check if question has been submitted
   function isQuestionSubmitted(questionId) {
     return submittedQuestions.value[questionId] === true
@@ -563,7 +655,7 @@ export const useExamStore = defineStore('exam', () => {
 
     const section = sections.value[sectionNum - 1]
     const sectionQuestionsList = questions.value.slice(section.startIndex, section.endIndex)
-    
+
     return sectionQuestionsList.map(q => {
       const userAnswer = getAnswer(q.id)
       const correctAnswer = q.correctAnswers || []
@@ -574,7 +666,9 @@ export const useExamStore = defineStore('exam', () => {
         userAnswer: userAnswer,
         correctAnswer: correctAnswer,
         isCorrect: answersMatch(userAnswer, correctAnswer),
-        options: q.options
+        options: q.options,
+        explanation: q.explanation || '',
+        domain: q.domain || ''
       }
     })
   }
@@ -586,8 +680,8 @@ export const useExamStore = defineStore('exam', () => {
     return {
       correct,
       total: sectionResults.length,
-      percentage: sectionResults.length > 0 
-        ? Math.round((correct / sectionResults.length) * 100) 
+      percentage: sectionResults.length > 0
+        ? Math.round((correct / sectionResults.length) * 100)
         : 0
     }
   }
@@ -603,7 +697,9 @@ export const useExamStore = defineStore('exam', () => {
         userAnswer: userAnswer,
         correctAnswer: correctAnswer,
         isCorrect: answersMatch(userAnswer, correctAnswer),
-        options: q.options
+        options: q.options,
+        explanation: q.explanation || '',
+        domain: q.domain || ''
       }
     })
   })
@@ -613,15 +709,49 @@ export const useExamStore = defineStore('exam', () => {
     return {
       correct,
       total: totalQuestions.value,
-      percentage: totalQuestions.value > 0 
-        ? Math.round((correct / totalQuestions.value) * 100) 
+      percentage: totalQuestions.value > 0
+        ? Math.round((correct / totalQuestions.value) * 100)
         : 0
     }
   })
 
+  // Per-domain score breakdown (registry domain order), for final review.
+  const domainBreakdown = computed(() => {
+    const totals = new Map()
+    for (const result of results.value) {
+      const key = result.domain || 'Other'
+      if (!totals.has(key)) {
+        totals.set(key, { domain: key, correct: 0, total: 0 })
+      }
+      const row = totals.get(key)
+      row.total += 1
+      if (result.isCorrect) {
+        row.correct += 1
+      }
+    }
+
+    const order = examConfig.value ? examConfig.value.domains.map(d => d.name) : []
+    return [...totals.values()]
+      .map(row => ({
+        ...row,
+        percentage: row.total > 0 ? Math.round((row.correct / row.total) * 100) : 0
+      }))
+      .sort((a, b) => {
+        const indexA = order.indexOf(a.domain)
+        const indexB = order.indexOf(b.domain)
+        return (indexA === -1 ? order.length : indexA) - (indexB === -1 ? order.length : indexB)
+      })
+  })
+
+  const passPercent = computed(() => examConfig.value?.simulation?.passPercent ?? null)
+  const hasPassed = computed(() => passPercent.value !== null && score.value.percentage >= passPercent.value)
+
   return {
     questions,
-    examType,
+    examId,
+    examConfig,
+    mode,
+    isSimulation,
     currentQuestionIndex,
     currentSection,
     answers,
@@ -640,6 +770,8 @@ export const useExamStore = defineStore('exam', () => {
     canGoPrevious,
     isLastQuestionInSection,
     loadQuestions,
+    startSimulation,
+    loadQuestionsForSession,
     setAnswer,
     getAnswer,
     nextQuestion,
@@ -653,6 +785,9 @@ export const useExamStore = defineStore('exam', () => {
     getSectionScore,
     results,
     score,
+    domainBreakdown,
+    passPercent,
+    hasPassed,
     isAnswerCorrect,
     submitAnswer,
     isQuestionSubmitted,
@@ -667,14 +802,20 @@ export const useExamStore = defineStore('exam', () => {
     autoSaveSession,
     currentSessionId,
     sessionStartTime,
-    // Timer functions
+    // Stopwatch (practice)
     timerElapsed,
     isTimerRunning,
     startTimer,
     pauseTimer,
     resetTimer,
     getTimerDuration,
-    formatTimerDuration
+    formatTimerDuration,
+    // Countdown (simulation)
+    countdownRemaining,
+    isCountdownRunning,
+    countdownExpired,
+    startCountdown,
+    pauseCountdown,
+    resetCountdown
   }
 })
-

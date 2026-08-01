@@ -11,32 +11,17 @@ database:
     version: "10.11"
 use_dns_when_possible: true
 composer_version: "2"
-web_environment:
-  - VITE_API_URL=https://drupal-frontend-specialist-mock-exam.ddev.site:3002/api
-  # Local-only JWT secret for DDEV; replace if sharing beyond a trusted team
-  - JWT_SECRET=ddev-local-jwt-6yCNGEWLgnAvddkq81x-FD5p8IR2P7QmADiUqSTm2A
 corepack_enable: false
 
-# Install Python 3, pip, and venv for PDF extraction script
+# Install Python 3, pip, and venv for content tooling
 webimage_extra_packages: [python3, python3-pip, python3-venv]
 
-# Expose Vite dev server port (5173) and backend API server port (3001)
+# Expose Vite dev server port (5173)
 web_extra_exposed_ports:
   - name: vite
     container_port: 5173
     http_port: 5173
     https_port: 5174
-  - name: api
-    container_port: 3001
-    http_port: 3001
-    https_port: 3002
-
-# Start backend API server automatically
-# Note: npm install will be handled by post-start hook
-web_extra_daemons:
-  - name: "api-server"
-    command: "bash -c 'if [ ! -d node_modules ]; then npm install; fi && npm start'"
-    directory: /var/www/html/server
 
 # Key features of DDEV's config.yaml:
 
@@ -320,6 +305,3 @@ web_extra_daemons:
 # See https://ddev.readthedocs.io/en/stable/users/extend/custom-commands/ for more
 # information on the commands that can be extended and the tasks you can define
 # for them. Example:
-hooks:
-  post-start:
-    - exec: "cd /var/www/html/server && if [ ! -d node_modules ]; then npm install; fi"

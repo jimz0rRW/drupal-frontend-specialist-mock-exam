@@ -1,39 +1,42 @@
 /**
- * Merges patched questions + new questions into generated_questions.md
+ * Rebuilds an exam's markdown question bank from JSON sources.
+ *
+ * Usage: node scripts/rebuildQuestionBank.mjs [examId]
+ *   examId defaults to 'front-end-specialist'.
+ *
+ * JSON sources live in scripts/question-data/<examId>/*.json (arrays of
+ * question objects). Domains, targets, and the output file come from the
+ * shared exam registry (src/exams/registry.js).
  */
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync, readdirSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { getExam, getBankTargets } from '../src/exams/registry.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const outPath = join(root, 'src/questions/generated_questions.md')
+const examId = process.argv[2] || 'front-end-specialist'
+const exam = getExam(examId)
 
-const dataDir = join(root, 'scripts/question-data')
-const patched = JSON.parse(readFileSync(join(dataDir, 'questions_patched.json'), 'utf8'))
-const neu = [
-  ...JSON.parse(readFileSync(join(dataDir, 'new_q_fund_theme.json'), 'utf8')),
-  ...JSON.parse(readFileSync(join(dataDir, 'new_q_tpl_layout.json'), 'utf8')),
-  ...JSON.parse(readFileSync(join(dataDir, 'new_q_perf_sec.json'), 'utf8'))
-]
-
-const DOMAINS = [
-  'Fundamental Web Development Concepts',
-  'Theming Concepts',
-  'Templates and Preprocess Functions',
-  'Layout Configuration',
-  'Performance',
-  'Security'
-]
-
-/** Exam-ratio targets (Acquia FE Specialist weights) */
-const TARGETS = {
-  'Fundamental Web Development Concepts': 100,
-  'Theming Concepts': 100,
-  'Templates and Preprocess Functions': 100,
-  'Layout Configuration': 60,
-  'Performance': 20,
-  'Security': 20
+if (!exam || exam.id !== examId) {
+  console.error(`Unknown exam id: ${examId}`)
+  process.exit(1)
 }
+
+const dataDir = join(root, 'scripts/question-data', exam.id)
+const outPath = join(root, 'src/questions', exam.bankFile)
+
+const DOMAINS = exam.domains.map((d) => d.name)
+const TARGETS = Object.fromEntries(getBankTargets(exam).map((t) => [t.domain, t.count]))
+
+const sourceFiles = readdirSync(dataDir).filter((name) => name.endsWith('.json')).sort()
+if (sourceFiles.length === 0) {
+  console.error(`No JSON sources found in ${dataDir}`)
+  process.exit(1)
+}
+
+const sourceQuestions = sourceFiles.flatMap((name) =>
+  JSON.parse(readFileSync(join(dataDir, name), 'utf8'))
+)
 
 function slug(d) {
   return d.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')
@@ -54,7 +57,7 @@ function normalize(q) {
   }
 }
 
-for (const q of neu) {
+for (const q of sourceQuestions) {
   if (!DOMAINS.includes(q.domain)) throw new Error('bad domain ' + q.domain)
   if (!q.options || q.options.length < 2) throw new Error('bad options')
   for (const i of q.correctAnswers) {
@@ -64,8 +67,7 @@ for (const q of neu) {
 }
 
 const byDomain = Object.fromEntries(DOMAINS.map((d) => [d, []]))
-for (const q of patched) byDomain[q.domain].push(normalize(q))
-for (const q of neu) byDomain[q.domain].push(normalize(q))
+for (const q of sourceQuestions) byDomain[q.domain].push(normalize(q))
 
 let id = 1
 const all = []
@@ -98,7 +100,7 @@ ${q.explanation}
 }
 
 const toc = DOMAINS.map((d) => `- [${d}](#${slug(d)})`).join('\n')
-let md = `# Drupal Front-End Specialist Practice Questions
+let md = `# ${exam.title} Practice Questions
 
 ## Jump to Section:
 

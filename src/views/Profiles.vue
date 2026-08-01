@@ -3,7 +3,7 @@
     <div class="max-w-md w-full">
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sm:p-8">
         <h1 class="text-2xl sm:text-3xl font-bold text-center mb-2 text-gray-800 dark:text-gray-200">
-          Drupal Front-End Specialist Mock Exam
+          Acquia Drupal Mock Exams
         </h1>
         <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
           Choose or create a local profile. Progress is saved in this browser.
@@ -86,7 +86,7 @@ profileStore.initProfiles()
 function selectProfile(profileId) {
   try {
     profileStore.selectProfile(profileId)
-    router.push('/')
+    router.push('/exams')
   } catch {
     // Error shown via store
   }
@@ -96,7 +96,7 @@ function createProfile() {
   try {
     profileStore.createProfile(newName.value)
     newName.value = ''
-    router.push('/')
+    router.push('/exams')
   } catch {
     // Error shown via store
   }

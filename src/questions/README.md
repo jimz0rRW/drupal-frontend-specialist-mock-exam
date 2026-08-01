@@ -1,46 +1,48 @@
 # Questions Directory
 
-Place your question markdown files in this directory.
+One markdown question bank per exam. The exam registry (`src/exams/registry.js`) maps each exam id to its bank file, domains, and domain targets.
 
-Each file can contain multiple questions. The question loader will automatically parse all markdown files in this directory.
+| Bank file | Exam |
+|-----------|------|
+| `front_end_specialist.md` | Acquia Certified Drupal Front End Specialist |
+| `site_builder.md` | Acquia Certified Drupal Site Builder |
+| `developer.md` | Acquia Certified Drupal Developer |
+| `backend_specialist.md` | Acquia Certified Drupal Backend Specialist |
 
-## Example Question Format
+Each bank holds **400 questions** grouped under `## Domain` sections matching the official blueprint weights, with a `## Jump to Section:` table of contents at the top.
+
+## Question Format
 
 ```markdown
-## Question 1
+### Question 1
 
-What is the main purpose of Drupal's theme system?
+**Domain:** Theming Concepts
 
-### Options
-- To manage database queries
-- To control the presentation layer of a website
-- To handle user authentication
-- To process form submissions
-
-### Correct Answers
-- To control the presentation layer of a website
-
-## Question 2
-
-Which of the following are Drupal theme files? (Multiple Answers)
+Question text here. For multiple-answer questions add (Choose two).
 
 ### Options
-- .info.yml
-- .theme
-- .twig
-- .module
+- Option A
+- Option B
+- Option C
 
 ### Correct Answers
-- .info.yml
-- .theme
-- .twig
+- [0] Option A
+- [1] Option B
+
+### Explanation
+Why the answers are correct.
+
+### Question 2
+
+...
 ```
 
 ## Notes
 
-- Question numbers should be sequential (1, 2, 3, etc.)
-- Options start with `### Options` section
-- Correct answers start with `### Correct Answers` section
-- For multiple answer questions, indicate this in the question text
-- The loader will automatically detect if questions allow multiple answers
+- Question numbers are sequential within a bank (1–400)
+- `**Domain:**` must match one of the exam's registry domain names exactly
+- `### Correct Answers` uses `[<option index>] <option text>`; multiple entries mark a multiple-answer question
+- The explanation must not start with `#` (it would be parsed as a heading)
+- Validate with `npm run validate:questions` (all banks, or `node scripts/validateQuestions.js <examId>` for one)
 
+`sample.md` is a tiny illustrative bank and is not loaded by any exam.

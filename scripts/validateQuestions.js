@@ -1,22 +1,47 @@
 #!/usr/bin/env node
-import { readFileSync, readdirSync } from 'fs'
+/**
+ * Validates markdown question banks against the shared exam registry.
+ *
+ * Usage: node scripts/validateQuestions.js [examId]
+ *   Without an exam id, every registered exam bank is validated.
+ *
+ * Structural problems (bad ids, missing answers/explanations, unknown
+ * domains) are errors. Domain counts that diverge from registry targets
+ * are reported as informational warnings.
+ */
+import { readFileSync } from 'fs'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { parseMarkdownQuestions } from '../src/utils/parseMarkdownQuestions.js'
+import { EXAMS, getExam, getBankTargets } from '../src/exams/registry.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const questionsDir = join(__dirname, '../src/questions')
 
-const banks = readdirSync(questionsDir)
-  .filter((name) => name.endsWith('.md') && !['README.md', 'sample.md'].includes(name))
-  .sort()
+const examIdArg = process.argv[2]
+const exams = examIdArg ? [getExam(examIdArg)] : EXAMS
+
+if (examIdArg && (!exams[0] || exams[0].id !== examIdArg)) {
+  console.error(`Unknown exam id: ${examIdArg}`)
+  process.exit(1)
+}
 
 let hasErrors = false
 
-for (const filename of banks) {
-  const content = readFileSync(join(questionsDir, filename), 'utf-8')
+for (const exam of exams) {
+  const filename = exam.bankFile
+  let content
+  try {
+    content = readFileSync(join(questionsDir, filename), 'utf-8')
+  } catch {
+    hasErrors = true
+    console.error(`\n${filename}: bank file missing for exam "${exam.id}"`)
+    continue
+  }
+
   const questions = parseMarkdownQuestions(content)
   const errors = []
+  const warnings = []
 
   if (questions.length === 0) {
     errors.push('No questions parsed')
@@ -24,6 +49,8 @@ for (const filename of banks) {
 
   const seenIds = new Set()
   let previousId = null
+  const validDomains = new Set(exam.domains.map((d) => d.name))
+  const perDomain = {}
 
   for (const q of questions) {
     const label = `Question ${q.id}`
@@ -40,6 +67,12 @@ for (const filename of banks) {
 
     if (!q.question || !q.question.trim()) {
       errors.push(`${label}: empty question text`)
+    }
+
+    if (!validDomains.has(q.domain)) {
+      errors.push(`${label}: unknown domain "${q.domain}"`)
+    } else {
+      perDomain[q.domain] = (perDomain[q.domain] || 0) + 1
     }
 
     if (!Array.isArray(q.options) || q.options.length < 2) {
@@ -61,9 +94,16 @@ for (const filename of banks) {
     }
   }
 
+  for (const { domain, count } of getBankTargets(exam)) {
+    const actual = perDomain[domain] || 0
+    if (actual !== count) {
+      warnings.push(`${domain}: ${actual}/${count} target questions`)
+    }
+  }
+
   if (errors.length > 0) {
     hasErrors = true
-    console.error(`\n${filename}: ${questions.length} questions, ${errors.length} issue(s)`)
+    console.error(`\n${filename} (${exam.id}): ${questions.length} questions, ${errors.length} issue(s)`)
     for (const err of errors.slice(0, 40)) {
       console.error(`  - ${err}`)
     }
@@ -71,7 +111,11 @@ for (const filename of banks) {
       console.error(`  ... and ${errors.length - 40} more`)
     }
   } else {
-    console.log(`${filename}: OK (${questions.length} questions)`)
+    console.log(`${filename} (${exam.id}): OK (${questions.length} questions)`)
+  }
+
+  for (const warning of warnings) {
+    console.log(`  target: ${warning}`)
   }
 }
 

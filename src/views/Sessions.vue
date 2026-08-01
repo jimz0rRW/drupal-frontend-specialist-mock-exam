@@ -16,7 +16,7 @@
         <p class="text-gray-600 dark:text-gray-400 mb-4">No saved sessions yet.</p>
         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-500">Complete an exam to save your results here.</p>
         <button
-          @click="goToExam"
+          @click="goToExams"
           class="mt-4 px-6 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700"
         >
           Start New Exam
@@ -37,22 +37,26 @@
             <div class="flex-1 w-full">
               <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
                 <h3 class="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  Session {{ formatDate(session.endTime || session.startTime) }}
+                  {{ examTitle(session) }}
+                  <span
+                    class="ml-1 px-2 py-0.5 rounded-full text-xs font-medium align-middle"
+                    :class="session.mode === 'simulation'
+                      ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300'
+                      : 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300'"
+                  >
+                    {{ session.mode === 'simulation' ? 'Simulation' : 'Practice' }}
+                  </span>
                   <span v-if="session.status === 'in-progress'" class="ml-2 text-xs sm:text-sm font-normal text-blue-600 dark:text-blue-400">
                     (In Progress)
                   </span>
                 </h3>
                 <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                  {{ formatExamType(session.examType) }}
+                  {{ formatDate(session.endTime || session.startTime) }}
                 </span>
                 <span
                   v-if="(session.status === 'completed' || !session.status) && session.score"
                   class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium w-fit"
-                  :class="{
-                    'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300': session.score.percentage >= 70,
-                    'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': session.score.percentage >= 50 && session.score.percentage < 70,
-                    'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300': session.score.percentage < 50
-                  }"
+                  :class="scoreBadgeClass(session)"
                 >
                   {{ session.score.percentage }}%
                 </span>
@@ -63,7 +67,7 @@
                   In Progress
                 </span>
               </div>
-              
+
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mt-3 text-xs sm:text-sm">
                 <div v-if="session.status === 'completed'">
                   <span class="text-gray-500 dark:text-gray-400">Correct:</span>
@@ -80,7 +84,10 @@
                 <div>
                   <span class="text-gray-500 dark:text-gray-400">Duration:</span>
                   <span class="ml-2 font-semibold text-gray-700 dark:text-gray-300">
-                    <span v-if="session.timerElapsed">{{ formatTimerDuration(session.timerElapsed) }}</span>
+                    <span v-if="session.mode === 'simulation' && typeof session.countdownRemaining === 'number' && session.status === 'in-progress'">
+                      {{ formatTimerDuration(session.countdownRemaining) }} left
+                    </span>
+                    <span v-else-if="session.timerElapsed">{{ formatTimerDuration(session.timerElapsed) }}</span>
                     <span v-else>{{ formatDuration(session.startTime, session.endTime) }}</span>
                   </span>
                 </div>
@@ -91,13 +98,13 @@
                   </span>
                 </div>
               </div>
-              
+
               <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                 Started: {{ formatDateTime(session.startTime) }}
                 <span v-if="session.endTime"> • Ended: {{ formatDateTime(session.endTime) }}</span>
               </div>
             </div>
-            
+
             <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:ml-4">
               <button
                 v-if="session.status === 'in-progress'"
@@ -123,52 +130,67 @@
           </div>
         </div>
       </div>
+
+      <div class="mt-6 text-center">
+        <button
+          @click="goToExams"
+          class="px-6 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 text-sm"
+        >
+          Back to Exams
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { getAllSessions, deleteSession as deleteSessionStorage, clearAllSessions, getSession } from '../utils/sessionStorage'
+import { getAllSessions, deleteSession as deleteSessionStorage, clearAllSessions } from '../utils/sessionStorage'
 import { useExamStore } from '../stores/exam'
 import { loadQuestionsFromMarkdown } from '../utils/questionLoader'
+import { getExam } from '../exams/registry'
 
 const router = useRouter()
 const examStore = useExamStore()
-const { examType } = storeToRefs(examStore)
 
 const sessions = ref([])
 
-async function ensureExamQuestions(type = 'generated') {
-  const targetType = type || 'generated'
+function examTitle(session) {
+  return getExam(session.examId).shortTitle
+}
 
-  if (examType.value === targetType && examStore.questions.length > 0) {
-    return true
+function scoreBadgeClass(session) {
+  const passPercent = getExam(session.examId).simulation.passPercent
+  const percentage = session.score?.percentage ?? 0
+  if (percentage >= passPercent) {
+    return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
   }
+  if (percentage >= passPercent - 20) {
+    return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'
+  }
+  return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
+}
 
+// Load the session's exact question set (replays simulation samples) into the store.
+async function loadSessionQuestions(session) {
   try {
-    const loadedQuestions = await loadQuestionsFromMarkdown(targetType)
-    if (!loadedQuestions.length) {
-      console.warn(`No questions found for exam type: ${targetType}`)
+    const bankQuestions = await loadQuestionsFromMarkdown(session.examId)
+    if (!bankQuestions.length) {
+      console.warn(`No questions found for exam: ${session.examId}`)
       return false
     }
 
-    examStore.loadQuestions(loadedQuestions, targetType)
+    examStore.loadQuestionsForSession(bankQuestions, session)
     return true
   } catch (error) {
-    console.error('Error loading questions for sessions view:', error)
+    console.error('Error loading questions for session:', error)
     return false
   }
 }
 
 onMounted(async () => {
   await loadSessions()
-
-  if (examStore.questions.length === 0) {
-    await ensureExamQuestions(examType.value || 'generated')
-  }
 })
 
 async function loadSessions() {
@@ -179,11 +201,11 @@ async function loadSessions() {
       // If status is missing, assume completed (for backward compatibility)
       const aStatus = a.status || 'completed'
       const bStatus = b.status || 'completed'
-      
+
       // In-progress sessions first
       if (aStatus === 'in-progress' && bStatus !== 'in-progress') return -1
       if (aStatus !== 'in-progress' && bStatus === 'in-progress') return 1
-      
+
       // Then sort by date (newest first)
       const aDate = new Date(a.endTime || a.startTime)
       const bDate = new Date(b.endTime || b.startTime)
@@ -202,19 +224,6 @@ function formatDate(dateString) {
     day: 'numeric',
     year: 'numeric'
   })
-}
-
-function formatExamType(type) {
-  if (type === 'sample') {
-    return 'Sample Exam'
-  }
-
-  if (!type || type === 'generated') {
-    return 'Practice Exam'
-  }
-
-  const normalized = String(type)
-  return normalized.charAt(0).toUpperCase() + normalized.slice(1)
 }
 
 function formatDateTime(dateString) {
@@ -237,7 +246,7 @@ function formatDuration(startTime, endTime) {
   const diffMins = Math.floor(diffMs / 60000)
   const diffHours = Math.floor(diffMins / 60)
   const mins = diffMins % 60
-  
+
   if (diffHours > 0) {
     return `${diffHours}h ${mins}m`
   }
@@ -260,7 +269,7 @@ function formatTimerDuration(seconds) {
 
 async function viewSession(session) {
   try {
-    const loaded = await ensureExamQuestions('generated')
+    const loaded = await loadSessionQuestions(session)
 
     if (!loaded) {
       alert('Unable to load questions for this session. Please verify the question set exists.')
@@ -279,7 +288,7 @@ async function viewSession(session) {
 
 async function resumeSession(session) {
   try {
-    const loaded = await ensureExamQuestions('generated')
+    const loaded = await loadSessionQuestions(session)
 
     if (!loaded) {
       alert('Unable to load questions for this session. Please verify the question set exists.')
@@ -288,8 +297,8 @@ async function resumeSession(session) {
 
     // Load the session into the store (will restore position)
     if (await examStore.resumeSession(session)) {
-      // Navigate to exam page to continue
-      router.push('/')
+      // Navigate to the right exam page to continue
+      router.push(session.mode === 'simulation' ? `/exam/${session.examId}/simulate` : `/exam/${session.examId}`)
     } else {
       alert('Failed to resume session. Please try again.')
     }
@@ -323,8 +332,7 @@ async function confirmClearAll() {
   }
 }
 
-function goToExam() {
-  router.push('/')
+function goToExams() {
+  router.push('/exams')
 }
 </script>
-

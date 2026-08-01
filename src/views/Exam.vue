@@ -2,7 +2,7 @@
   <div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-4xl">
     <!-- Timer Widget -->
     <ExamTimer />
-    
+
     <p v-if="examLoadError" class="mb-4 text-sm text-red-600 dark:text-red-400">{{ examLoadError }}</p>
 
     <div v-if="isLoadingExam" class="text-center py-12">
@@ -10,7 +10,15 @@
     </div>
 
     <div v-else-if="questions.length === 0" class="text-center py-12">
-      <p class="text-gray-600 dark:text-gray-400 mb-4">No questions loaded. Check <code class="text-sm">src/questions/generated_questions.md</code>.</p>
+      <p class="text-gray-600 dark:text-gray-400 mb-4">
+        No questions loaded. Check <code class="text-sm">src/questions/{{ examConfig?.bankFile }}</code>.
+      </p>
+      <button
+        @click="goToExams"
+        class="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 text-sm"
+      >
+        Back to Exams
+      </button>
     </div>
 
     <div v-else>
@@ -18,15 +26,29 @@
       <div class="mb-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 sm:p-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 mb-3">
           <h2 class="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200">
-            Section {{ currentSection }} of {{ totalSections }}
+            {{ examConfig?.shortTitle }}
+            <span
+              class="inline-block ml-1 px-2 py-0.5 rounded-full text-xs font-medium align-middle"
+              :class="isSimulation
+                ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300'
+                : 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300'"
+            >
+              {{ isSimulation ? 'Simulation' : 'Practice' }}
+            </span>
             <span
               v-if="currentSectionLabel"
               class="block text-sm font-normal text-gray-600 dark:text-gray-300 mt-1 sm:mt-0"
             >
-              {{ currentSectionLabel }}
+              Section {{ currentSection }} of {{ totalSections }} — {{ currentSectionLabel }}
             </span>
           </h2>
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            <button
+              @click="goToExams"
+              class="px-3 py-1 bg-blue-500 text-white rounded text-xs sm:text-sm hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 w-full sm:w-auto"
+            >
+              All Exams
+            </button>
             <button
               @click="goToSessions"
               class="px-3 py-1 bg-green-500 text-white rounded text-xs sm:text-sm hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 w-full sm:w-auto"
@@ -44,7 +66,7 @@
             </span>
           </div>
         </div>
-        
+
         <!-- Section Navigation -->
         <div class="mt-3">
           <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jump to Section:</label>
@@ -73,8 +95,8 @@
           <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{{ Math.round(progress) }}%</span>
         </div>
         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-          <div 
-            class="bg-blue-500 dark:bg-blue-600 h-2 rounded-full transition-all duration-300" 
+          <div
+            class="bg-blue-500 dark:bg-blue-600 h-2 rounded-full transition-all duration-300"
             :style="{ width: `${progress}%` }"
           ></div>
         </div>
@@ -98,7 +120,7 @@
             :key="shuffledIndex"
             class="flex items-start p-3 sm:p-4 border-2 rounded-lg transition-colors"
             :class="{
-              // Before submission
+              // Before submission (or simulation: never submitted)
               'border-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-500': isSelected(shuffledIndex) && !isSubmitted,
               'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 bg-white dark:bg-gray-800': !isSelected(shuffledIndex) && !isSubmitted,
               'cursor-pointer': !isSubmitted,
@@ -131,8 +153,8 @@
             </span>
           </label>
         </div>
-        
-        <!-- Validation Result -->
+
+        <!-- Validation Result (practice mode only) -->
         <div v-if="isSubmitted" class="mt-4 sm:mt-6 p-3 sm:p-4 rounded-lg" :class="isAnswerCorrect ? 'bg-green-50 dark:bg-green-900/30 border-2 border-green-500 dark:border-green-400' : 'bg-red-50 dark:bg-red-900/30 border-2 border-red-500 dark:border-red-400'">
           <div class="flex items-center mb-2">
             <span v-if="isAnswerCorrect" class="text-green-700 dark:text-green-400 font-semibold text-base sm:text-lg">
@@ -143,8 +165,8 @@
             </span>
           </div>
         </div>
-        
-        <!-- Explanation -->
+
+        <!-- Explanation (practice mode only; simulation defers to final review) -->
         <div v-if="isSubmitted && currentQuestion.explanation" class="mt-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
           <h3 class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Explanation:</h3>
           <p class="text-sm sm:text-base text-gray-700 dark:text-gray-300">{{ currentQuestion.explanation }}</p>
@@ -161,7 +183,33 @@
           Previous
         </button>
 
-        <div class="flex gap-2">
+        <!-- Simulation mode: answers save on selection, no per-question submit -->
+        <div v-if="isSimulation" class="flex gap-2">
+          <button
+            v-if="isLastQuestionInSection && currentSection >= totalSections"
+            @click="confirmFinishSimulation"
+            class="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 text-sm sm:text-base"
+          >
+            Finish Exam
+          </button>
+          <button
+            v-else-if="isLastQuestionInSection"
+            @click="goToNextSection"
+            class="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 text-sm sm:text-base"
+          >
+            Continue to Next Section
+          </button>
+          <button
+            v-else
+            @click="nextQuestion"
+            class="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 text-sm sm:text-base"
+          >
+            Next
+          </button>
+        </div>
+
+        <!-- Practice mode: submit per question with instant feedback -->
+        <div v-else class="flex gap-2">
           <button
             v-if="isSubmitted && isLastQuestionInSection"
             @click="finishSection"
@@ -203,7 +251,12 @@
             {{ currentSectionStartIndex + sectionIndex + 1 }}
           </button>
         </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 space-y-1 sm:space-y-0 sm:space-x-3">
+        <p v-if="isSimulation" class="text-xs text-gray-500 dark:text-gray-400 mt-2 space-y-1 sm:space-y-0 sm:space-x-3">
+          <span class="inline-flex items-center"><span class="inline-block w-3 h-3 sm:w-4 sm:h-4 bg-blue-500 dark:bg-blue-600 rounded mr-1"></span> Current question</span>
+          <span class="inline-flex items-center"><span class="inline-block w-3 h-3 sm:w-4 sm:h-4 bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-500 dark:border-yellow-400 rounded mr-1"></span> Answered</span>
+          <span class="inline-flex items-center"><span class="inline-block w-3 h-3 sm:w-4 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded mr-1"></span> Not answered</span>
+        </p>
+        <p v-else class="text-xs text-gray-500 dark:text-gray-400 mt-2 space-y-1 sm:space-y-0 sm:space-x-3">
           <span class="inline-flex items-center"><span class="inline-block w-3 h-3 sm:w-4 sm:h-4 bg-blue-500 dark:bg-blue-600 rounded mr-1"></span> Current question</span>
           <span class="inline-flex items-center"><span class="inline-block w-3 h-3 sm:w-4 sm:h-4 bg-green-100 dark:bg-green-900/30 border-2 border-green-500 dark:border-green-400 rounded mr-1"></span> Correct</span>
           <span class="inline-flex items-center"><span class="inline-block w-3 h-3 sm:w-4 sm:h-4 bg-red-100 dark:bg-red-900/30 border-2 border-red-500 dark:border-red-400 rounded mr-1"></span> Incorrect</span>
@@ -218,17 +271,24 @@
 <script setup>
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useExamStore } from '../stores/exam'
 import { useProfileStore } from '../stores/profile'
 import { loadQuestionsFromMarkdown } from '../utils/questionLoader'
+import { getExam, isValidExamId } from '../exams/registry'
 import ExamTimer from '../components/ExamTimer.vue'
 
 const router = useRouter()
+const route = useRoute()
 const examStore = useExamStore()
 const profileStore = useProfileStore()
 
 const { sections, currentSectionData, currentSectionLabel, currentSectionRange } = storeToRefs(examStore)
+
+const routeExamId = computed(() => route.params.examId)
+const routeMode = computed(() => (route.meta.mode === 'simulation' ? 'simulation' : 'practice'))
+const examConfig = computed(() => getExam(routeExamId.value))
+const isSimulation = computed(() => examStore.isSimulation)
 
 const isLoadingExam = ref(false)
 const examLoadError = ref('')
@@ -253,14 +313,18 @@ async function loadExam() {
   examLoadError.value = ''
 
   try {
-    const loadedQuestions = await loadQuestionsFromMarkdown('generated')
+    const loadedQuestions = await loadQuestionsFromMarkdown(routeExamId.value)
     if (loadedQuestions.length === 0) {
       examLoadError.value = 'No questions found.'
-      examStore.loadQuestions([], 'generated')
+      examStore.loadQuestions([], routeExamId.value, routeMode.value)
       return
     }
 
-    examStore.loadQuestions(loadedQuestions, 'generated')
+    if (routeMode.value === 'simulation') {
+      examStore.startSimulation(loadedQuestions, routeExamId.value)
+    } else {
+      examStore.loadQuestions(loadedQuestions, routeExamId.value, 'practice')
+    }
   } catch (error) {
     console.error('Error loading questions:', error)
     examLoadError.value = 'Failed to load questions.'
@@ -271,7 +335,7 @@ async function loadExam() {
 
 // Check if current question has been submitted
 const isSubmitted = computed(() => {
-  if (!currentQuestion.value) return false
+  if (!currentQuestion.value || isSimulation.value) return false
   return examStore.isQuestionSubmitted(currentQuestion.value.id)
 })
 
@@ -299,6 +363,13 @@ watch(() => examStore.currentSection, (newSection) => {
   currentSection.value = newSection
 })
 
+// Auto-submit navigation when the simulation countdown expires
+watch(() => examStore.countdownExpired, (expired) => {
+  if (expired && examStore.isExamComplete) {
+    router.push('/review')
+  }
+})
+
 // Save session before page unload
 const handleBeforeUnload = async (event) => {
   if (!examStore.isExamComplete) {
@@ -309,10 +380,30 @@ const handleBeforeUnload = async (event) => {
 
 onMounted(async () => {
   try {
-    if (questions.value.length === 0) {
+    if (!isValidExamId(routeExamId.value)) {
+      router.replace('/exams')
+      return
+    }
+
+    const storeMatchesRoute =
+      questions.value.length > 0 &&
+      examStore.examId === routeExamId.value &&
+      examStore.mode === routeMode.value &&
+      (routeMode.value === 'practice' || !examStore.isExamComplete)
+
+    if (!storeMatchesRoute) {
       await loadExam()
     } else {
       currentSection.value = examStore.currentSection
+      // Resume the countdown for an in-progress simulation
+      if (
+        routeMode.value === 'simulation' &&
+        !examStore.isExamComplete &&
+        !examStore.isCountdownRunning &&
+        examStore.countdownRemaining > 0
+      ) {
+        examStore.startCountdown()
+      }
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
@@ -342,7 +433,7 @@ function isSelected(shuffledIndex) {
 
 function handleAnswerChange(shuffledIndex, event) {
   if (!currentQuestion.value) return
-  
+
   // Convert shuffled index to original index
   const originalIndex = examStore.shuffledToOriginalIndex(currentQuestion.value.id, shuffledIndex)
   const currentAnswer = examStore.getAnswer(currentQuestion.value.id) || []
@@ -393,7 +484,7 @@ function isCorrectAnswer(shuffledIndex) {
 function submitAnswer() {
   if (!currentQuestion.value) return
   if (!hasAnswer.value) return
-  
+
   // Mark question as submitted
   examStore.submitAnswer(currentQuestion.value.id)
 }
@@ -406,13 +497,26 @@ function previousQuestion() {
   examStore.previousQuestion()
 }
 
-function goToQuestion(index) {
-  examStore.goToQuestion(index)
+function goToNextSection() {
+  examStore.goToSection(currentSection.value + 1)
 }
 
 function finishSection() {
   // Navigate to section review
   router.push(`/section/${examStore.currentSection}/review`)
+}
+
+async function confirmFinishSimulation() {
+  const unanswered = totalQuestions.value - Object.keys(examStore.answers).filter(
+    (questionId) => (examStore.answers[questionId] || []).length > 0
+  ).length
+  const message = unanswered > 0
+    ? `You have ${unanswered} unanswered question${unanswered === 1 ? '' : 's'}. Finish the exam anyway?`
+    : 'Finish the exam and see your results?'
+  if (confirm(message)) {
+    await examStore.finishExam()
+    router.push('/review')
+  }
 }
 
 function goToQuestionInSection(sectionIndex) {
@@ -428,6 +532,11 @@ function isCurrentQuestionInSection(sectionIndex) {
 function getQuestionButtonClass(questionId, sectionIndex) {
   if (isCurrentQuestionInSection(sectionIndex)) {
     return 'bg-blue-500 dark:bg-blue-600 text-white ring-2 ring-blue-300 dark:ring-blue-400'
+  }
+  if (isSimulation.value) {
+    return questionHasAnswer(questionId)
+      ? 'bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-500 dark:border-yellow-400 text-yellow-800 dark:text-yellow-300 hover:bg-yellow-200 dark:hover:bg-yellow-900/50'
+      : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
   }
   if (questionIsCorrect(questionId)) {
     return 'bg-green-100 dark:bg-green-900/30 border-2 border-green-500 dark:border-green-400 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
@@ -448,9 +557,8 @@ function goToSelectedSection(sectionNum) {
   }
 }
 
-function finishExam() {
-  examStore.finishExam()
-  router.push('/review')
+function goToExams() {
+  router.push('/exams')
 }
 
 function goToSessions() {
@@ -462,4 +570,3 @@ function switchProfile() {
   router.push('/profiles')
 }
 </script>
-

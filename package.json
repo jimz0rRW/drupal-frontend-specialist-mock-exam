@@ -4,10 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:server": "cd server && npm run dev",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "cd server && npm start",
     "validate:questions": "node scripts/validateQuestions.js",
     "test": "vitest run"
   },

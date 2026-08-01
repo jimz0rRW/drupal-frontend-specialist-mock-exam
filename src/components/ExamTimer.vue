@@ -1,6 +1,23 @@
 <template>
   <div class="fixed top-16 sm:top-20 right-3 sm:right-4 z-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-3 sm:p-4 min-w-[140px] sm:min-w-[160px]">
-    <div class="flex flex-col items-center gap-2">
+    <!-- Simulation countdown: no controls, turns red when running low -->
+    <div v-if="isSimulation" class="flex flex-col items-center gap-2">
+      <div class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+        Time Left
+      </div>
+      <div
+        class="text-xl sm:text-2xl font-mono font-bold"
+        :class="isRunningLow ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'"
+      >
+        {{ formattedCountdown }}
+      </div>
+      <div v-if="isRunningLow" class="text-xs text-red-600 dark:text-red-400 font-medium">
+        Wrapping up soon
+      </div>
+    </div>
+
+    <!-- Practice stopwatch with manual controls -->
+    <div v-else class="flex flex-col items-center gap-2">
       <div class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
         Timer
       </div>
@@ -46,13 +63,16 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onBeforeUnmount } from 'vue'
+import { computed, onBeforeUnmount } from 'vue'
 import { useExamStore } from '../stores/exam'
 
 const examStore = useExamStore()
 
+const isSimulation = computed(() => examStore.isSimulation)
 const isTimerRunning = computed(() => examStore.isTimerRunning)
 const formattedTime = computed(() => examStore.formatTimerDuration(examStore.timerElapsed))
+const formattedCountdown = computed(() => examStore.formatTimerDuration(examStore.countdownRemaining))
+const isRunningLow = computed(() => examStore.countdownRemaining > 0 && examStore.countdownRemaining <= 5 * 60)
 
 function startTimer() {
   examStore.startTimer()
@@ -68,11 +88,13 @@ function resetTimer() {
   }
 }
 
-// Cleanup interval on unmount
+// Cleanup intervals on unmount (remaining countdown persists via session save)
 onBeforeUnmount(() => {
   if (examStore.isTimerRunning) {
     examStore.pauseTimer()
   }
+  if (examStore.isCountdownRunning) {
+    examStore.pauseCountdown()
+  }
 })
 </script>
-

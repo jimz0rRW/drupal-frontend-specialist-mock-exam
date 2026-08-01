@@ -14,7 +14,6 @@ dist-ssr
 
 # Environment
 .env
-server/.env
 
 # Python virtual environment
 .venv/

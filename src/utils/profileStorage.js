@@ -61,11 +61,23 @@ export function deleteProfileRecord(profileId) {
   }
 }
 
+// Normalize legacy sessions (pre multi-exam) onto the current shape:
+// examType: 'generated' -> examId: 'front-end-specialist', mode: 'practice'.
+function normalizeSession(session) {
+  if (!session || typeof session !== 'object') return session
+  return {
+    ...session,
+    examId: session.examId || session.examType || 'front-end-specialist',
+    mode: session.mode === 'simulation' ? 'simulation' : 'practice'
+  }
+}
+
 export function getSessionsForProfile(profileId) {
   if (!profileId) return []
   try {
     const raw = localStorage.getItem(sessionsKey(profileId))
-    return raw ? JSON.parse(raw) : []
+    const sessions = raw ? JSON.parse(raw) : []
+    return Array.isArray(sessions) ? sessions.map(normalizeSession) : []
   } catch {
     return []
   }

@@ -185,17 +185,17 @@ function getOptionLabel(options, index) {
 
 function goBackToSection() {
   examStore.goToSection(currentSection.value)
-  router.push('/')
+  router.push(`/exam/${examStore.examId}`)
 }
 
 function goToPreviousSection() {
   examStore.goToSection(currentSection.value - 1)
-  router.push('/')
+  router.push(`/exam/${examStore.examId}`)
 }
 
 function goToNextSection() {
   examStore.goToSection(currentSection.value + 1)
-  router.push('/')
+  router.push(`/exam/${examStore.examId}`)
 }
 
 function goToFinalReview() {
@@ -207,7 +207,7 @@ function goToSectionFromReview(sectionNum) {
   const section = parseInt(sectionNum, 10)
   if (section >= 1 && section <= totalSections.value) {
     examStore.goToSection(section)
-    router.push('/')
+    router.push(`/exam/${examStore.examId}`)
   }
 }
 </script>

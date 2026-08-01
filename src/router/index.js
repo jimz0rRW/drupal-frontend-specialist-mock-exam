@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 const Exam = () => import('../views/Exam.vue')
+const ExamPicker = () => import('../views/ExamPicker.vue')
 const Review = () => import('../views/Review.vue')
 const SectionReview = () => import('../views/SectionReview.vue')
 const Sessions = () => import('../views/Sessions.vue')
@@ -13,14 +14,26 @@ const routes = [
     component: Profiles
   },
   {
-    path: '/login',
-    redirect: '/profiles'
+    path: '/',
+    redirect: '/exams'
   },
   {
-    path: '/',
+    path: '/exams',
+    name: 'ExamPicker',
+    component: ExamPicker,
+    meta: { requiresProfile: true }
+  },
+  {
+    path: '/exam/:examId',
     name: 'Exam',
     component: Exam,
-    meta: { requiresProfile: true }
+    meta: { requiresProfile: true, mode: 'practice' }
+  },
+  {
+    path: '/exam/:examId/simulate',
+    name: 'ExamSimulation',
+    component: Exam,
+    meta: { requiresProfile: true, mode: 'simulation' }
   },
   {
     path: '/section/:section/review',
@@ -40,6 +53,10 @@ const routes = [
     name: 'Sessions',
     component: Sessions,
     meta: { requiresProfile: true }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/exams'
   }
 ]
 
@@ -57,9 +74,9 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  // Direct visit to /profiles with an active profile → continue into the exam
+  // Direct visit to /profiles with an active profile → continue to exam picker
   if (to.path === '/profiles' && profileStore.hasActiveProfile && !from.name) {
-    next('/')
+    next('/exams')
     return
   }
 
